@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Booking {
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  name          String
+  email         String
+  phone         String?
+  
+  activityId    String
+  activityTitle String
+  date          DateTime
+  guests        Int
+  totalPrice    Float
+  
+  status        String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  active    Boolean  @default(true)
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  price       Float
+  images      String[] // Array of image URLs
+  category    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // New fields for rich content
+  rating      Float    @default(0)
+  reviews     Int      @default(0)
+  duration    String   @default("")
+  location    String   @default("")
+  features    String[]
+  included    String[]
+  whatToBring String[]
+  itinerary   Json?    // Stores array of { time, title, description }
+  host        Json?    // Stores { name, image }
+  tags        String[]
+}
+
+model SupportRequest {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  status    String   @default("PENDING") // PENDING, IN_PROGRESS, RESOLVED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

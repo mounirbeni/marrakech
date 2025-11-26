@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/mouni/Desktop/marrakech/src/app/loading.tsx"],"sourcesContent":["\"use client\";\r\n\r\nexport default function Loading() {\r\n    return (\r\n        <div className=\"min-h-screen bg-background flex items-center justify-center\">\r\n            <div className=\"text-center space-y-4\">\r\n                <div className=\"relative\">\r\n                    <div className=\"h-16 w-16 mx-auto\">\r\n                        <div className=\"absolute inset-0 rounded-full border-4 border-primary/20\"></div>\r\n                        <div className=\"absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin\"></div>\r\n                    </div>\r\n                </div>\r\n                <p className=\"text-muted-foreground font-medium\">Loading...</p>\r\n            </div>\r\n        </div>\r\n    );\r\n}\r\n"],"names":[],"mappings":";;;;;AAAA;;AAEe,SAAS;IACpB,qBACI,6LAAC;QAAI,WAAU;kBACX,cAAA,6LAAC;YAAI,WAAU;;8BACX,6LAAC;oBAAI,WAAU;8BACX,cAAA,6LAAC;wBAAI,WAAU;;0CACX,6LAAC;gCAAI,WAAU;;;;;;0CACf,6LAAC;gCAAI,WAAU;;;;;;;;;;;;;;;;;8BAGvB,6LAAC;oBAAE,WAAU;8BAAoC;;;;;;;;;;;;;;;;;AAIjE;KAdwB"}}]
+}

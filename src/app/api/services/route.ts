@@ -31,8 +31,14 @@ export async function POST(request: Request) {
                 title,
                 description,
                 price: parseFloat(price),
-                images: images || [],
+                images: JSON.stringify(images || []),
                 category,
+                features: JSON.stringify([]),
+                included: JSON.stringify([]),
+                whatToBring: JSON.stringify([]),
+                tags: JSON.stringify([]),
+                itinerary: JSON.stringify([]),
+                host: JSON.stringify({}),
             },
         })
 

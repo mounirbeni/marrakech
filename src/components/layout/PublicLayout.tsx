@@ -18,7 +18,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         <>
             <SkipLink />
             <Header />
-            <main id="main-content">{children}</main>
+            <main id="main-content" className="flex-1 w-full pt-16 md:pt-20">{children}</main>
             <Footer />
             <WhatsAppButton />
         </>

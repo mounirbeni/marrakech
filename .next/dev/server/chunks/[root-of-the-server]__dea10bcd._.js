@@ -60,7 +60,7 @@ function manifest() {
         icons: [
             {
                 src: '/icon',
-                sizes: 'any',
+                sizes: '32x32',
                 type: 'image/png'
             }
         ],

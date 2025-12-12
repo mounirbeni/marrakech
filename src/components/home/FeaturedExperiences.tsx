@@ -1,7 +1,7 @@
 "use client";
 
 import { ActivityCard } from "@/components/shared/ActivityCard";
-import { activities } from "@/lib/data/activities-data";
+import { activitiesData } from "@/lib/data/activities-data";
 import { motion } from "framer-motion";
 
 export function FeaturedExperiences() {
@@ -30,7 +30,7 @@ export function FeaturedExperiences() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {activities.slice(0, 6).map((activity, index) => (
+                    {Object.values(activitiesData).flat().slice(0, 6).map((activity, index) => (
                         <motion.div
                             key={activity.id}
                             initial={{ opacity: 0, y: 30 }}

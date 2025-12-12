@@ -31,7 +31,7 @@ export async function GET() {
         })
 
         const notifications = [
-            ...recentBookings.map((b: any) => ({
+            ...recentBookings.map((b) => ({
                 id: `booking-${b.id}`,
                 type: 'BOOKING',
                 title: 'New Booking',
@@ -40,7 +40,7 @@ export async function GET() {
                 createdAt: b.createdAt,
                 link: '/admin/bookings'
             })),
-            ...recentComplaints.map((c: any) => ({
+            ...recentComplaints.map((c) => ({
                 id: `complaint-${c.id}`,
                 type: 'COMPLAINT',
                 title: 'New Support Request',

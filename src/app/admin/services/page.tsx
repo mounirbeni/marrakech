@@ -43,7 +43,20 @@ const fetcher = async (url: string) => {
     const res = await fetch(url)
     const text = await res.text()
     try {
-        return JSON.parse(text)
+        const data = JSON.parse(text)
+        if (Array.isArray(data)) {
+            return data.map((service: any) => ({
+                ...service,
+                images: typeof service.images === 'string' ? JSON.parse(service.images) : service.images,
+                features: typeof service.features === 'string' ? JSON.parse(service.features) : service.features,
+                included: typeof service.included === 'string' ? JSON.parse(service.included) : service.included,
+                whatToBring: typeof service.whatToBring === 'string' ? JSON.parse(service.whatToBring) : service.whatToBring,
+                tags: typeof service.tags === 'string' ? JSON.parse(service.tags) : service.tags,
+                itinerary: typeof service.itinerary === 'string' ? JSON.parse(service.itinerary) : service.itinerary,
+                host: typeof service.host === 'string' ? JSON.parse(service.host) : service.host,
+            }))
+        }
+        return data
     } catch (e) {
         console.error(`JSON Parse Error for ${url}:`, text)
         throw e

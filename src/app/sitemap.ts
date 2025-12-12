@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { activities } from '@/lib/data/activities-data';
+import { activitiesData } from '@/lib/data/activities-data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const baseUrl = 'https://marrakech-luxe.vercel.app';
@@ -63,7 +63,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ];
 
     // Dynamic experience pages
-    const experiencePages: MetadataRoute.Sitemap = activities.map((activity) => ({
+    const allActivities = Object.values(activitiesData).flat();
+    const experiencePages: MetadataRoute.Sitemap = allActivities.map((activity) => ({
         url: `${baseUrl}/experiences/${activity.id}`,
         lastModified: new Date(),
         changeFrequency: 'weekly' as const,

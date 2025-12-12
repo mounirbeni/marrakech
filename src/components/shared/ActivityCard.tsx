@@ -32,12 +32,19 @@ export function ActivityCard({ activity }: ActivityCardProps) {
         <Link href={`/experiences/${activity.id}`} className="block h-full group">
             <Card className="h-full flex flex-col overflow-hidden rounded-2xl border-border bg-card shadow-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
                 <div className="relative aspect-[4/3] overflow-hidden">
-                    <Image
-                        src={activity.image}
-                        alt={activity.title}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-110 dark-mode-image"
-                    />
+                    {activity.image ? (
+                        <Image
+                            src={activity.image}
+                            alt={activity.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover transition-transform duration-700 group-hover:scale-110 dark-mode-image"
+                        />
+                    ) : (
+                        <div className="w-full h-full bg-secondary/30 flex items-center justify-center text-muted-foreground">
+                            <span className="text-sm">No Image</span>
+                        </div>
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                     <Button

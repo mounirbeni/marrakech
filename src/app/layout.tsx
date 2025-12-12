@@ -81,10 +81,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  icons: {
-    icon: "/icon",
-    apple: "/icon",
-  },
 };
 
 export const viewport = {
@@ -104,32 +100,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-US" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('theme');
-                  var systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                  var appliedTheme = theme === 'system' || !theme ? systemTheme : theme;
-                  if (appliedTheme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
-      </head>
-      <body className={`${inter.className} ${playfair.variable} antialiased`}>
+
+      <body className={`${inter.className} ${playfair.variable} antialiased`} suppressHydrationWarning>
         <WishlistProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
+            defaultTheme="light"
             disableTransitionOnChange
           >
             <PublicLayout>

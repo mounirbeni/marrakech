@@ -1,7 +1,7 @@
 "use client";
 
 import { useWishlist } from "@/lib/contexts/WishlistContext";
-import { activities } from "@/lib/data/activities-data";
+import { activitiesData } from "@/lib/data/activities-data";
 import { ActivityCard } from "@/components/shared/ActivityCard";
 import { Heart } from "lucide-react";
 import Link from "next/link";
@@ -11,7 +11,8 @@ export default function WishlistPage() {
     const { wishlist } = useWishlist();
 
     // Filter activities that are in wishlist
-    const wishlistActivities = activities.filter(activity =>
+    const allActivities = Object.values(activitiesData).flat();
+    const wishlistActivities = allActivities.filter(activity =>
         wishlist.includes(activity.id)
     );
 

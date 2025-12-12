@@ -1,50 +1,60 @@
-import { SignJWT, jwtVerify, JWTPayload } from 'jose'
-import { cookies } from 'next/headers'
 
-const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key-change-this-in-prod'
-const key = new TextEncoder().encode(secretKey)
+import { SignJWT, jwtVerify } from 'jose';
+import bcrypt from 'bcryptjs';
+import { cookies } from 'next/headers';
 
-export async function encrypt(payload: JWTPayload) {
-    return await new SignJWT(payload)
+const JWT_SECRET = new TextEncoder().encode(
+    process.env.JWT_SECRET || 'default-secret-key-change-this'
+);
+
+export async function hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, 10);
+}
+
+export async function comparePassword(plain: string, hashed: string): Promise<boolean> {
+    return await bcrypt.compare(plain, hashed);
+}
+
+export async function signJWT(payload: any): Promise<string> {
+    return new SignJWT(payload)
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setExpirationTime('24h')
-        .sign(key)
+        .sign(JWT_SECRET);
 }
 
-export async function decrypt(input: string): Promise<JWTPayload | null> {
+export async function verifyJWT(token: string): Promise<any> {
     try {
-        const { payload } = await jwtVerify(input, key, {
-            algorithms: ['HS256'],
-        })
-        return payload
-    } catch {
-        return null
+        const { payload } = await jwtVerify(token, JWT_SECRET);
+        return payload;
+    } catch (error) {
+        return null;
     }
 }
 
-export async function login() {
-    // Verify credentials and create session
-    // This function will be called from the server action or API route
-    // For now, we'll just handle the session creation part here
-}
-
 export async function getSession() {
-    const cookieStore = await cookies()
-    const session = cookieStore.get('session')?.value
-    if (!session) return null
-    return await decrypt(session)
+    const cookieStore = await cookies();
+    const token = cookieStore.get('auth_token')?.value;
+
+    if (!token) return null;
+
+    return await verifyJWT(token);
 }
 
-import { NextRequest } from 'next/server'
+export async function loginUser(payload: any) {
+    const token = await signJWT(payload);
+    const cookieStore = await cookies();
 
-export async function updateSession(request: NextRequest) {
-    const session = request.cookies.get('session')?.value
-    if (!session) return
+    // Set cookie
+    cookieStore.set('auth_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24, // 24 hours
+        path: '/',
+    });
+}
 
-    // Refresh the session so it doesn't expire
-    const parsed = await decrypt(session) as any
-    parsed.expires = new Date(Date.now() + 24 * 60 * 60 * 1000)
-    // const res = new Response(null) // This needs to be handled in middleware
-    // In middleware we just return the response with the new cookie
+export async function logoutUser() {
+    const cookieStore = await cookies();
+    cookieStore.delete('auth_token');
 }

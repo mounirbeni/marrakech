@@ -16,19 +16,20 @@ export function Hero() {
     const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
 
     return (
-        <section ref={ref} className="relative h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
+        <section ref={ref} className="relative h-[90dvh] min-h-[600px] flex items-center justify-center overflow-hidden">
             {/* Parallax Background */}
             <motion.div
                 style={{ y, opacity }}
-                className="absolute inset-0 z-0"
+                className="absolute inset-0 z-0 h-full w-full"
             >
                 <div
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110 hero-bg-image"
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110 hero-bg-image h-full w-full transition-opacity duration-500"
                     style={{
-                        backgroundImage: "url('https://images.unsplash.com/photo-1539020140153-e479b8c22e70?q=80&w=2000&auto=format&fit=crop')",
+                        backgroundImage: "url('/homepage.jpg')",
                     }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
+                <div className="absolute inset-0 bg-white/60 dark:bg-black/50" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background dark:from-black/40 dark:via-black/20 dark:to-black/60" />
             </motion.div>
 
             {/* Content */}
@@ -38,9 +39,9 @@ export function Hero() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
                 >
-                    <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight drop-shadow-2xl font-serif leading-[1.1]">
+                    <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-foreground mb-6 tracking-tight drop-shadow-sm dark:drop-shadow-2xl font-serif leading-[1.1]">
                         Uncover the Secrets <br className="hidden md:block" />
-                        <span className="text-primary-foreground italic">of Marrakech</span>
+                        <span className="text-primary italic">of Marrakech</span>
                     </h1>
                 </motion.div>
 
@@ -48,7 +49,7 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                    className="text-lg sm:text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto drop-shadow-lg font-medium leading-relaxed"
+                    className="text-lg sm:text-xl md:text-2xl text-muted-foreground dark:text-gray-300 mb-10 max-w-2xl mx-auto font-medium leading-relaxed"
                 >
                     Experience the magic of the Red City with trusted local guides.
                     Curated tours, authentic encounters, and unforgettable memories.
@@ -63,7 +64,7 @@ export function Hero() {
                     <Link href="/experiences">
                         <Button
                             size="lg"
-                            className="text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 bg-primary hover:bg-primary/90 text-white border-2 border-transparent"
+                            className="text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 bg-primary hover:bg-primary/90 text-primary-foreground"
                         >
                             Explore Experiences
                         </Button>
@@ -72,7 +73,7 @@ export function Hero() {
                         <Button
                             size="lg"
                             variant="outline"
-                            className="text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 bg-white/10 backdrop-blur-sm border-white/50 text-white hover:bg-white/20 hover:border-white"
+                            className="text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 bg-background/50 backdrop-blur-sm border-input text-foreground hover:bg-accent hover:text-accent-foreground"
                         >
                             How it Works
                         </Button>
@@ -80,20 +81,7 @@ export function Hero() {
                 </motion.div>
             </div>
 
-            {/* Scroll Indicator */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1, duration: 1 }}
-                className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/80 flex flex-col items-center gap-2"
-            >
-                <span className="text-sm uppercase tracking-widest font-medium">Scroll</span>
-                <motion.div
-                    animate={{ y: [0, 10, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    className="w-px h-12 bg-gradient-to-b from-white to-transparent"
-                />
-            </motion.div>
+
         </section>
     );
 }

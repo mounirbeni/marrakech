@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
+
+import { NextResponse } from 'next/server';
+import { logoutUser } from '@/lib/auth';
 
 export async function POST() {
-    const cookieStore = await cookies()
-    cookieStore.delete('session')
-    return NextResponse.json({ success: true })
+    await logoutUser();
+    return NextResponse.json({ success: true });
 }

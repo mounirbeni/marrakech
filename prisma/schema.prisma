@@ -6,26 +6,37 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Booking {
-  id            String   @id @default(uuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              String   @id
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
   
-  name          String
-  email         String
-  phone         String?
+  name            String
+  email           String
+  phone           String?
   
-  activityId    String
-  activityTitle String
-  date          DateTime
-  guests        Int
-  totalPrice    Float
+  activityId      String
+  activityTitle   String
+  date            DateTime
+  guests          Int
+  totalPrice      Float
   
-  status        String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  pickupLocation  String?
+  flightNumber    String?
+  language        String?
+  dietary         String?
+  specialRequests String?
+  packageName     String?
+
+  status          String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  
+  user            User?    @relation(fields: [userId], references: [id])
+  userId          String?
+  review          Review?
 }
 
 model NewsletterSubscriber {
@@ -40,9 +51,55 @@ model User {
   email     String   @unique
   password  String
   name      String?
-  role      String   @default("ADMIN")
+  role      String   @default("CLIENT") // CLIENT, ADMIN
+  canMessage Boolean  @default(true)
+  conversationStatus String @default("NONE") // NONE, PENDING, OPEN, CLOSED
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  bookings  Booking[]
+  messages  Message[]
+  reviews   Review[]
+  conversations Conversation[]
+}
+
+model Conversation {
+  id        String   @id @default(uuid())
+  subject   String
+  status    String   @default("OPEN") // OPEN, CLOSED
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  messages  Message[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id             String   @id @default(uuid())
+  content        String
+  sender         String   // USER or ADMIN
+  read           Boolean  @default(false)
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  createdAt      DateTime @default(now())
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  
+  service   Service  @relation(fields: [serviceId], references: [id])
+  serviceId String
+  
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  bookingId String   @unique
 }
 
 model Service {
@@ -50,7 +107,7 @@ model Service {
   title       String
   description String
   price       Float
-  images      String[] // Array of image URLs
+  images      String // Stores JSON string of image URLs
   category    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -60,12 +117,14 @@ model Service {
   reviews     Int      @default(0)
   duration    String   @default("")
   location    String   @default("")
-  features    String[]
-  included    String[]
-  whatToBring String[]
-  itinerary   Json?    // Stores array of { time, title, description }
-  host        Json?    // Stores { name, image }
-  tags        String[]
+  features    String
+  included    String
+  whatToBring String
+  itinerary   String  // JSON string
+  host        String  // JSON string
+  tags        String
+  
+  userReviews Review[]
 }
 
 model SupportRequest {

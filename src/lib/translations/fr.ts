@@ -6,7 +6,6 @@ export const fr = {
     about: "À propos",
     contact: "Contact",
     wishlist: "Favoris",
-    joinWaitlist: "Liste d'attente",
 
     // Hero
     heroTitle: "Découvrez les Secrets de Marrakech",

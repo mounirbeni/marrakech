@@ -6,7 +6,6 @@ export const en = {
     about: "About",
     contact: "Contact",
     wishlist: "Wishlist",
-    joinWaitlist: "Join Waitlist",
 
     // Hero
     heroTitle: "Uncover the Secrets of Marrakech",

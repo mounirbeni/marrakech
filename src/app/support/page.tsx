@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, Phone, MapPin, Clock, Send, HelpCircle, MessageSquare, FileText } from "lucide-react";
+import { Mail, Phone, MapPin, Send, HelpCircle, MessageSquare, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,8 +33,12 @@ export default function SupportPage() {
 
             toast.success('Message sent successfully! We will get back to you soon.');
             form.reset();
-        } catch (error: any) {
-            toast.error(error.message || 'Something went wrong. Please try again.');
+        } catch (error: unknown) {
+            let errorMessage = 'Something went wrong. Please try again.';
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+            toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -49,7 +53,7 @@ export default function SupportPage() {
                         Support Center
                     </h1>
                     <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                        We're here to help you with any questions or issues you may have.
+                        We&apos;re here to help you with any questions or issues you may have.
                     </p>
                 </div>
             </div>
@@ -127,7 +131,7 @@ export default function SupportPage() {
                                 <AccordionItem value="item-3">
                                     <AccordionTrigger>Do you offer private tours?</AccordionTrigger>
                                     <AccordionContent>
-                                        Absolutely! Most of our experiences can be booked as private tours. Look for the "Private" tag or contact us for a custom arrangement.
+                                        Absolutely! Most of our experiences can be booked as private tours. Look for the &quot;Private&quot; tag or contact us for a custom arrangement.
                                     </AccordionContent>
                                 </AccordionItem>
                             </Accordion>

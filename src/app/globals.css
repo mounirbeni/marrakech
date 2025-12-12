@@ -48,9 +48,7 @@
 
   /* Light Mode - Premium Palette */
   --background: #FFFCF8;
-  /* Warm off-white */
   --foreground: #1C1917;
-  /* Warm black */
 
   --card: #FFFFFF;
   --card-foreground: #1C1917;
@@ -58,27 +56,22 @@
   --popover: #FFFFFF;
   --popover-foreground: #1C1917;
 
-  /* Terracotta Primary */
   --primary: #C05621;
   --primary-foreground: #FFFFFF;
 
-  /* Warm Sand Secondary */
   --secondary: #F5F0EB;
-  --secondary-foreground: #4338CA;
-  /* Deep Indigo for contrast or keep dark */
   --secondary-foreground: #1C1917;
 
-  --muted: #F5F0EB;
-  --muted-foreground: #78716C;
+  --muted: #EDE5DE;
+  --muted-foreground: #6B625B;
 
-  /* Gold Accent */
   --accent: #D97706;
   --accent-foreground: #FFFFFF;
 
   --destructive: #DC2626;
   --destructive-foreground: #FFFFFF;
 
-  --border: #E7E5E4;
+  --border: #DBCDC4;
   --input: #E7E5E4;
   --ring: #C05621;
 
@@ -94,24 +87,22 @@
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #F5F0EB;
   --sidebar-accent-foreground: #1C1917;
-  --sidebar-border: #E7E5E4;
+  --sidebar-border: #DBCDC4;
   --sidebar-ring: #C05621;
 }
 
 .dark {
   /* Dark Mode - Deep Night Palette */
   --background: #0C0A09;
-  /* Very dark warm grey */
   --foreground: #FAFAF9;
 
-  --card: #1C1917;
+  --card: #141211;
   --card-foreground: #FAFAF9;
 
-  --popover: #1C1917;
+  --popover: #141211;
   --popover-foreground: #FAFAF9;
 
   --primary: #EA580C;
-  /* Slightly brighter terracotta */
   --primary-foreground: #FFFFFF;
 
   --secondary: #292524;
@@ -121,10 +112,9 @@
   --muted-foreground: #A8A29E;
 
   --accent: #F59E0B;
-  /* Brighter gold */
   --accent-foreground: #000000;
 
-  --destructive: #7f1d1d;
+  --destructive: #991B1B;
   --destructive-foreground: #FAFAF9;
 
   --border: #292524;
@@ -152,8 +142,21 @@
     @apply border-border outline-ring/50;
   }
 
+  html {
+    @apply scroll-smooth;
+    -webkit-text-size-adjust: 100%;
+    /* Prevent font scaling in landscape on iOS */
+  }
+
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-sans antialiased overflow-x-hidden min-h-screen flex flex-col;
+    /* overflow-x-hidden prevents horizontal scrollbars from unwanted overflows */
+  }
+
+  /* Improve tap targets on mobile */
+  button,
+  a {
+    @apply touch-manipulation;
   }
 }
 

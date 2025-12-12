@@ -6,7 +6,6 @@ export const ar = {
     about: "من نحن",
     contact: "اتصل بنا",
     wishlist: "المفضلة",
-    joinWaitlist: "انضم للقائمة",
 
     // Hero
     heroTitle: "اكتشف أسرار مراكش",

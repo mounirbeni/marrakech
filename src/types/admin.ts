@@ -23,6 +23,13 @@ export interface Service {
     languages?: string[]
     included?: string[]
     requirements?: string[]
+    rating?: number
+    reviews?: number
+    features?: string[]
+    whatToBring?: string[]
+    itinerary?: any
+    host?: any
+    tags?: string[]
 }
 
 export interface User {

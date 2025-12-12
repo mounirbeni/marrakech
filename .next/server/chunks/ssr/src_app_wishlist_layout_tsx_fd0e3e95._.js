@@ -1,3 +1,0 @@
-module.exports=[83068,a=>{"use strict";function b({children:a}){return a}a.s(["default",()=>b,"metadata",0,{title:"My Wishlist",description:"View your saved Marrakech experiences. Keep track of your favorite activities, tours, and adventures for easy planning.",openGraph:{title:"Wishlist | Explore Marrakech",description:"Your favorite Marrakech experiences saved for later. Easy planning for your perfect trip.",url:"https://marrakech-luxe.vercel.app/wishlist"}}])}];
-
-//# sourceMappingURL=src_app_wishlist_layout_tsx_fd0e3e95._.js.map

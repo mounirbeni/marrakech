@@ -277,14 +277,27 @@ export default function ProfilePage() {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-black/5">
             {/* Header */}
-            <div className="border-b bg-white dark:bg-black/20 sticky top-0 z-10">
-                <div className="container mx-auto px-6 py-4">
-                    <h1 className="text-2xl font-bold">My Dashboard</h1>
-                    <p className="text-sm text-muted-foreground">Welcome back, {user?.name}</p>
+            <div className="border-b bg-white dark:bg-black/20">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 max-w-7xl">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-xl sm:text-2xl font-bold">My Dashboard</h1>
+                            <p className="text-xs sm:text-sm text-muted-foreground">Welcome back, {user?.name}</p>
+                        </div>
+                        {/* Mobile Logout */}
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleLogout}
+                            className="md:hidden gap-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                            <LogOut className="w-4 h-4" />
+                        </Button>
+                    </div>
                 </div>
             </div>
 
-            <div className="container mx-auto p-6 flex gap-6">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-7xl flex flex-col md:flex-row gap-4 md:gap-6">
                 {/* Sidebar */}
                 <aside className="w-64 space-y-2 hidden md:block">
                     <Card className="flex flex-col h-[calc(100vh-140px)]">
@@ -340,37 +353,37 @@ export default function ProfilePage() {
                 <main className="flex-1 space-y-6">
                     {activeTab === 'overview' && (
                         <>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <Card>
-                                    <CardHeader className="pb-3">
-                                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Bookings</CardTitle>
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                                <Card className="hover:shadow-md transition-shadow">
+                                    <CardHeader className="pb-2 sm:pb-3">
+                                        <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Total Bookings</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-3xl font-bold">{stats.total}</div>
+                                        <div className="text-2xl sm:text-3xl font-bold">{stats.total}</div>
                                     </CardContent>
                                 </Card>
-                                <Card>
-                                    <CardHeader className="pb-3">
-                                        <CardTitle className="text-sm font-medium text-muted-foreground">Active</CardTitle>
+                                <Card className="hover:shadow-md transition-shadow">
+                                    <CardHeader className="pb-2 sm:pb-3">
+                                        <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Active</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-3xl font-bold text-blue-600">{stats.active}</div>
+                                        <div className="text-2xl sm:text-3xl font-bold text-blue-600">{stats.active}</div>
                                     </CardContent>
                                 </Card>
-                                <Card>
-                                    <CardHeader className="pb-3">
-                                        <CardTitle className="text-sm font-medium text-muted-foreground">Completed</CardTitle>
+                                <Card className="hover:shadow-md transition-shadow">
+                                    <CardHeader className="pb-2 sm:pb-3">
+                                        <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Completed</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-3xl font-bold text-green-600">{stats.completed}</div>
+                                        <div className="text-2xl sm:text-3xl font-bold text-green-600">{stats.completed}</div>
                                     </CardContent>
                                 </Card>
-                                <Card>
-                                    <CardHeader className="pb-3">
-                                        <CardTitle className="text-sm font-medium text-muted-foreground">Cancelled</CardTitle>
+                                <Card className="hover:shadow-md transition-shadow">
+                                    <CardHeader className="pb-2 sm:pb-3">
+                                        <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Cancelled</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-3xl font-bold text-red-600">{stats.cancelled}</div>
+                                        <div className="text-2xl sm:text-3xl font-bold text-red-600">{stats.cancelled}</div>
                                     </CardContent>
                                 </Card>
                             </div>
@@ -408,80 +421,154 @@ export default function ProfilePage() {
                                 <CardDescription>Manage and track your reservations</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="rounded-md border overflow-x-auto">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>ID</TableHead>
-                                                <TableHead>Activity</TableHead>
-                                                <TableHead>Date</TableHead>
-                                                <TableHead>Guests</TableHead>
-                                                <TableHead>Status</TableHead>
-                                                <TableHead className="text-right">Actions</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {bookings.length === 0 ? (
-                                                <TableRow>
-                                                    <TableCell colSpan={6} className="text-center h-24">
-                                                        No bookings found.
-                                                    </TableCell>
-                                                </TableRow>
-                                            ) : (
-                                                bookings.map((booking) => (
-                                                    <TableRow key={booking.id}>
-                                                        <TableCell className="font-mono text-xs">{booking.id.slice(0, 8)}</TableCell>
-                                                        <TableCell className="font-medium">{booking.activityTitle}</TableCell>
-                                                        <TableCell>{format(new Date(booking.date), "PP")}</TableCell>
-                                                        <TableCell>{booking.guests}</TableCell>
-                                                        <TableCell>
+                                {bookings.length === 0 ? (
+                                    <div className="text-center py-12">
+                                        <Calendar className="w-12 h-12 mx-auto text-muted-foreground/50 mb-3" />
+                                        <p className="text-muted-foreground">No bookings found.</p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {/* Mobile: Card Layout */}
+                                        <div className="md:hidden space-y-4">
+                                            {bookings.map((booking) => (
+                                                <Card key={booking.id} className="overflow-hidden">
+                                                    <CardContent className="p-4 space-y-3">
+                                                        <div className="flex items-start justify-between gap-3">
+                                                            <div className="flex-1 min-w-0">
+                                                                <h3 className="font-semibold text-sm sm:text-base truncate">{booking.activityTitle}</h3>
+                                                                <p className="text-xs text-muted-foreground mt-1">ID: {booking.id.slice(0, 8)}</p>
+                                                            </div>
                                                             <Badge className={
-                                                                booking.status === 'CONFIRMED' ? 'bg-green-500 hover:bg-green-600' :
-                                                                    booking.status === 'CANCELLED' ? 'bg-red-500 hover:bg-red-600' :
-                                                                        booking.status === 'COMPLETED' ? 'bg-orange-500 hover:bg-orange-600' :
-                                                                            'bg-yellow-500 hover:bg-yellow-600'
+                                                                booking.status === 'CONFIRMED' ? 'bg-green-500' :
+                                                                    booking.status === 'CANCELLED' ? 'bg-red-500' :
+                                                                        booking.status === 'COMPLETED' ? 'bg-orange-500' :
+                                                                            'bg-yellow-500'
                                                             }>
                                                                 {booking.status}
                                                             </Badge>
-                                                        </TableCell>
-                                                        <TableCell className="text-right space-x-2">
+                                                        </div>
+
+                                                        <div className="grid grid-cols-2 gap-2 text-sm">
+                                                            <div className="flex items-center gap-1.5 text-muted-foreground">
+                                                                <Calendar className="w-3.5 h-3.5" />
+                                                                <span className="text-xs">{format(new Date(booking.date), "PP")}</span>
+                                                            </div>
+                                                            <div className="flex items-center gap-1.5 text-muted-foreground">
+                                                                <User className="w-3.5 h-3.5" />
+                                                                <span className="text-xs">{booking.guests} {booking.guests === 1 ? 'Guest' : 'Guests'}</span>
+                                                            </div>
+                                                        </div>
+
+                                                        {(booking.status === 'PENDING' || (booking.status === 'COMPLETED' && !booking.review)) && (
+                                                            <Separator />
+                                                        )}
+
+                                                        <div className="flex flex-wrap gap-2">
                                                             {booking.status === 'PENDING' && (
                                                                 <>
                                                                     <Button
                                                                         size="sm"
                                                                         variant="outline"
                                                                         onClick={() => setModifyBooking(booking)}
-                                                                        className="gap-1"
+                                                                        className="gap-1.5 flex-1"
                                                                     >
-                                                                        <Edit3 className="w-3 h-3" /> Modify
+                                                                        <Edit3 className="w-3.5 h-3.5" /> Modify
                                                                     </Button>
                                                                     <Button
                                                                         size="sm"
                                                                         variant="destructive"
                                                                         onClick={() => handleCancelBooking(booking.id)}
-                                                                        className="gap-1"
+                                                                        className="gap-1.5 flex-1"
                                                                     >
-                                                                        <XCircle className="w-3 h-3" /> Cancel
+                                                                        <XCircle className="w-3.5 h-3.5" /> Cancel
                                                                     </Button>
                                                                 </>
                                                             )}
                                                             {booking.status === 'COMPLETED' && !booking.review && (
-                                                                <Button size="sm" onClick={() => setReviewBooking(booking)} className="gap-1">
-                                                                    <Star className="w-3 h-3" /> Rate
+                                                                <Button size="sm" onClick={() => setReviewBooking(booking)} className="gap-1.5 w-full">
+                                                                    <Star className="w-3.5 h-3.5" /> Rate Experience
                                                                 </Button>
                                                             )}
                                                             {booking.review && (
-                                                                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                                                    <CheckCircle className="w-3 h-3 text-green-600" /> Reviewed
+                                                                <span className="text-xs text-muted-foreground flex items-center gap-1.5 w-full justify-center py-1">
+                                                                    <CheckCircle className="w-3.5 h-3.5 text-green-600" /> Reviewed
                                                                 </span>
                                                             )}
-                                                        </TableCell>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            ))}
+                                        </div>
+
+                                        {/* Desktop: Table Layout */}
+                                        <div className="hidden md:block rounded-md border overflow-x-auto">
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead>ID</TableHead>
+                                                        <TableHead>Activity</TableHead>
+                                                        <TableHead>Date</TableHead>
+                                                        <TableHead>Guests</TableHead>
+                                                        <TableHead>Status</TableHead>
+                                                        <TableHead className="text-right">Actions</TableHead>
                                                     </TableRow>
-                                                ))
-                                            )}
-                                        </TableBody>
-                                    </Table>
-                                </div>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {bookings.map((booking) => (
+                                                        <TableRow key={booking.id}>
+                                                            <TableCell className="font-mono text-xs">{booking.id.slice(0, 8)}</TableCell>
+                                                            <TableCell className="font-medium">{booking.activityTitle}</TableCell>
+                                                            <TableCell>{format(new Date(booking.date), "PP")}</TableCell>
+                                                            <TableCell>{booking.guests}</TableCell>
+                                                            <TableCell>
+                                                                <Badge className={
+                                                                    booking.status === 'CONFIRMED' ? 'bg-green-500 hover:bg-green-600' :
+                                                                        booking.status === 'CANCELLED' ? 'bg-red-500 hover:bg-red-600' :
+                                                                            booking.status === 'COMPLETED' ? 'bg-orange-500 hover:bg-orange-600' :
+                                                                                'bg-yellow-500 hover:bg-yellow-600'
+                                                                }>
+                                                                    {booking.status}
+                                                                </Badge>
+                                                            </TableCell>
+                                                            <TableCell className="text-right space-x-2">
+                                                                {booking.status === 'PENDING' && (
+                                                                    <>
+                                                                        <Button
+                                                                            size="sm"
+                                                                            variant="outline"
+                                                                            onClick={() => setModifyBooking(booking)}
+                                                                            className="gap-1"
+                                                                        >
+                                                                            <Edit3 className="w-3 h-3" /> Modify
+                                                                        </Button>
+                                                                        <Button
+                                                                            size="sm"
+                                                                            variant="destructive"
+                                                                            onClick={() => handleCancelBooking(booking.id)}
+                                                                            className="gap-1"
+                                                                        >
+                                                                            <XCircle className="w-3 h-3" /> Cancel
+                                                                        </Button>
+                                                                    </>
+                                                                )}
+                                                                {booking.status === 'COMPLETED' && !booking.review && (
+                                                                    <Button size="sm" onClick={() => setReviewBooking(booking)} className="gap-1">
+                                                                        <Star className="w-3 h-3" /> Rate
+                                                                    </Button>
+                                                                )}
+                                                                {booking.review && (
+                                                                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                                                        <CheckCircle className="w-3 h-3 text-green-600" /> Reviewed
+                                                                    </span>
+                                                                )}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </div>
+                                    </>
+                                )}
                             </CardContent>
                         </Card>
                     )}

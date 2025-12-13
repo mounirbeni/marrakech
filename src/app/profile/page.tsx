@@ -821,27 +821,27 @@ export default function ProfilePage() {
 
             {/* Modify Request Dialog */}
             <Dialog open={!!modifyBooking} onOpenChange={(open) => !open && setModifyBooking(null)}>
-                <DialogContent>
+                <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle>Request Modification</DialogTitle>
-                        <DialogDescription>
+                        <DialogDescription className="text-sm">
                             Tell us what you'd like to change about your booking for {modifyBooking?.activityTitle}
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="space-y-4 py-4">
+                    <div className="space-y-4 py-2 sm:py-4">
                         <div className="space-y-2">
                             <Label>What would you like to modify?</Label>
                             <textarea
-                                className="w-full min-h-[120px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                className="w-full min-h-[100px] sm:min-h-[120px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
                                 placeholder="E.g., change date, number of guests, special requests..."
                                 value={modifyRequest}
                                 onChange={(e) => setModifyRequest(e.target.value)}
                             />
                         </div>
                     </div>
-                    <DialogFooter>
-                        <Button variant="ghost" onClick={() => setModifyBooking(null)}>Cancel</Button>
-                        <Button onClick={handleSubmitModifyRequest} disabled={submittingModify || !modifyRequest.trim()}>
+                    <DialogFooter className="flex-col sm:flex-row gap-2">
+                        <Button variant="ghost" onClick={() => setModifyBooking(null)} className="w-full sm:w-auto">Cancel</Button>
+                        <Button onClick={handleSubmitModifyRequest} disabled={submittingModify || !modifyRequest.trim()} className="w-full sm:w-auto">
                             {submittingModify ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send Request'}
                         </Button>
                     </DialogFooter>
@@ -850,24 +850,25 @@ export default function ProfilePage() {
 
             {/* Review Dialog */}
             <Dialog open={!!reviewBooking} onOpenChange={(open) => !open && setReviewBooking(null)}>
-                <DialogContent>
+                <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle>Rate Your Experience</DialogTitle>
-                        <DialogDescription>
+                        <DialogDescription className="text-sm">
                             How was your {reviewBooking?.activityTitle}?
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="space-y-4 py-4">
+                    <div className="space-y-4 py-2 sm:py-4">
                         <div className="flex justify-center gap-2">
                             {[1, 2, 3, 4, 5].map((star) => (
                                 <button
                                     key={star}
                                     type="button"
                                     onClick={() => setRating(star)}
-                                    className="focus:outline-none"
+                                    className="focus:outline-none transition-transform hover:scale-110 active:scale-95"
+                                    aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
                                 >
                                     <Star
-                                        className={`w-8 h-8 ${star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                                        className={`w-8 h-8 sm:w-9 sm:h-9 ${star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
                                     />
                                 </button>
                             ))}
@@ -875,16 +876,16 @@ export default function ProfilePage() {
                         <div className="space-y-2">
                             <Label>Comment</Label>
                             <textarea
-                                className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                className="w-full min-h-[80px] sm:min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
                                 placeholder="Share your experience..."
                                 value={comment}
                                 onChange={(e) => setComment(e.target.value)}
                             />
                         </div>
                     </div>
-                    <DialogFooter>
-                        <Button variant="ghost" onClick={() => setReviewBooking(null)}>Cancel</Button>
-                        <Button onClick={handleSubmitReview} disabled={submittingReview}>
+                    <DialogFooter className="flex-col sm:flex-row gap-2">
+                        <Button variant="ghost" onClick={() => setReviewBooking(null)} className="w-full sm:w-auto">Cancel</Button>
+                        <Button onClick={handleSubmitReview} disabled={submittingReview} className="w-full sm:w-auto">
                             {submittingReview ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit Review'}
                         </Button>
                     </DialogFooter>

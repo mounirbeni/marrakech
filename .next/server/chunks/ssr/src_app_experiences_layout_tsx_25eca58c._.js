@@ -1,0 +1,3 @@
+module.exports=[84818,a=>{"use strict";function b({children:a}){return a}a.s(["default",()=>b,"metadata",0,{title:"All Experiences",description:"Discover the magic of Marrakech with our curated selection of premium activities, tours, and adventures. From desert excursions to cooking classes, find your perfect Moroccan experience.",openGraph:{title:"All Experiences | Explore Marrakech",description:"Discover the magic of Marrakech with our curated selection of premium activities, tours, and adventures.",url:"https://marrakech-luxe.vercel.app/experiences"}}])}];
+
+//# sourceMappingURL=src_app_experiences_layout_tsx_25eca58c._.js.map

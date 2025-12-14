@@ -5,17 +5,23 @@ import { Service } from '@/types/admin'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import Image from 'next/image'
+import { useParams } from 'next/navigation'
 import { notFound } from 'next/navigation'
 
-export default function ServiceDetailPage({ params }: { params: { id: string } }) {
+export default function ServiceDetailPage() {
+    const params = useParams()
+    const id = params?.id as string
+
     const [service, setService] = useState<Service | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         const fetchService = async () => {
+            if (!id) return;
+
             try {
-                const response = await fetch(`/api/services/${params.id}`)
+                const response = await fetch(`/api/services/${id}`)
                 if (!response.ok) {
                     if (response.status === 404) {
                         notFound()
@@ -33,10 +39,8 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
             }
         }
 
-        if (params.id) {
-            fetchService()
-        }
-    }, [params.id])
+        fetchService()
+    }, [id])
 
     if (loading) {
         return (
@@ -65,12 +69,12 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
             <Button variant="outline" className="mb-6" onClick={() => window.history.back()}>
                 ← Back to Services
             </Button>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2">
                     <h1 className="text-3xl font-bold mb-2">{service.title}</h1>
                     <p className="text-muted-foreground mb-6">{service.category}</p>
-                    
+
                     <div className="relative h-96 w-full rounded-lg overflow-hidden mb-6">
                         {service.images && service.images[0] ? (
                             <Image
@@ -85,7 +89,7 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
                             </div>
                         )}
                     </div>
-                    
+
                     <Card className="mb-6">
                         <CardHeader>
                             <CardTitle>Description</CardTitle>
@@ -94,7 +98,7 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
                             <p>{service.description}</p>
                         </CardContent>
                     </Card>
-                    
+
                     {service.itinerary && (
                         <Card className="mb-6">
                             <CardHeader>
@@ -113,7 +117,7 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
                         </Card>
                     )}
                 </div>
-                
+
                 <div>
                     <Card>
                         <CardHeader>
@@ -127,11 +131,11 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
                                 <span className="text-lg font-semibold">Price:</span>
                                 <span className="text-2xl font-bold">${service.price.toFixed(2)}</span>
                             </div>
-                            
+
                             <Button className="w-full" size="lg">
                                 Book Now
                             </Button>
-                            
+
                             <div className="pt-4 border-t">
                                 <h3 className="font-semibold mb-2">Details</h3>
                                 <ul className="space-y-2 text-sm">

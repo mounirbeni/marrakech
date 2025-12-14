@@ -1,0 +1,3 @@
+{
+  "/api/admin/conversations/[id]/close/route": "app/api/admin/conversations/[id]/close/route.js"
+}

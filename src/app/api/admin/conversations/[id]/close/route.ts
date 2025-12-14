@@ -4,7 +4,7 @@ import { getSession } from '@/lib/auth';
 
 export async function PATCH(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await getSession();
     if (!session || session.role !== 'ADMIN') {
@@ -13,7 +13,7 @@ export async function PATCH(
 
     try {
         const { action } = await request.json();
-        const conversationId = params.id;
+        const { id: conversationId } = await params;
 
         if (!action || (action !== 'close' && action !== 'reopen')) {
             return NextResponse.json(

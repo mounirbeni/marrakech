@@ -255,3 +255,4 @@ Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
 [00:12:58.558] Server  LOG      ○ Compiling /_not-found/page ...
 [00:13:59.190] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
 [00:37:00.745] Server  LOG      ✓ Compiled in 599ms
+[00:57:58.913] Server  LOG      ✓ Compiled in 1232ms

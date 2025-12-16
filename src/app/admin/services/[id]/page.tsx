@@ -24,7 +24,9 @@ export default async function EditServicePage({ params }: { params: Promise<{ id
         included: JSON.parse(service.included || '[]'),
         whatToBring: JSON.parse(service.whatToBring || '[]'),
         tags: JSON.parse(service.tags || '[]'),
-        itinerary: service.itinerary ? JSON.parse(service.itinerary) : []
+        itinerary: service.itinerary ? JSON.parse(service.itinerary) : [],
+        latitude: service.latitude ?? undefined,
+        longitude: service.longitude ?? undefined
     };
 
     return <ServiceEditor initialData={parsedService} />;

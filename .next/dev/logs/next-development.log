@@ -260,3 +260,4 @@ Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
 [01:08:46.621] Server  LOG      ✓ Compiled in 1954ms
 [01:08:47.907] Browser WARN    Image with src "/homepage.jpg" is using quality "90" which is not configured in images.qualities [70, 70, 70, 70, 75]. Please update your config to [70, 70, 70, 70, 75, 90].
 Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+[01:14:35.232] Server  LOG        Reload env: .env

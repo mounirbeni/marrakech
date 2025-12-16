@@ -4,11 +4,12 @@ import { getSession } from '@/lib/auth';
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const service = await prisma.service.findUnique({
-            where: { id: params.id }
+            where: { id }
         });
 
         if (!service) {
@@ -34,12 +35,13 @@ export async function GET(
 
 export async function PATCH(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getSession();
         if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+        const { id } = await params;
         const body = await request.json();
 
         // Prepare data for update, only serializing what's present
@@ -60,7 +62,7 @@ export async function PATCH(
         if (body.itinerary) data.itinerary = JSON.stringify(body.itinerary);
 
         const updated = await prisma.service.update({
-            where: { id: params.id },
+            where: { id },
             data
         });
 
@@ -72,14 +74,15 @@ export async function PATCH(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getSession();
         if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+        const { id } = await params;
         await prisma.service.delete({
-            where: { id: params.id }
+            where: { id }
         });
 
         return NextResponse.json({ success: true });

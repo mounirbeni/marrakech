@@ -2,13 +2,15 @@ import { ServiceEditor } from '@/components/admin/ServiceEditor';
 import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 
-export default async function EditServicePage({ params }: { params: { id: string } }) {
-    if (params.id === 'new') {
+export default async function EditServicePage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+
+    if (id === 'new') {
         return <ServiceEditor isNew />;
     }
 
     const service = await prisma.service.findUnique({
-        where: { id: params.id }
+        where: { id }
     });
 
     if (!service) {

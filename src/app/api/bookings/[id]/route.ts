@@ -5,8 +5,9 @@ import { getSession } from '@/lib/auth';
 // GET: Fetch single booking for editing
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params;
     try {
         const session = await getSession();
         if (!session) {
@@ -14,7 +15,7 @@ export async function GET(
         }
 
         const booking = await prisma.booking.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: { user: true }
         });
 
@@ -37,8 +38,9 @@ export async function GET(
 // PATCH: Update booking details
 export async function PATCH(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params;
     try {
         const session = await getSession();
         if (!session) {
@@ -46,7 +48,7 @@ export async function PATCH(
         }
 
         const booking = await prisma.booking.findUnique({
-            where: { id: params.id },
+            where: { id },
         });
 
         if (!booking) {
@@ -81,7 +83,7 @@ export async function PATCH(
         // If the body is JUST status='CANCELLED', allow it.
         if (body.status === 'CANCELLED') {
             const updatedBooking = await prisma.booking.update({
-                where: { id: params.id },
+                where: { id },
                 data: { status: 'CANCELLED' },
             });
             return NextResponse.json(updatedBooking);
@@ -104,7 +106,7 @@ export async function PATCH(
         }
 
         const updatedBooking = await prisma.booking.update({
-            where: { id: params.id },
+            where: { id },
             data: updateData,
         });
 
@@ -119,8 +121,9 @@ export async function PATCH(
 // DELETE: Cancel booking (Soft delete / Status update)
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params;
     try {
         const session = await getSession();
         if (!session) {
@@ -128,7 +131,7 @@ export async function DELETE(
         }
 
         const booking = await prisma.booking.findUnique({
-            where: { id: params.id },
+            where: { id },
         });
 
         if (!booking) {
@@ -140,7 +143,7 @@ export async function DELETE(
         }
 
         const updatedBooking = await prisma.booking.update({
-            where: { id: params.id },
+            where: { id },
             data: { status: 'CANCELLED' },
         });
 

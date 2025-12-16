@@ -1,0 +1,256 @@
+[00:00:06.336] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:00:07.089] Server  LOG      ✓ Ready in 5.6s
+[00:00:10.555] Server  LOG      ○ Compiling /login ...
+[00:00:20.285] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:20.297] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:43.818] Server  WARN    Image with src "/homepage.jpg" is using quality "90" which is not configured in images.qualities [75]. Please update your config to [75, 90].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+[00:00:45.002] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:45.993] Browser WARN    Image with src "/homepage.jpg" is using quality "90" which is not configured in images.qualities [75]. Please update your config to [75, 90].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+[00:00:45.993] Browser WARN    Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly.
+[00:09:35.647] Server  LOG      ○ Compiling /admin/accommodations ...
+[00:09:40.884] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:41.497] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:50.500] Server  ERROR   C:\Users\mouni\Desktop\marrakech\.next\dev\server\chunks\[root-of-the-server]__34636a8d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:09:50.563] Server  ERROR   C:\Users\mouni\Desktop\marrakech\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:09:50.622] Server  ERROR   C:\Users\mouni\Desktop\marrakech\.next\dev\server\chunks\node_modules_887da280._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:09:50.635] Server  ERROR   C:\Users\mouni\Desktop\marrakech\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:09:50.647] Server  ERROR   C:\Users\mouni\Desktop\marrakech\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:09:50.653] Server  ERROR   C:\Users\mouni\Desktop\marrakech\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:09:50.656] Server  ERROR   C:\Users\mouni\Desktop\marrakech\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:09:50.663] Server  ERROR   C:\Users\mouni\Desktop\marrakech\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:09:50.669] Server  ERROR   C:\Users\mouni\Desktop\marrakech\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:09:50.680] Server  ERROR   [NOTIFICATIONS_GET] PrismaClientInitializationError: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].booking.findMany()` invocation in
+C:\Users\mouni\Desktop\marrakech\.next\dev\server\chunks\[root-of-the-server]__34636a8d._.js:165:176
+
+  162 // we will generate notifications on the fly from recent events.
+  163 // In a real app, you'd want a Notification table.
+  164 // For this task, I'll simulate notifications based on recent bookings and complaints.
+→ 165 const recentBookings = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].booking.findMany(
+Can't reach database server at `ep-small-pine-ah90shfm-pooler.c-3.us-east-1.aws.neon.tech`:`5432`
+
+Please make sure your database server is running at `ep-small-pine-ah90shfm-pooler.c-3.us-east-1.aws.neon.tech`:`5432`.
+[00:09:50.873] Browser ERROR   Application error: {}
+[00:09:50.873] Browser ERROR   Application error: {}
+[00:09:54.135] Browser ERROR   Application error: {}
+[00:09:54.135] Browser ERROR   Application error: {}
+[00:10:01.147] Browser ERROR   Application error: {}
+[00:10:01.147] Browser ERROR   Application error: {}
+[00:10:01.363] Browser ERROR   Application error: {}
+[00:10:01.363] Browser ERROR   Application error: {}
+[00:10:01.758] Browser ERROR   Application error: {}
+[00:10:01.758] Browser ERROR   Application error: {}
+[00:10:11.588] Server  ERROR   C:\Users\mouni\Desktop\marrakech\.next\dev\server\chunks\ssr\node_modules_next_dist_3b4d20e1._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:10:11.590] Server  ERROR   C:\Users\mouni\Desktop\marrakech\.next\dev\server\chunks\ssr\[root-of-the-server]__f7a58885._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:10:11.591] Server  WARN    Error: Route "/admin/services/[id]" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:10:12.019] Server  ERROR   C:\Users\mouni\Desktop\marrakech\.next\dev\server\chunks\ssr\[root-of-the-server]__f7a58885._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:10:12.024] Server  ERROR    ⨯ PrismaClientValidationError: 
+Invalid `{imported module ./src/lib/prisma.ts}["default"].service.findUnique()` invocation in
+C:\Users\mouni\Desktop\marrakech\.next\dev\server\chunks\ssr\[root-of-the-server]__f7a58885._.js:124:163
+
+  121         columnNumber: 16
+  122     }, this);
+  123 }
+→ 124 const service = await {imported module ./src/lib/prisma.ts}["default"].service.findUnique({
+        where: {
+          id: undefined,
+      ?   AND?: ServiceWhereInput | ServiceWhereInput[],
+      ?   OR?: ServiceWhereInput[],
+      ?   NOT?: ServiceWhereInput | ServiceWhereInput[],
+      ?   title?: StringFilter | String,
+      ?   description?: StringFilter | String,
+      ?   price?: FloatFilter | Float,
+      ?   images?: StringFilter | String,
+      ?   category?: StringFilter | String,
+      ?   createdAt?: DateTimeFilter | DateTime,
+      ?   updatedAt?: DateTimeFilter | DateTime,
+      ?   rating?: FloatFilter | Float,
+      ?   reviews?: IntFilter | Int,
+      ?   duration?: StringFilter | String,
+      ?   location?: StringFilter | String,
+      ?   features?: StringFilter | String,
+      ?   included?: StringFilter | String,
+      ?   whatToBring?: StringFilter | String,
+      ?   itinerary?: StringFilter | String,
+      ?   host?: StringFilter | String,
+      ?   tags?: StringFilter | String,
+      ?   userReviews?: ReviewListRelationFilter
+        }
+      })
+
+Argument `where` of type ServiceWhereUniqueInput needs at least one of `id` arguments. Available options are marked with ?.
+[00:10:12.397] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:12.397] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:13.915] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:13.915] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:17.240] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:18.771] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[00:10:29.619] Server  ERROR   C:\Users\mouni\Desktop\marrakech\.next\dev\server\chunks\ssr\node_modules_next_dist_3b4d20e1._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:10:29.620] Server  ERROR   C:\Users\mouni\Desktop\marrakech\.next\dev\server\chunks\ssr\[root-of-the-server]__f7a58885._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:10:29.621] Server  WARN    Error: Route "/admin/services/[id]" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:10:29.672] Server  ERROR   C:\Users\mouni\Desktop\marrakech\.next\dev\server\chunks\ssr\[root-of-the-server]__f7a58885._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:10:29.674] Server  ERROR    ⨯ PrismaClientValidationError: 
+Invalid `{imported module ./src/lib/prisma.ts}["default"].service.findUnique()` invocation in
+C:\Users\mouni\Desktop\marrakech\.next\dev\server\chunks\ssr\[root-of-the-server]__f7a58885._.js:124:163
+
+  121         columnNumber: 16
+  122     }, this);
+  123 }
+→ 124 const service = await {imported module ./src/lib/prisma.ts}["default"].service.findUnique({
+        where: {
+          id: undefined,
+      ?   AND?: ServiceWhereInput | ServiceWhereInput[],
+      ?   OR?: ServiceWhereInput[],
+      ?   NOT?: ServiceWhereInput | ServiceWhereInput[],
+      ?   title?: StringFilter | String,
+      ?   description?: StringFilter | String,
+      ?   price?: FloatFilter | Float,
+      ?   images?: StringFilter | String,
+      ?   category?: StringFilter | String,
+      ?   createdAt?: DateTimeFilter | DateTime,
+      ?   updatedAt?: DateTimeFilter | DateTime,
+      ?   rating?: FloatFilter | Float,
+      ?   reviews?: IntFilter | Int,
+      ?   duration?: StringFilter | String,
+      ?   location?: StringFilter | String,
+      ?   features?: StringFilter | String,
+      ?   included?: StringFilter | String,
+      ?   whatToBring?: StringFilter | String,
+      ?   itinerary?: StringFilter | String,
+      ?   host?: StringFilter | String,
+      ?   tags?: StringFilter | String,
+      ?   userReviews?: ReviewListRelationFilter
+        }
+      })
+
+Argument `where` of type ServiceWhereUniqueInput needs at least one of `id` arguments. Available options are marked with ?.
+[00:10:29.863] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:29.863] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:30.916] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:30.916] Browser ERROR   Application error: {"digest":"4225783051","environmentName":"Server","name":"PrismaClientValidationError"}
+[00:10:47.122] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:10:47.848] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:10:59.387] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[00:11:00.737] Browser ERROR   React has detected a change in the order of Hooks called by %s. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+%s   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ BookingsPage 1. useState                   useState
+2. useState                   useState
+3. useState                   useState
+4. useState                   useState
+5. useContext                 useContext
+6. useMemo                    useMemo
+7. useRef                     useRef
+8. useRef                     useRef
+9. useRef                     useRef
+10. useRef                    useRef
+11. useRef                    useRef
+12. useRef                    useRef
+13. useMemo                   useMemo
+14. useCallback               useCallback
+15. useSyncExternalStore      useSyncExternalStore
+16. useRef                    useRef
+17. useCallback               useCallback
+18. useCallback               useCallback
+19. useLayoutEffect           useLayoutEffect
+20. useLayoutEffect           useLayoutEffect
+21. useLayoutEffect           useLayoutEffect
+22. useDebugValue             useDebugValue
+23. undefined                 useState
+
+[00:11:00.737] Browser ERROR   Application error: {}
+[00:11:00.737] Browser ERROR   Application error: {}
+[00:11:04.657] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:11:06.554] Browser ERROR   React has detected a change in the order of Hooks called by %s. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+%s   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ BookingsPage 1. useState                   useState
+2. useState                   useState
+3. useState                   useState
+4. useState                   useState
+5. useContext                 useContext
+6. useMemo                    useMemo
+7. useRef                     useRef
+8. useRef                     useRef
+9. useRef                     useRef
+10. useRef                    useRef
+11. useRef                    useRef
+12. useRef                    useRef
+13. useMemo                   useMemo
+14. useCallback               useCallback
+15. useSyncExternalStore      useSyncExternalStore
+16. useRef                    useRef
+17. useCallback               useCallback
+18. useCallback               useCallback
+19. useLayoutEffect           useLayoutEffect
+20. useLayoutEffect           useLayoutEffect
+21. useLayoutEffect           useLayoutEffect
+22. useDebugValue             useDebugValue
+23. undefined                 useState
+
+[00:11:06.554] Browser ERROR   Application error: {}
+[00:11:06.554] Browser ERROR   Application error: {}
+[00:11:09.189] Server  LOG      ○ Compiling /admin ...
+[00:11:10.782] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:11:11.930] Browser ERROR   React has detected a change in the order of Hooks called by %s. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+%s   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ BookingsPage 1. useState                   useState
+2. useState                   useState
+3. useState                   useState
+4. useState                   useState
+5. useContext                 useContext
+6. useMemo                    useMemo
+7. useRef                     useRef
+8. useRef                     useRef
+9. useRef                     useRef
+10. useRef                    useRef
+11. useRef                    useRef
+12. useRef                    useRef
+13. useMemo                   useMemo
+14. useCallback               useCallback
+15. useSyncExternalStore      useSyncExternalStore
+16. useRef                    useRef
+17. useCallback               useCallback
+18. useCallback               useCallback
+19. useLayoutEffect           useLayoutEffect
+20. useLayoutEffect           useLayoutEffect
+21. useLayoutEffect           useLayoutEffect
+22. useDebugValue             useDebugValue
+23. undefined                 useState
+
+[00:11:11.930] Browser ERROR   Application error: {}
+[00:11:11.930] Browser ERROR   Application error: {}
+[00:11:47.012] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[00:12:51.674] Server  LOG      ✓ Compiled in 1693ms
+[00:12:54.178] Browser WARN    Image with src "/homepage.jpg" is using quality "90" which is not configured in images.qualities [70, 70, 75]. Please update your config to [70, 70, 75, 90].
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+[00:12:58.558] Server  LOG      ○ Compiling /_not-found/page ...
+[00:13:59.190] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold

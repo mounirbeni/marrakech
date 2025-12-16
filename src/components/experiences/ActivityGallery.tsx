@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { X, ChevronLeft, ChevronRight, Expand } from "lucide-react";
@@ -15,26 +15,21 @@ export function ActivityGallery({ images, title }: ActivityGalleryProps) {
     const [selectedImage, setSelectedImage] = useState<number | null>(null);
     const [direction, setDirection] = useState(0);
 
-    // Ensure we have images
-    if (!images || images.length === 0) return null;
-
     // Filter out any empty or invalid images
-    const validImages = images.filter(img => img && img.trim() !== "");
-
-    if (validImages.length === 0) return null;
+    const validImages = (images || []).filter(img => img && img.trim() !== "");
 
     // Navigation functions for lightbox
-    const goToNext = () => {
-        if (selectedImage === null) return;
+    const goToNext = useCallback(() => {
+        if (selectedImage === null || validImages.length === 0) return;
         setDirection(1);
         setSelectedImage((prev) => (prev === null ? 0 : (prev + 1) % validImages.length));
-    };
+    }, [selectedImage, validImages.length]);
 
-    const goToPrev = () => {
-        if (selectedImage === null) return;
+    const goToPrev = useCallback(() => {
+        if (selectedImage === null || validImages.length === 0) return;
         setDirection(-1);
         setSelectedImage((prev) => (prev === null ? 0 : (prev - 1 + validImages.length) % validImages.length));
-    };
+    }, [selectedImage, validImages.length]);
 
     // Keyboard navigation
     useEffect(() => {
@@ -48,7 +43,10 @@ export function ActivityGallery({ images, title }: ActivityGalleryProps) {
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [selectedImage]);
+    }, [selectedImage, goToNext, goToPrev]);
+
+    // Ensure we have images
+    if (validImages.length === 0) return null;
 
     // Variants for image transition animations
     const slideVariants = {
@@ -98,7 +96,7 @@ export function ActivityGallery({ images, title }: ActivityGalleryProps) {
                             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
                         />
                         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300" />
-                        
+
                         {/* Image counter overlay for first image */}
                         {idx === 0 && validImages.length > 4 && (
                             <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white text-sm font-medium rounded-full px-3 py-1.5 flex items-center gap-1.5">
@@ -106,7 +104,7 @@ export function ActivityGallery({ images, title }: ActivityGalleryProps) {
                                 View Gallery ({validImages.length})
                             </div>
                         )}
-                        
+
                         {/* Expand icon for all images */}
                         <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <Expand className="h-4 w-4" />
@@ -166,7 +164,7 @@ export function ActivityGallery({ images, title }: ActivityGalleryProps) {
                         </div>
 
                         {/* Image display */}
-                        <div 
+                        <div
                             className="relative w-full h-full max-w-6xl max-h-[90vh] flex items-center justify-center"
                             onClick={(e) => e.stopPropagation()}
                         >

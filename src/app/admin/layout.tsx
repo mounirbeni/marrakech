@@ -16,14 +16,14 @@ export default async function AdminLayout({
     return (
         <div className="flex h-screen overflow-hidden bg-background">
             {/* Desktop Sidebar */}
-            <aside className="hidden md:flex w-64 flex-col border-r bg-card">
+            <aside className="hidden md:flex w-72 flex-col bg-background">
                 <AdminSidebar />
             </aside>
 
             <div className="flex-1 flex flex-col overflow-hidden">
                 <AdminHeader />
 
-                <main className="flex-1 overflow-y-auto">
+                <main className="flex-1 overflow-y-auto bg-muted/10 p-6">
                     {children}
                 </main>
             </div>

@@ -9,6 +9,8 @@ import { Activity } from "@/lib/types";
 import { useWishlist } from "@/lib/contexts/WishlistContext";
 import { cn } from "@/lib/utils";
 
+import { TrustBadge } from "@/components/ui/trust-badge";
+
 interface ActivityCardProps {
     activity: Activity;
 }
@@ -47,11 +49,19 @@ export function ActivityCard({ activity }: ActivityCardProps) {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
+                    {/* Trust Badges */}
+                    <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+                        {activity.rating >= 4.8 && (
+                            <TrustBadge type="bestseller" />
+                        )}
+                        <TrustBadge type="verified" />
+                    </div>
+
                     <Button
                         variant="ghost"
                         size="icon"
                         className={cn(
-                            "absolute top-3 right-3 h-9 w-9 rounded-full backdrop-blur-md transition-all duration-300 z-10 shadow-sm",
+                            "absolute top-3 right-3 h-11 w-11 rounded-full backdrop-blur-md transition-all duration-300 z-10 shadow-sm",
                             inWishlist
                                 ? "bg-primary text-white hover:bg-primary/90"
                                 : "bg-white/90 text-foreground hover:bg-white hover:text-primary hover:scale-110"
@@ -59,7 +69,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
                         onClick={toggleWishlist}
                         aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
                     >
-                        <Heart className={cn("h-4 w-4", inWishlist && "fill-current")} />
+                        <Heart className={cn("h-5 w-5", inWishlist && "fill-current")} />
                     </Button>
 
 

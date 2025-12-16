@@ -6,7 +6,7 @@ import { Logo } from "@/components/shared/Logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useWishlist } from "@/lib/contexts/WishlistContext";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
@@ -23,8 +23,21 @@ export function Header() {
     const { wishlistCount } = useWishlist();
     const { scrollY } = useScroll();
     const [lastScrollY, setLastScrollY] = useState(0);
+    const [user, setUser] = useState<{ id: string; role: string; name?: string } | null>(null);
 
     const showSolidHeader = !isHome || isScrolled;
+
+    // Fetch user session on mount
+    useEffect(() => {
+        fetch('/api/auth/me')
+            .then(res => res.json())
+            .then(data => {
+                if (data.user) {
+                    setUser(data.user);
+                }
+            })
+            .catch(() => setUser(null));
+    }, []);
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         const previous = lastScrollY;
@@ -37,12 +50,18 @@ export function Header() {
         setIsScrolled(latest > 20);
     });
 
+    // Dynamic nav links based on user role
     const navLinks = [
         { name: "Home", href: "/" },
         { name: "Things to do", href: "/experiences" },
         { name: "How It Works", href: "/how-it-works" },
         { name: "About", href: "/about" },
         { name: "Support", href: "/support" },
+        ...(user ? [
+            user.role === 'ADMIN'
+                ? { name: "Admin Dashboard", href: "/admin/dashboard" }
+                : { name: "My Dashboard", href: "/dashboard" }
+        ] : [])
     ];
 
     return (

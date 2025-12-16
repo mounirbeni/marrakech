@@ -36,8 +36,8 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { ServiceForm } from '@/components/admin/ServiceForm'
 import { Service } from '@/types/admin'
+import Link from 'next/link'
 
 const fetcher = async (url: string) => {
     const res = await fetch(url)
@@ -121,27 +121,12 @@ export default function ServicesPage() {
                         Manage your services and experiences.
                     </p>
                 </div>
-                <Dialog open={isDialogOpen} onOpenChange={(open) => {
-                    setIsDialogOpen(open)
-                    if (!open) setEditingService(null)
-                }}>
-                    <DialogTrigger asChild>
-                        <Button>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Add Service
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-                        <DialogHeader>
-                            <DialogTitle>{editingService ? 'Edit Service' : 'Add New Service'}</DialogTitle>
-                        </DialogHeader>
-                        <ServiceForm
-                            initialData={editingService}
-                            onSubmit={editingService ? handleUpdate : handleCreate}
-                            onCancel={() => setIsDialogOpen(false)}
-                        />
-                    </DialogContent>
-                </Dialog>
+                <Link href="/admin/services/new">
+                    <Button>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add Service
+                    </Button>
+                </Link>
             </div>
 
             <Card>
@@ -234,12 +219,11 @@ export default function ServicesPage() {
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                    <DropdownMenuItem onClick={() => {
-                                                        setEditingService(service)
-                                                        setIsDialogOpen(true)
-                                                    }}>
-                                                        <Pencil className="mr-2 h-4 w-4" />
-                                                        Edit
+                                                    <DropdownMenuItem asChild>
+                                                        <Link href={`/admin/services/${service.id}`} className="flex items-center">
+                                                            <Pencil className="mr-2 h-4 w-4" />
+                                                            Edit
+                                                        </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleDelete(service.id)} className="text-red-600">
                                                         <Trash2 className="mr-2 h-4 w-4" />

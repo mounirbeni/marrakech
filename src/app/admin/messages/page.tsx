@@ -11,11 +11,31 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Send, MessageSquare, ArrowLeft, XCircle, Trash2, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+interface ConversationSummary {
+    id: string;
+    subject: string;
+    status: string;
+    updatedAt: string;
+    lastMessage: string;
+    lastMessageTime: string;
+    userName: string;
+    userEmail: string;
+    unreadCount: number;
+    userId: string;
+}
+
+interface MessageData {
+    id: string;
+    content: string;
+    sender: string;
+    createdAt: string;
+}
+
 export default function AdminMessagesPage() {
     const router = useRouter();
-    const [conversations, setConversations] = useState<any[]>([]);
-    const [selectedConversation, setSelectedConversation] = useState<any>(null);
-    const [messages, setMessages] = useState<any[]>([]);
+    const [conversations, setConversations] = useState<ConversationSummary[]>([]);
+    const [selectedConversation, setSelectedConversation] = useState<ConversationSummary | null>(null);
+    const [messages, setMessages] = useState<MessageData[]>([]);
     const [newMessage, setNewMessage] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [sending, setSending] = useState(false);
@@ -67,7 +87,7 @@ export default function AdminMessagesPage() {
         }
     };
 
-    const handleSelectConversation = (conv: any) => {
+    const handleSelectConversation = (conv: ConversationSummary) => {
         setSelectedConversation(conv);
         fetchMessages(conv.id);
     };

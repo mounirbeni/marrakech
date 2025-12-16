@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { notFound } from 'next/navigation'
+import { BookingModal } from '@/components/bookings/BookingModal'
 
 export default function ServiceDetailPage() {
     const params = useParams()
@@ -42,6 +43,34 @@ export default function ServiceDetailPage() {
         fetchService()
     }, [id])
 
+    const [bookingLoading, setBookingLoading] = useState(false)
+    const [bookingSuccess, setBookingSuccess] = useState(false)
+    const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
+
+    const handleBookNow = async () => {
+        setBookingLoading(true)
+        try {
+            // Check authentication status
+            const authRes = await fetch('/api/auth/status')
+            const authData = await authRes.json()
+
+            if (!authData.authenticated) {
+                // Redirect to login with return URL
+                const returnUrl = encodeURIComponent(`/services/${id}`)
+                window.location.href = `/login?from=${returnUrl}`
+                return
+            }
+
+            // Authenticated - Open Booking Modal
+            setIsBookingModalOpen(true)
+
+        } catch (error) {
+            console.error('Booking check failed', error)
+        } finally {
+            setBookingLoading(false)
+        }
+    }
+
     if (loading) {
         return (
             <div className="container py-8">
@@ -64,11 +93,43 @@ export default function ServiceDetailPage() {
         return notFound()
     }
 
+    if (bookingSuccess) {
+        return (
+            <div className="container py-8">
+                <div className="max-w-md mx-auto text-center space-y-4 p-8 border rounded-lg bg-green-50">
+                    <h1 className="text-2xl font-bold text-green-800">Booking Confirmed!</h1>
+                    <p className="text-green-700">
+                        Your reservation for <strong>{service?.title}</strong> has been placed successfully.
+                    </p>
+                    <div className="flex gap-4 justify-center pt-4">
+                        <Button onClick={() => window.location.href = '/dashboard'}>
+                            View in Dashboard
+                        </Button>
+                        <Button variant="outline" onClick={() => setBookingSuccess(false)}>
+                            Back to Service
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="container py-8">
             <Button variant="outline" className="mb-6" onClick={() => window.history.back()}>
                 ← Back to Services
             </Button>
+
+            {service && (
+                <BookingModal
+                    isOpen={isBookingModalOpen}
+                    onClose={() => setIsBookingModalOpen(false)}
+                    serviceTitle={service.title}
+                    servicePrice={service.price}
+                    serviceId={service.id}
+                    onBookingSuccess={() => setBookingSuccess(true)}
+                />
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2">
@@ -132,8 +193,13 @@ export default function ServiceDetailPage() {
                                 <span className="text-2xl font-bold">${service.price.toFixed(2)}</span>
                             </div>
 
-                            <Button className="w-full" size="lg">
-                                Book Now
+                            <Button
+                                className="w-full"
+                                size="lg"
+                                onClick={handleBookNow}
+                                disabled={bookingLoading}
+                            >
+                                {bookingLoading ? 'Checking...' : 'Book Now'}
                             </Button>
 
                             <div className="pt-4 border-t">

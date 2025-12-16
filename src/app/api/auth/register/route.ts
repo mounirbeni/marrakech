@@ -4,6 +4,9 @@ import prisma from '@/lib/prisma';
 import { hashPassword, loginUser } from '@/lib/auth';
 
 export async function POST(request: Request) {
+    // Artificial delay to mitigate brute force attacks
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     try {
         const { email, password, name } = await request.json();
 

@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import { format } from 'date-fns'
-import { Mail, Trash2, CheckCircle, XCircle, Filter, Search, MoreHorizontal, Calendar as CalendarIcon, MessageCircle } from 'lucide-react'
+import { Mail, Trash2, CheckCircle, XCircle, Filter, Search, MoreHorizontal, Calendar as CalendarIcon, MessageCircle, Download, LayoutList, LayoutGrid } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { BookingKanban } from '@/components/admin/bookings/BookingKanban'
 import { Input } from '@/components/ui/input'
 import {
     Select,
@@ -46,6 +47,14 @@ import { Calendar } from "@/components/ui/calendar"
 import { cn } from "@/lib/utils"
 import { Booking } from "@/types/admin"
 import { toast } from "sonner"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 
 const fetcher = async (url: string) => {
     const res = await fetch(url)
@@ -57,6 +66,7 @@ export default function BookingsPage() {
     const [searchQuery, setSearchQuery] = useState('')
     const [statusFilter, setStatusFilter] = useState('ALL')
     const [date, setDate] = useState<Date>()
+    const [viewMode, setViewMode] = useState<'LIST' | 'BOARD'>('LIST')
 
     const { data: bookings, error, isLoading } = useSWR<Booking[]>('/api/admin/bookings', fetcher)
 
@@ -100,10 +110,45 @@ export default function BookingsPage() {
                 return 'bg-green-500 hover:bg-green-600'
             case 'CANCELLED':
                 return 'bg-red-500 hover:bg-red-600'
+            case 'UNPROCESSED':
+                return 'bg-blue-500 hover:bg-blue-600'
             default:
                 return 'bg-yellow-500 hover:bg-yellow-600'
         }
     }
+
+    const handleExport = () => {
+        if (!filteredBookings || filteredBookings.length === 0) {
+            toast.error("No bookings to export");
+            return;
+        }
+
+        const headers = ["ID", "Name", "Email", "Phone", "Activity", "Date", "Guests", "Status", "Total Price"];
+        const csvContent = [
+            headers.join(","),
+            ...filteredBookings.map(b => [
+                b.id,
+                `"${b.name}"`,
+                b.email,
+                b.phone || "",
+                `"${b.activityTitle}"`,
+                format(new Date(b.date), 'yyyy-MM-dd'),
+                b.guests,
+                b.status,
+                b.totalPrice
+            ].join(","))
+        ].join("\n");
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `bookings_export_${format(new Date(), 'yyyy-MM-dd')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success("Export started");
+    };
 
     // Client-side filtering
     const filteredBookings = bookings?.filter((booking) => {
@@ -137,8 +182,14 @@ export default function BookingsPage() {
     if (error) return <div>Failed to load bookings</div>
     if (isLoading) return <div>Loading...</div>
 
+    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+
+    // ... (existing code, ensure to integrate this)
+
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
+            {/* Same header... */}
             <div className="flex items-center justify-between space-y-2">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">Bookings</h2>
@@ -146,9 +197,14 @@ export default function BookingsPage() {
                         Manage your bookings and reservations here.
                     </p>
                 </div>
+                <Button onClick={handleExport} variant="outline" className="gap-2">
+                    <Download className="h-4 w-4" />
+                    Export CSV
+                </Button>
             </div>
 
             <Card>
+                {/* Same card header... */}
                 <CardHeader>
                     <CardTitle>All Bookings</CardTitle>
                     <CardDescription>
@@ -156,6 +212,7 @@ export default function BookingsPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
+                    {/* Filters ... */}
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
                         <div className="flex items-center gap-2 flex-1 w-full md:max-w-sm">
                             <div className="relative flex-1">
@@ -169,6 +226,24 @@ export default function BookingsPage() {
                             </div>
                         </div>
                         <div className="flex flex-col md:flex-row items-center gap-2 w-full md:w-auto">
+                            <div className="flex items-center bg-muted p-1 rounded-lg border mr-2">
+                                <Button
+                                    variant={viewMode === 'LIST' ? 'secondary' : 'ghost'}
+                                    size="sm"
+                                    onClick={() => setViewMode('LIST')}
+                                    className="h-7 px-3"
+                                >
+                                    <LayoutList className="h-4 w-4 mr-2" /> List
+                                </Button>
+                                <Button
+                                    variant={viewMode === 'BOARD' ? 'secondary' : 'ghost'}
+                                    size="sm"
+                                    onClick={() => setViewMode('BOARD')}
+                                    className="h-7 px-3"
+                                >
+                                    <LayoutGrid className="h-4 w-4 mr-2" /> Board
+                                </Button>
+                            </div>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
@@ -201,6 +276,7 @@ export default function BookingsPage() {
                                 <SelectContent>
                                     <SelectItem value="ALL">All Statuses</SelectItem>
                                     <SelectItem value="PENDING">Pending</SelectItem>
+                                    <SelectItem value="UNPROCESSED">Awaiting Confirmation</SelectItem>
                                     <SelectItem value="CONFIRMED">Confirmed</SelectItem>
                                     <SelectItem value="CANCELLED">Cancelled</SelectItem>
                                 </SelectContent>
@@ -222,107 +298,189 @@ export default function BookingsPage() {
                         </div>
                     </div>
 
-                    <div className="rounded-md border overflow-x-auto">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Customer</TableHead>
-                                    <TableHead>Service</TableHead>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {filteredBookings?.map((booking) => (
-                                    <TableRow key={booking.id}>
-                                        <TableCell>
-                                            <div className="font-medium">{booking.name}</div>
-                                            <div className="text-sm text-muted-foreground">{booking.email}</div>
-                                            <div className="text-sm text-muted-foreground">{booking.phone}</div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="font-medium">{booking.activityTitle}</div>
-                                            <div className="text-sm text-muted-foreground">{booking.guests} guests</div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {format(new Date(booking.date), 'PPP')}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge className={getStatusColor(booking.status)}>
-                                                {booking.status}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="h-8 w-8 p-0"
-                                                    onClick={() => window.open(`mailto:${booking.email}`, '_blank')}
-                                                    title="Send Email"
-                                                >
-                                                    <Mail className="h-4 w-4" />
-                                                </Button>
-                                                {booking.phone && (
+                    {viewMode === 'BOARD' ? (
+                        <div className="h-[600px] overflow-hidden">
+                            <BookingKanban
+                                bookings={filteredBookings || []}
+                                onStatusUpdate={handleStatusUpdate}
+                            />
+                        </div>
+                    ) : (
+                        <div className="rounded-md border overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Customer</TableHead>
+                                        <TableHead>Service</TableHead>
+                                        <TableHead>Date</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {filteredBookings?.map((booking) => (
+                                        <TableRow key={booking.id}>
+                                            <TableCell>
+                                                <div className="font-medium">{booking.name}</div>
+                                                <div className="text-sm text-muted-foreground">{booking.email}</div>
+                                                <div className="text-sm text-muted-foreground">{booking.phone}</div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="font-medium">{booking.activityTitle}</div>
+                                                <div className="text-sm text-muted-foreground">{booking.guests} guests</div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {format(new Date(booking.date), 'PPP')}
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge className={getStatusColor(booking.status)}>
+                                                    {booking.status === 'UNPROCESSED' ? 'Awaiting Confirmation' : booking.status}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex items-center justify-end gap-2">
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
-                                                        className="h-8 w-8 p-0 text-green-600 hover:text-green-700"
-                                                        onClick={() => {
-                                                            const phone = booking.phone?.replace(/\D/g, '')
-                                                            window.open(`https://wa.me/${phone}`, '_blank')
-                                                        }}
-                                                        title="Open WhatsApp"
+                                                        className="h-8 w-8 p-0"
+                                                        onClick={() => window.open(`mailto:${booking.email}`, '_blank')}
+                                                        title="Send Email"
                                                     >
-                                                        <MessageCircle className="h-4 w-4" />
+                                                        <Mail className="h-4 w-4" />
                                                     </Button>
-                                                )}
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" className="h-8 w-8 p-0">
-                                                            <span className="sr-only">Open menu</span>
-                                                            <MoreHorizontal className="h-4 w-4" />
+                                                    {booking.phone && (
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="h-8 w-8 p-0 text-green-600 hover:text-green-700"
+                                                            onClick={() => {
+                                                                const phone = booking.phone?.replace(/\D/g, '')
+                                                                window.open(`https://wa.me/${phone}`, '_blank')
+                                                            }}
+                                                            title="Open WhatsApp"
+                                                        >
+                                                            <MessageCircle className="h-4 w-4" />
                                                         </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                        <DropdownMenuSeparator />
-                                                        {booking.status !== 'CONFIRMED' && (
-                                                            <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, 'CONFIRMED')}>
-                                                                <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
-                                                                Confirm Booking
+                                                    )}
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                                                <span className="sr-only">Open menu</span>
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                            <DropdownMenuItem onClick={() => {
+                                                                setSelectedBooking(booking)
+                                                                setIsDetailsOpen(true)
+                                                            }}>
+                                                                View Details
                                                             </DropdownMenuItem>
-                                                        )}
-                                                        {booking.status !== 'CANCELLED' && (
-                                                            <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, 'CANCELLED')}>
-                                                                <XCircle className="mr-2 h-4 w-4 text-orange-600" />
-                                                                Cancel Booking
+                                                            <DropdownMenuSeparator />
+                                                            {booking.status !== 'CONFIRMED' && (
+                                                                <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, 'CONFIRMED')}>
+                                                                    <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
+                                                                    Confirm Booking
+                                                                </DropdownMenuItem>
+                                                            )}
+                                                            {booking.status !== 'CANCELLED' && (
+                                                                <DropdownMenuItem onClick={() => handleStatusUpdate(booking.id, 'CANCELLED')}>
+                                                                    <XCircle className="mr-2 h-4 w-4 text-orange-600" />
+                                                                    Cancel Booking
+                                                                </DropdownMenuItem>
+                                                            )}
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem onClick={() => handleDelete(booking.id)} className="text-red-600">
+                                                                <Trash2 className="mr-2 h-4 w-4" />
+                                                                Delete Booking
                                                             </DropdownMenuItem>
-                                                        )}
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem onClick={() => handleDelete(booking.id)} className="text-red-600">
-                                                            <Trash2 className="mr-2 h-4 w-4" />
-                                                            Delete Booking
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                                {filteredBookings?.length === 0 && (
-                                    <TableRow>
-                                        <TableCell colSpan={5} className="h-24 text-center">
-                                            No bookings found.
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                    {filteredBookings?.length === 0 && (
+                                        <TableRow>
+                                            <TableCell colSpan={5} className="h-24 text-center">
+                                                No bookings found.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
+
+            <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Booking Details</DialogTitle>
+                        <DialogDescription>Full details for booking #{selectedBooking?.id.slice(0, 8)}</DialogDescription>
+                    </DialogHeader>
+                    {selectedBooking && (
+                        <div className="grid gap-4 py-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <Label className="text-muted-foreground">Customer</Label>
+                                    <div className="font-medium">{selectedBooking.name}</div>
+                                    <div className="text-sm">{selectedBooking.email}</div>
+                                    <div className="text-sm">{selectedBooking.phone}</div>
+                                </div>
+                                <div>
+                                    <Label className="text-muted-foreground">Status</Label>
+                                    <div>
+                                        <Badge className={getStatusColor(selectedBooking.status)}>
+                                            {selectedBooking.status}
+                                        </Badge>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <Label className="text-muted-foreground">Activity</Label>
+                                <div className="font-medium text-lg">{selectedBooking.activityTitle}</div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <Label className="text-muted-foreground">Date & Time</Label>
+                                    <div>{format(new Date(selectedBooking.date), 'PPP p')}</div>
+                                </div>
+                                <div>
+                                    <Label className="text-muted-foreground">Guests</Label>
+                                    <div>{selectedBooking.guests} people</div>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <Label className="text-muted-foreground">Total Price</Label>
+                                    <div className="font-bold">€{selectedBooking.totalPrice}</div>
+                                </div>
+                            </div>
+                            {selectedBooking.pickupLocation && (
+                                <div>
+                                    <Label className="text-muted-foreground">Pickup Location</Label>
+                                    <div>{selectedBooking.pickupLocation}</div>
+                                </div>
+                            )}
+                            {selectedBooking.flightNumber && (
+                                <div>
+                                    <Label className="text-muted-foreground">Flight Number</Label>
+                                    <div>{selectedBooking.flightNumber}</div>
+                                </div>
+                            )}
+                            {selectedBooking.specialRequests && (
+                                <div>
+                                    <Label className="text-muted-foreground">Special Requests</Label>
+                                    <div className="text-sm">{selectedBooking.specialRequests}</div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

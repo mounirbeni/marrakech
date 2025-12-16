@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
@@ -22,11 +23,14 @@ export function Hero() {
                 style={{ y, opacity }}
                 className="absolute inset-0 z-0 h-full w-full"
             >
-                <div
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110 hero-bg-image h-full w-full transition-opacity duration-500"
-                    style={{
-                        backgroundImage: "url('/homepage.jpg')",
-                    }}
+                <Image
+                    src="/homepage.jpg"
+                    alt="Marrakech Landscape"
+                    fill
+                    priority
+                    quality={90}
+                    className="object-cover object-center scale-110"
+                    sizes="100vw"
                 />
                 <div className="absolute inset-0 bg-white/60 dark:bg-black/50" />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background dark:from-black/40 dark:via-black/20 dark:to-black/60" />

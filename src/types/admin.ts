@@ -6,8 +6,15 @@ export interface Booking {
     activityTitle: string
     guests: number
     date: string
-    status: 'PENDING' | 'CONFIRMED' | 'CANCELLED'
+    status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'UNPROCESSED'
     totalPrice?: number
+    createdAt: string
+    pickupLocation?: string
+    flightNumber?: string
+    language?: string
+    dietary?: string
+    specialRequests?: string
+    packageName?: string
 }
 
 export interface Service {
@@ -19,6 +26,8 @@ export interface Service {
     description?: string
     duration?: string
     location?: string
+    latitude?: number
+    longitude?: number
     maxPeople?: number
     languages?: string[]
     included?: string[]
@@ -27,16 +36,29 @@ export interface Service {
     reviews?: number
     features?: string[]
     whatToBring?: string[]
-    itinerary?: any
-    host?: any
+    itinerary?: ItineraryItem[]
+    host?: Host | string
     tags?: string[]
+}
+
+export interface ItineraryItem {
+    time: string
+    title: string
+    description: string
+}
+
+export interface Host {
+    name: string
+    image: string
+    bio?: string
+    verified?: boolean
 }
 
 export interface User {
     id: string
     name: string | null
     email: string
-    role: 'ADMIN' | 'USER'
+    role: 'ADMIN' | 'CLIENT'
     source?: 'REGISTERED' | 'NEWSLETTER'
     createdAt: string
     _count?: {

@@ -1,95 +1,58 @@
-
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { Booking } from '@prisma/client';
-
-// Helper to generate short readable IDs (e.g., "BK-X7Y2Z")
-function generateBookingId() {
-    const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'; // Removed confusing chars (0, O, 1, I)
-    let result = '';
-    for (let i = 0; i < 6; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result; // Result: "X7Y2Z9"
-}
+import { getSession } from '@/lib/auth';
+// import { v4 as uuidv4 } from 'uuid';
+// Schema: id String @id. No default(uuid()). I need to generate it.
+// Actually standard Prisma convention with UUID is often @default(uuid()).
+// Let me re-read schema.
+// Schema line 14: id String @id
+// It does NOT have @default(uuid()). So I must provide it.
 
 export async function POST(request: Request) {
     try {
-        const body = await request.json();
+        const session = await getSession();
+        if (!session) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
 
-        // Basic Validation
-        if (!body.contact?.name || !body.contact?.email || !body.activityId || !body.date) {
-            return NextResponse.json(
-                { error: 'Missing required fields' },
-                { status: 400 }
-            );
+        const body = await request.json();
+        const {
+            activityId,
+            activityTitle,
+            date,
+            guests,
+            totalPrice,
+            pickupLocation,
+            phone,
+            name, // Optional fallback if not in session?
+            email
+        } = body;
+
+        if (!activityId || !date || !guests || !totalPrice) {
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
         const booking = await prisma.booking.create({
             data: {
-                id: generateBookingId(),
-                name: body.contact.name,
-                email: body.contact.email,
-                phone: body.contact.phone,
-                activityId: body.activityId,
-                activityTitle: body.activityTitle,
-                date: new Date(body.date),
-                guests: body.guests,
-                totalPrice: body.totalPrice,
-                packageName: body.package,
-
-                pickupLocation: body.logistics.pickupLocation,
-                flightNumber: body.logistics.flightNumber,
-
-                language: body.preferences.language,
-                dietary: body.preferences.dietary,
-                specialRequests: body.preferences.specialRequests,
-
-                status: 'PENDING'
+                id: crypto.randomUUID(), // Native node method
+                userId: session.id,
+                name: name || session.name || 'Unknown User',
+                email: email || session.email,
+                phone: phone || null,
+                activityId,
+                activityTitle,
+                date: new Date(date),
+                guests: parseInt(guests),
+                totalPrice: parseFloat(totalPrice),
+                pickupLocation: pickupLocation || null,
+                status: 'UNPROCESSED' // Default status for new bookings
             }
         });
 
-        return NextResponse.json(booking, { status: 201 });
+        return NextResponse.json({ success: true, bookingId: booking.id });
 
     } catch (error) {
-        console.error('Booking Error:', error);
-        return NextResponse.json(
-            {
-                error: 'Internal Server Error',
-                details: error instanceof Error ? error.message : String(error)
-            },
-            { status: 500 }
-        );
-    }
-}
-
-export async function GET(request: Request) {
-    try {
-        // Auto-update past bookings to COMPLETED
-        await prisma.booking.updateMany({
-            where: {
-                status: 'CONFIRMED',
-                date: {
-                    lt: new Date()
-                }
-            },
-            data: {
-                status: 'COMPLETED'
-            }
-        });
-
-        // In a real app, you would verify admin session here
-        const bookings = await prisma.booking.findMany({
-            orderBy: {
-                createdAt: 'desc'
-            }
-        });
-
-        return NextResponse.json(bookings);
-    } catch (error) {
-        return NextResponse.json(
-            { error: 'Failed to fetch bookings' },
-            { status: 500 }
-        );
+        console.error('Booking creation error:', error);
+        return NextResponse.json({ error: 'Failed to create booking' }, { status: 500 });
     }
 }

@@ -1,12 +1,11 @@
-
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-
 import { getSession } from '@/lib/auth';
 
-export async function PATCH(
+// GET: Fetch single booking for editing
+export async function GET(
     request: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: { params: { id: string } }
 ) {
     try {
         const session = await getSession();
@@ -14,70 +13,141 @@ export async function PATCH(
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { id } = await params;
-        const body = await request.json();
-        const { status } = body;
+        const booking = await prisma.booking.findUnique({
+            where: { id: params.id },
+            include: { user: true }
+        });
 
-        const validStatuses = ['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'];
-
-        if (!status || !validStatuses.includes(status)) {
-            return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
-        }
-
-        // Fetch existing booking to check ownership/status
-        const booking = await prisma.booking.findUnique({ where: { id } });
         if (!booking) {
             return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
         }
 
-        // Authorization Logic
-        if (session.role !== 'ADMIN') {
-            // Client Logic
-            // 1. Must own the booking
-            if ((booking as any).userId !== session.id && booking.email !== session.email) {
-                return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-            }
-            // 2. Can only Cancel
-            if (status !== 'CANCELLED') {
-                return NextResponse.json({ error: 'Clients can only cancel bookings' }, { status: 403 });
-            }
-            // 3. Can only Cancel if PENDING
-            if (booking.status !== 'PENDING') {
-                return NextResponse.json({ error: 'Cannot cancel processed booking' }, { status: 400 });
-            }
+        // Security: Ensure owner or Admin
+        if (booking.userId !== session.id && session.role !== 'ADMIN') {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
 
-        const updatedBooking = await prisma.booking.update({
-            where: { id },
-            data: { status },
-        });
-
-        return NextResponse.json(updatedBooking);
+        return NextResponse.json(booking);
     } catch (error) {
-        console.error('Error updating booking:', error);
-        return NextResponse.json(
-            { error: 'Failed to update booking' },
-            { status: 500 }
-        );
+        console.error("GET Booking Error:", error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
 
-export async function DELETE(
+// PATCH: Update booking details
+export async function PATCH(
     request: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: { params: { id: string } }
 ) {
     try {
-        const { id } = await params;
-        await prisma.booking.delete({
-            where: { id },
+        const session = await getSession();
+        if (!session) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const booking = await prisma.booking.findUnique({
+            where: { id: params.id },
         });
 
-        return NextResponse.json({ success: true });
+        if (!booking) {
+            return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+        }
+
+        // Security: Ensure owner
+        if (booking.userId !== session.id && session.role !== 'ADMIN') {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        if (booking.status === 'CANCELLED') {
+            return NextResponse.json({ error: 'Cannot edit a cancelled booking' }, { status: 400 });
+        }
+
+        // 5-Hour Modification Window enforced for Clients
+        if (session.role !== 'ADMIN') {
+            const bookingTime = new Date(booking.createdAt).getTime();
+            const now = Date.now();
+            const hoursSinceBooking = (now - bookingTime) / (1000 * 60 * 60);
+
+            if (hoursSinceBooking > 5) {
+                return NextResponse.json({
+                    error: 'Modification window expired (5 hours limit)'
+                }, { status: 403 });
+            }
+        }
+
+        const body = await request.json();
+
+        // Handle explicit status change requests (e.g. from Admin or Cancellation)
+        // If the body is JUST status='CANCELLED', allow it.
+        if (body.status === 'CANCELLED') {
+            const updatedBooking = await prisma.booking.update({
+                where: { id: params.id },
+                data: { status: 'CANCELLED' },
+            });
+            return NextResponse.json(updatedBooking);
+        }
+
+        // Regular Booking Updates
+        const { date, guests, pickupLocation, specialRequests, contactPhone } = body;
+        const updateData: any = {};
+
+        if (date) updateData.date = new Date(date);
+        if (guests) updateData.guests = parseInt(guests);
+        if (pickupLocation !== undefined) updateData.pickupLocation = pickupLocation;
+        if (specialRequests !== undefined) updateData.specialRequests = specialRequests;
+        if (contactPhone !== undefined) updateData.phone = contactPhone;
+
+        // Simple price scaling if guests change
+        if (guests && guests !== booking.guests && booking.guests > 0) {
+            const pricePerHead = booking.totalPrice / booking.guests;
+            updateData.totalPrice = pricePerHead * guests;
+        }
+
+        const updatedBooking = await prisma.booking.update({
+            where: { id: params.id },
+            data: updateData,
+        });
+
+        return NextResponse.json(updatedBooking);
+
     } catch (error) {
-        console.error('Error deleting booking:', error);
-        return NextResponse.json(
-            { error: 'Failed to delete booking' },
-            { status: 500 }
-        );
+        console.error("PATCH Booking Error:", error);
+        return NextResponse.json({ error: 'Update failed' }, { status: 500 });
+    }
+}
+
+// DELETE: Cancel booking (Soft delete / Status update)
+export async function DELETE(
+    request: Request,
+    { params }: { params: { id: string } }
+) {
+    try {
+        const session = await getSession();
+        if (!session) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const booking = await prisma.booking.findUnique({
+            where: { id: params.id },
+        });
+
+        if (!booking) {
+            return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+        }
+
+        if (booking.userId !== session.id && session.role !== 'ADMIN') {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        const updatedBooking = await prisma.booking.update({
+            where: { id: params.id },
+            data: { status: 'CANCELLED' },
+        });
+
+        return NextResponse.json(updatedBooking);
+
+    } catch (error) {
+        console.error("DELETE Booking Error:", error);
+        return NextResponse.json({ error: 'Cancellation failed' }, { status: 500 });
     }
 }

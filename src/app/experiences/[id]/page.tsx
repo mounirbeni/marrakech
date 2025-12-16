@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import Script from 'next/script';
 import { BookingForm } from "@/components/experiences/BookingForm";
+import { WeatherWidget } from "@/components/experiences/WeatherWidget"; // Added
+import { TrustBadge } from "@/components/ui/trust-badge"; // Added
 import { ActivityCard } from "@/components/shared/ActivityCard";
 import { ActivityGallery } from "@/components/experiences/ActivityGallery";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -204,6 +206,7 @@ export default async function ActivityPage({ params }: PageProps) {
                                             {activity.difficulty} Level
                                         </Badge>
                                     )}
+                                    <TrustBadge type="verified" className="bg-white/90 text-primary border-none" />
                                 </div>
 
                                 <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-white tracking-tight leading-[1.1] shadow-sm">
@@ -378,7 +381,7 @@ export default async function ActivityPage({ params }: PageProps) {
                                                     </div>
                                                 )}
                                             </div>
-                                            <p className="text-lg text-muted-foreground italic">"{activity.host.bio}"</p>
+                                            <p className="text-lg text-muted-foreground italic">&quot;{activity.host.bio}&quot;</p>
                                             <div className="flex flex-wrap gap-2 pt-2">
                                                 {activity.languages?.map((lang) => (
                                                     <Badge key={lang} variant="secondary" className="px-3 py-1">
@@ -470,6 +473,7 @@ export default async function ActivityPage({ params }: PageProps) {
                         {/* RIGHT COLUMN - STICKY */}
                         <div className="lg:col-span-1">
                             <div className="sticky top-24 space-y-6">
+                                <WeatherWidget />
                                 <BookingForm activity={activity} />
 
 

@@ -15,19 +15,27 @@ export async function comparePassword(plain: string, hashed: string): Promise<bo
     return await bcrypt.compare(plain, hashed);
 }
 
-export async function signJWT(payload: any): Promise<string> {
+export interface UserPayload {
+    id: string;
+    email: string;
+    role: string;
+    name?: string | null;
+    [key: string]: unknown;
+}
+
+export async function signJWT(payload: UserPayload): Promise<string> {
     return new SignJWT(payload)
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
-        .setExpirationTime('24h')
+        .setExpirationTime('1h')
         .sign(JWT_SECRET);
 }
 
-export async function verifyJWT(token: string): Promise<any> {
+export async function verifyJWT(token: string): Promise<UserPayload | null> {
     try {
         const { payload } = await jwtVerify(token, JWT_SECRET);
-        return payload;
-    } catch (error) {
+        return payload as UserPayload;
+    } catch {
         return null;
     }
 }
@@ -41,7 +49,7 @@ export async function getSession() {
     return await verifyJWT(token);
 }
 
-export async function loginUser(payload: any) {
+export async function loginUser(payload: UserPayload) {
     const token = await signJWT(payload);
     const cookieStore = await cookies();
 
@@ -49,7 +57,7 @@ export async function loginUser(payload: any) {
     cookieStore.set('auth_token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24, // 24 hours
+        maxAge: 60 * 60, // 1 hour
         path: '/',
     });
 }

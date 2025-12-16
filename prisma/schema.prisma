@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,28 +11,23 @@ model Booking {
   id              String   @id
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  
   name            String
   email           String
   phone           String?
-  
   activityId      String
   activityTitle   String
   date            DateTime
   guests          Int
   totalPrice      Float
-  
   pickupLocation  String?
   flightNumber    String?
   language        String?
   dietary         String?
   specialRequests String?
   packageName     String?
-
-  status          String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
-  
-  user            User?    @relation(fields: [userId], references: [id])
+  status          String   @default("PENDING")
   userId          String?
+  user            User?    @relation(fields: [userId], references: [id])
   review          Review?
 }
 
@@ -47,43 +39,42 @@ model NewsletterSubscriber {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String?
-  role      String   @default("CLIENT") // CLIENT, ADMIN
-  canMessage Boolean  @default(true)
-  conversationStatus String @default("NONE") // NONE, PENDING, OPEN, CLOSED
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  bookings  Booking[]
-  messages  Message[]
-  reviews   Review[]
-  conversations Conversation[]
+  id                 String         @id @default(uuid())
+  email              String         @unique
+  password           String
+  name               String?
+  role               String         @default("CLIENT")
+  canMessage         Boolean        @default(true)
+  conversationStatus String         @default("NONE")
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  bookings           Booking[]
+  conversations      Conversation[]
+  messages           Message[]
+  reviews            Review[]
 }
 
 model Conversation {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   subject   String
-  status    String   @default("OPEN") // OPEN, CLOSED
+  status    String    @default("OPEN")
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id])
   messages  Message[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Message {
-  id             String   @id @default(uuid())
+  id             String       @id @default(uuid())
   content        String
-  sender         String   // USER or ADMIN
-  read           Boolean  @default(false)
+  sender         String
+  read           Boolean      @default(false)
   conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   userId         String
-  user           User     @relation(fields: [userId], references: [id])
-  createdAt      DateTime @default(now())
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id])
 }
 
 model Review {
@@ -91,15 +82,12 @@ model Review {
   rating    Int
   comment   String
   createdAt DateTime @default(now())
-  
-  service   Service  @relation(fields: [serviceId], references: [id])
   serviceId String
-  
-  user      User     @relation(fields: [userId], references: [id])
   userId    String
-  
-  booking   Booking  @relation(fields: [bookingId], references: [id])
   bookingId String   @unique
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  service   Service  @relation(fields: [serviceId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Service {
@@ -107,23 +95,22 @@ model Service {
   title       String
   description String
   price       Float
-  images      String // Stores JSON string of image URLs
+  images      String
   category    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  // New fields for rich content
   rating      Float    @default(0)
   reviews     Int      @default(0)
   duration    String   @default("")
   location    String   @default("")
+  latitude    Float?
+  longitude   Float?
   features    String
   included    String
   whatToBring String
-  itinerary   String  // JSON string
-  host        String  // JSON string
+  itinerary   String
+  host        String
   tags        String
-  
   userReviews Review[]
 }
 
@@ -134,7 +121,7 @@ model SupportRequest {
   phone     String?
   subject   String
   message   String
-  status    String   @default("PENDING") // PENDING, IN_PROGRESS, RESOLVED
+  status    String   @default("PENDING")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

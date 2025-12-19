@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
+import { generateBookingId } from '@/lib/utils/id-generator';
 // import { v4 as uuidv4 } from 'uuid';
 // Schema: id String @id. No default(uuid()). I need to generate it.
 // Actually standard Prisma convention with UUID is often @default(uuid()).
@@ -70,7 +71,7 @@ export async function POST(request: Request) {
 
         const booking = await prisma.booking.create({
             data: {
-                id: crypto.randomUUID(), // Native node method
+                id: generateBookingId(), // Short booking ID
                 userId: session?.id || null, // Use session ID if available, otherwise null
                 name: name || session?.name || email.split('@')[0] || 'Valued Customer',
                 email: email || session?.email || '',

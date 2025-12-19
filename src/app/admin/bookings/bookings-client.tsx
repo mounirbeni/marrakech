@@ -129,7 +129,7 @@ export default function BookingsClient({ initialBookings }: BookingsClientProps)
                                     <tr key={booking.id} className="hover:bg-gray-50/50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="font-medium text-gray-900">{booking.name}</div>
-                                            <div className="text-xs text-gray-500 mt-0.5">ID: {booking.id.slice(0, 8)}...</div>
+                                            <div className="text-xs text-gray-500 mt-0.5">ID: {booking.id}</div>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2 text-gray-600">

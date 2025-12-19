@@ -418,7 +418,7 @@ export default function BookingsPage() {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Booking Details</DialogTitle>
-                        <DialogDescription>Full details for booking #{selectedBooking?.id?.slice(0, 8)}</DialogDescription>
+                        <DialogDescription>Full details for booking #{selectedBooking?.id}</DialogDescription>
                     </DialogHeader>
                     {selectedBooking && (
                         <div className="grid gap-4 py-4">

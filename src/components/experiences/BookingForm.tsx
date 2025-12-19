@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { CalendarIcon, MessageCircle, Clock } from "lucide-react";
 import { format } from "date-fns";
@@ -31,6 +31,7 @@ export function BookingForm({ activity }: BookingFormProps) {
 
     // Helper to get  first package name from either structure
     const getFirstPackageName = () => {
+        if (!activity) return undefined;
         if (activity.packageCategories && activity.packageCategories.length > 0) {
             return activity.packageCategories[0]?.packages[0]?.name;
         }
@@ -62,14 +63,16 @@ export function BookingForm({ activity }: BookingFormProps) {
     const [prevActivityId, setPrevActivityId] = useState(activity.id);
 
     // Reset state if activity changes (pattern: state derived from props)
-    if (activity.id !== prevActivityId) {
-        setPrevActivityId(activity.id);
-        setSelectedPackageName(getFirstPackageName());
-        // Also reset other state if needed, but for now just package
-    }
+    useEffect(() => {
+        if (activity && activity.id !== prevActivityId) {
+            setPrevActivityId(activity.id);
+            setSelectedPackageName(getFirstPackageName());
+            // Also reset other state if needed, but for now just package
+        }
+    }, [activity, prevActivityId]);
 
     const selectedPackage = findPackage(selectedPackageName);
-    const pricePerPerson = selectedPackage ? selectedPackage.price : activity.price;
+    const pricePerPerson = selectedPackage ? selectedPackage.price : (activity ? activity.price : 0);
     const totalPrice = pricePerPerson * guests;
 
     // Generate time slots (09:00 to 18:00)
@@ -343,7 +346,8 @@ export function BookingForm({ activity }: BookingFormProps) {
                     className="w-full gap-2 rounded-full border-primary/20 hover:bg-primary/5 hover:text-primary"
                     onClick={() => {
                         const phoneNumber = "212601439975"; // Morocco format: +212 601 439 975
-                        const message = encodeURIComponent(`Hi! I'm interested in booking "${activity.title}" for ${guests} people. Can you provide more information?`);
+                        const activityTitle = activity?.title || 'this activity';
+                        const message = encodeURIComponent(`Hi! I'm interested in booking "${activityTitle}" for ${guests} people. Can you provide more information?`);
                         window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
                     }}
                 >

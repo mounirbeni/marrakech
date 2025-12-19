@@ -17,6 +17,12 @@ interface ActivityCardProps {
 
 export function ActivityCard({ activity }: ActivityCardProps) {
     const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+    
+    // Guard against undefined activity
+    if (!activity || !activity.id) {
+        return null;
+    }
+    
     const inWishlist = isInWishlist(activity.id);
 
     const toggleWishlist = (e: React.MouseEvent) => {

@@ -31,6 +31,9 @@ const safeParse = (data: string | null | undefined, fallback: any) => {
 };
 
 async function getActivity(id: string): Promise<Activity | null> {
+    // Validate input
+    if (!id) return null;
+    
     let service = null;
     try {
         service = await prisma.service.findUnique({
@@ -45,12 +48,18 @@ async function getActivity(id: string): Promise<Activity | null> {
 
     if (!service && !staticActivity) return null;
 
-    if (!service && staticActivity) return staticActivity;
+    if (!service && staticActivity) {
+        // Ensure staticActivity has required id
+        if (!staticActivity.id) {
+            staticActivity.id = id; // Assign the id if missing
+        }
+        return staticActivity;
+    }
 
     if (service) {
         const parsedImages = safeParse(service.images, []);
         return {
-            id: service.id,
+            id: service.id || id, // Ensure id is present
             title: service.title,
             price: service.price,
             rating: service.rating,
@@ -112,6 +121,11 @@ export default async function ActivityPage({ params }: PageProps) {
         notFound();
     }
 
+    // Ensure activity has all required properties
+    if (!activity.id) {
+        notFound();
+    }
+
     // Get related activities (fetch from DB)
     let relatedServices: any[] = [];
     try {
@@ -128,6 +142,9 @@ export default async function ActivityPage({ params }: PageProps) {
     }
 
     const relatedActivities: Activity[] = (relatedServices as any[]).map(service => {
+        // Skip services without id
+        if (!service.id) return null;
+        
         const parsedImages = safeParse(service.images, []);
         return {
             id: service.id,
@@ -160,7 +177,7 @@ export default async function ActivityPage({ params }: PageProps) {
             packages: [],
             packageCategories: []
         };
-    });
+    }).filter(Boolean) as Activity[];
 
     return (
         <div className="min-h-screen bg-background pt-28 pb-20">
@@ -454,7 +471,7 @@ export default async function ActivityPage({ params }: PageProps) {
                     <div className="border-t border-border pt-12">
                         <h2 className="text-3xl font-bold mb-8">You might also like</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {relatedActivities.map((related) => (
+                            {relatedActivities.filter(activity => activity.id).map((related) => (
                                 <ActivityCard key={related.id} activity={related} />
                             ))}
                         </div>

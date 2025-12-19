@@ -152,7 +152,7 @@ export default function ExperiencesClient({ initialActivities }: ExperiencesClie
                     <main className="w-full lg:w-3/4">
                         {filteredActivities.length > 0 ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
-                                {filteredActivities.map((activity) => (
+                                {filteredActivities.filter(activity => activity.id).map((activity) => (
                                     <ActivityCard key={activity.id} activity={activity} />
                                 ))}
                             </div>

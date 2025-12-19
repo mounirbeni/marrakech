@@ -32,6 +32,11 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
+        // Validate activityId is a string
+        if (typeof activityId !== 'string') {
+            return NextResponse.json({ error: 'Invalid activity ID' }, { status: 400 });
+        }
+
         const booking = await prisma.booking.create({
             data: {
                 id: crypto.randomUUID(), // Native node method

@@ -67,6 +67,8 @@ export default function BookingsPage() {
     const [statusFilter, setStatusFilter] = useState('ALL')
     const [date, setDate] = useState<Date>()
     const [viewMode, setViewMode] = useState<'LIST' | 'BOARD'>('LIST')
+    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false)
 
     const { data: bookings, error, isLoading } = useSWR<Booking[]>('/api/admin/bookings', fetcher)
 
@@ -181,9 +183,6 @@ export default function BookingsPage() {
 
     if (error) return <div>Failed to load bookings</div>
     if (isLoading) return <div>Loading...</div>
-
-    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
-    const [isDetailsOpen, setIsDetailsOpen] = useState(false)
 
     // ... (existing code, ensure to integrate this)
 

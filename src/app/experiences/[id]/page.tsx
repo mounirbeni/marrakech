@@ -21,6 +21,15 @@ interface PageProps {
     params: Promise<{ id: string }>;
 }
 
+const safeParse = (data: string | null | undefined, fallback: any) => {
+    if (!data) return fallback;
+    try {
+        return JSON.parse(data);
+    } catch {
+        return fallback;
+    }
+};
+
 async function getActivity(id: string): Promise<Activity | null> {
     const service = await prisma.service.findUnique({
         where: { id }
@@ -34,6 +43,7 @@ async function getActivity(id: string): Promise<Activity | null> {
     if (!service && staticActivity) return staticActivity;
 
     if (service) {
+        const parsedImages = safeParse(service.images, []);
         return {
             id: service.id,
             title: service.title,
@@ -41,25 +51,25 @@ async function getActivity(id: string): Promise<Activity | null> {
             rating: service.rating,
             reviews: service.reviews,
             category: service.category,
-            image: service.images[0] || "",
+            image: parsedImages[0] || "",
             duration: service.duration,
-            features: service.features,
+            features: safeParse(service.features, []),
             location: service.location,
-            tags: service.tags,
-            images: service.images,
-            host: (service.host as unknown as { name: string; image: string }) || { name: "Marrakech Host", image: "/localexpert.jpg" },
+            tags: safeParse(service.tags, []),
+            images: parsedImages,
+            host: safeParse(service.host, { name: "Marrakech Host", image: "/localexpert.jpg" }),
             description: service.description,
-            included: service.included,
+            included: safeParse(service.included, []),
             exclusions: (service as any).exclusions || [],
             meetingPoint: (service as any).meetingPoint || "",
             endingPoint: (service as any).endingPoint || "",
             cancellationPolicy: (service as any).cancellationPolicy || "",
             requirements: (service as any).requirements || [],
             ageRestrictions: (service as any).ageRestrictions || "",
-            whatToBring: service.whatToBring,
+            whatToBring: safeParse(service.whatToBring, []),
             experienceHighlights: (service as any).experienceHighlights || [],
             additionalInfo: (service as any).additionalInfo || "",
-            itinerary: (service.itinerary as unknown as { time: string; title: string; description: string }[]) || [],
+            itinerary: safeParse(service.itinerary, []),
             minGroupSize: (service as any).minGroupSize || 1,
             maxGroupSize: (service as any).maxGroupSize || 8,
             packages: staticActivity?.packages || [],
@@ -106,37 +116,40 @@ export default async function ActivityPage({ params }: PageProps) {
         take: 3
     });
 
-    const relatedActivities: Activity[] = relatedServices.map(service => ({
-        id: service.id,
-        title: service.title,
-        price: service.price,
-        rating: service.rating,
-        reviews: service.reviews,
-        category: service.category,
-        image: service.images[0] || "",
-        duration: service.duration,
-        features: service.features,
-        location: service.location,
-        tags: service.tags,
-        images: service.images,
-        host: (service.host as unknown as { name: string; image: string }) || { name: "Marrakech Host", image: "/localexpert.jpg" },
-        description: service.description,
-        included: service.included,
-        exclusions: (service as any).exclusions || [],
-        meetingPoint: (service as any).meetingPoint || "",
-        endingPoint: (service as any).endingPoint || "",
-        cancellationPolicy: (service as any).cancellationPolicy || "",
-        requirements: (service as any).requirements || [],
-        ageRestrictions: (service as any).ageRestrictions || "",
-        whatToBring: service.whatToBring,
-        experienceHighlights: (service as any).experienceHighlights || [],
-        additionalInfo: (service as any).additionalInfo || "",
-        itinerary: (service.itinerary as unknown as { time: string; title: string; description: string }[]) || [],
-        minGroupSize: (service as any).minGroupSize || 1,
-        maxGroupSize: (service as any).maxGroupSize || 8,
-        packages: [],
-        packageCategories: []
-    }));
+    const relatedActivities: Activity[] = relatedServices.map(service => {
+        const parsedImages = safeParse(service.images, []);
+        return {
+            id: service.id,
+            title: service.title,
+            price: service.price,
+            rating: service.rating,
+            reviews: service.reviews,
+            category: service.category,
+            image: parsedImages[0] || "",
+            duration: service.duration,
+            features: safeParse(service.features, []),
+            location: service.location,
+            tags: safeParse(service.tags, []),
+            images: parsedImages,
+            host: safeParse(service.host, { name: "Marrakech Host", image: "/localexpert.jpg" }),
+            description: service.description,
+            included: safeParse(service.included, []),
+            exclusions: (service as any).exclusions || [],
+            meetingPoint: (service as any).meetingPoint || "",
+            endingPoint: (service as any).endingPoint || "",
+            cancellationPolicy: (service as any).cancellationPolicy || "",
+            requirements: (service as any).requirements || [],
+            ageRestrictions: (service as any).ageRestrictions || "",
+            whatToBring: safeParse(service.whatToBring, []),
+            experienceHighlights: (service as any).experienceHighlights || [],
+            additionalInfo: (service as any).additionalInfo || "",
+            itinerary: safeParse(service.itinerary, []),
+            minGroupSize: (service as any).minGroupSize || 1,
+            maxGroupSize: (service as any).maxGroupSize || 8,
+            packages: [],
+            packageCategories: []
+        };
+    });
 
     return (
         <div className="min-h-screen bg-background pt-28 pb-20">

@@ -113,7 +113,7 @@ export default async function ActivityPage({ params }: PageProps) {
     }
 
     // Get related activities (fetch from DB)
-    let relatedServices;
+    let relatedServices: any[] = [];
     try {
         relatedServices = await prisma.service.findMany({
             where: {
@@ -127,7 +127,7 @@ export default async function ActivityPage({ params }: PageProps) {
         relatedServices = [];
     }
 
-    const relatedActivities: Activity[] = relatedServices.map(service => {
+    const relatedActivities: Activity[] = (relatedServices as any[]).map(service => {
         const parsedImages = safeParse(service.images, []);
         return {
             id: service.id,

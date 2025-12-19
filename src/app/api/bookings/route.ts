@@ -8,13 +8,39 @@ import { getSession } from '@/lib/auth';
 // Schema line 14: id String @id
 // It does NOT have @default(uuid()). So I must provide it.
 
-export async function POST(request: Request) {
+// GET: Fetch all bookings (Admin only)
+export async function GET(request: Request) {
     try {
         const session = await getSession();
         if (!session) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
+        // Only admins can fetch all bookings
+        if (session.role !== 'ADMIN') {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        const bookings = await prisma.booking.findMany({
+            include: {
+                user: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        return NextResponse.json(bookings);
+    } catch (error) {
+        console.error('Failed to fetch bookings:', error);
+        return NextResponse.json({ error: 'Failed to fetch bookings' }, { status: 500 });
+    }
+}
+
+export async function POST(request: Request) {
+    try {
+        const session = await getSession();
+        
         const body = await request.json();
         const {
             activityId,
@@ -24,7 +50,7 @@ export async function POST(request: Request) {
             totalPrice,
             pickupLocation,
             phone,
-            name, // Optional fallback if not in session?
+            name,
             email
         } = body;
 
@@ -37,12 +63,17 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid activity ID' }, { status: 400 });
         }
 
+        // Validate email is provided (required for all bookings)
+        if (!email) {
+            return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+        }
+
         const booking = await prisma.booking.create({
             data: {
                 id: crypto.randomUUID(), // Native node method
-                userId: session.id,
-                name: name || session.name || 'Unknown User',
-                email: email || session.email,
+                userId: session?.id || null, // Use session ID if available, otherwise null
+                name: name || session?.name || email.split('@')[0] || 'Valued Customer',
+                email: email || session?.email || '',
                 phone: phone || null,
                 activityId,
                 activityTitle,
@@ -54,7 +85,7 @@ export async function POST(request: Request) {
             }
         });
 
-        return NextResponse.json({ success: true, bookingId: booking.id });
+        return NextResponse.json({ success: true, booking: booking });
 
     } catch (error) {
         console.error('Booking creation error:', error);

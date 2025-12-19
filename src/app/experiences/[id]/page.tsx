@@ -31,9 +31,14 @@ const safeParse = (data: string | null | undefined, fallback: any) => {
 };
 
 async function getActivity(id: string): Promise<Activity | null> {
-    const service = await prisma.service.findUnique({
-        where: { id }
-    });
+    let service = null;
+    try {
+        service = await prisma.service.findUnique({
+            where: { id }
+        });
+    } catch (error) {
+        console.error("Database error in getActivity:", error);
+    }
 
     // Fallback to static data if not found in DB, or to get packages
     const staticActivity = activities.find(a => a.id === id || (service && a.title === service.title));
@@ -108,13 +113,19 @@ export default async function ActivityPage({ params }: PageProps) {
     }
 
     // Get related activities (fetch from DB)
-    const relatedServices = await prisma.service.findMany({
-        where: {
-            category: activity.category,
-            id: { not: activity.id }
-        },
-        take: 3
-    });
+    let relatedServices;
+    try {
+        relatedServices = await prisma.service.findMany({
+            where: {
+                category: activity.category,
+                id: { not: activity.id }
+            },
+            take: 3
+        });
+    } catch (error) {
+        console.error("Failed to fetch related services:", error);
+        relatedServices = [];
+    }
 
     const relatedActivities: Activity[] = relatedServices.map(service => {
         const parsedImages = safeParse(service.images, []);

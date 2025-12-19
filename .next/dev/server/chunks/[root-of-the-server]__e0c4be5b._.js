@@ -105,7 +105,7 @@ async function comparePassword(plain, hashed) {
 async function signJWT(payload) {
     return new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$jose$2f$dist$2f$webapi$2f$jwt$2f$sign$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["SignJWT"](payload).setProtectedHeader({
         alg: 'HS256'
-    }).setIssuedAt().setExpirationTime('24h').sign(JWT_SECRET);
+    }).setIssuedAt().setExpirationTime('1h').sign(JWT_SECRET);
 }
 async function verifyJWT(token) {
     try {
@@ -128,7 +128,7 @@ async function loginUser(payload) {
     cookieStore.set('auth_token', token, {
         httpOnly: true,
         secure: ("TURBOPACK compile-time value", "development") === 'production',
-        maxAge: 60 * 60 * 24,
+        maxAge: 60 * 60,
         path: '/'
     });
 }

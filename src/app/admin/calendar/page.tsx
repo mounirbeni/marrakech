@@ -17,7 +17,7 @@ const fetcher = async (url: string) => {
 
 export default function CalendarPage() {
     const [date, setDate] = useState<Date | undefined>(new Date())
-    const { data: bookings, isLoading } = useSWR<Booking[]>('/api/bookings', fetcher)
+    const { data: bookings, isLoading } = useSWR<Booking[]>('/api/admin/bookings', fetcher)
 
     // Get dates that have bookings
     const bookedDates = bookings?.map(b => new Date(b.date)) || []

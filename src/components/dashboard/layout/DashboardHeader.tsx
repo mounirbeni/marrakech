@@ -15,8 +15,27 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DashboardSidebar } from "./DashboardSidebar";
+import useSWR from 'swr';
+import { formatDistanceToNow } from 'date-fns';
+import { useRouter } from 'next/navigation';
+import { Notification } from '@/types/admin';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function DashboardHeader() {
+    const router = useRouter();
+    const { data: notifications } = useSWR<Notification[]>('/api/user/notifications', fetcher, {
+        refreshInterval: 30000
+    });
+
+    const unreadCount = notifications?.filter(n => !n.read).length || 0;
+
+    const handleNotificationClick = (notification: Notification) => {
+        if (notification.link) {
+            router.push(notification.link);
+        }
+    };
+
     return (
         <header className="h-16 border-b bg-card/50 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-50">
             <div className="flex items-center gap-4 lg:hidden">
@@ -49,26 +68,37 @@ export function DashboardHeader() {
                     <PopoverTrigger asChild>
                         <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
                             <Bell className="w-5 h-5" />
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full ring-2 ring-background animate-pulse" />
+                            {unreadCount > 0 && (
+                                <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full ring-2 ring-background animate-pulse" />
+                            )}
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-80 p-0" align="end">
                         <div className="p-4 border-b">
                             <h4 className="font-semibold leading-none">Notifications</h4>
                         </div>
-                        <div className="grid gap-1 p-1">
-                            {[
-                                { title: "Booking Confirmed", desc: "Your trip to Atlas Mountains is set!", time: "2m ago", unread: true },
-                                { title: "Welcome!", desc: "Thanks for joining Marrakech Escapes.", time: "1d ago", unread: false }
-                            ].map((item, i) => (
-                                <div key={i} className={`flex flex-col gap-1 p-3 rounded-lg hover:bg-muted/50 transition-colors ${item.unread ? 'bg-primary/5' : ''}`}>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">{item.title}</span>
-                                        <span className="text-xs text-muted-foreground">{item.time}</span>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground line-clamp-2">{item.desc}</p>
+                        <div className="max-h-[300px] overflow-y-auto">
+                            {notifications?.length === 0 ? (
+                                <div className="p-4 text-center text-sm text-muted-foreground">
+                                    No new notifications
                                 </div>
-                            ))}
+                            ) : (
+                                notifications?.map((item, i) => (
+                                    <div 
+                                        key={i} 
+                                        className={`flex flex-col gap-1 p-3 cursor-pointer hover:bg-muted/50 transition-colors ${!item.read ? 'bg-primary/5' : ''}`}
+                                        onClick={() => handleNotificationClick(item)}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm font-medium">{item.title}</span>
+                                            <span className="text-xs text-muted-foreground">
+                                                {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
+                                            </span>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground line-clamp-2">{item.message}</p>
+                                    </div>
+                                ))
+                            )}
                         </div>
                         <div className="p-2 border-t text-center">
                             <Button variant="ghost" size="sm" className="w-full text-xs h-auto py-1.5">Mark all as read</Button>

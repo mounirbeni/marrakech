@@ -180,6 +180,24 @@ async function GET() {
             },
             take: 5
         });
+        // Fetch unread messages from users
+        const unreadMessages = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].message.findMany({
+            where: {
+                sender: 'USER',
+                read: false
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            take: 5,
+            include: {
+                user: {
+                    select: {
+                        name: true
+                    }
+                }
+            }
+        });
         const notifications = [
             ...recentBookings.map((b)=>({
                     id: `booking-${b.id}`,
@@ -198,6 +216,15 @@ async function GET() {
                     read: false,
                     createdAt: c.createdAt,
                     link: '/admin/complaints'
+                })),
+            ...unreadMessages.map((m)=>({
+                    id: `message-${m.id}`,
+                    type: 'MESSAGE',
+                    title: 'New Message',
+                    message: `From ${m.user?.name || 'User'}: ${m.content}`,
+                    read: false,
+                    createdAt: m.createdAt,
+                    link: '/admin/messages'
                 }))
         ].sort((a, b)=>new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json(notifications);

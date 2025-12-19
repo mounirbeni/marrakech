@@ -1,41 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import {
-    CalendarIcon,
-    MessageCircle,
-    Clock,
-    User,
-    Mail,
-    Phone,
-    Euro,
-    Star,
-    Award,
-    Heart,
-    MapPin,
-    Plane,
-    Languages,
-    Utensils,
-    FileText,
-    Check,
-    ArrowRight,
-    CheckCircle,
-    LogIn,
-    UserPlus
-} from "lucide-react";
+import { CalendarIcon, MessageCircle, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
 import {
     Popover,
     PopoverContent,
@@ -45,10 +16,6 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Activity } from "@/lib/types";
 
 interface BookingFormProps {
@@ -56,50 +23,13 @@ interface BookingFormProps {
 }
 
 export function BookingForm({ activity }: BookingFormProps) {
-    // Core Booking State
     const [date, setDate] = useState<Date>();
     const [guests, setGuests] = useState(2);
-    const [selectedTime, setSelectedTime] = useState<string>("");
-
-    // Contact Information
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
 
-    // Logistics & Preferences
-    const [pickupLocation, setPickupLocation] = useState("");
-    const [flightNumber, setFlightNumber] = useState("");
-    const [language, setLanguage] = useState("English");
-    const [dietary, setDietary] = useState("");
-    const [specialRequests, setSpecialRequests] = useState("");
-
-    // UI State
-    const [isLoading, setIsLoading] = useState(false);
-
-    // Auth State
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [authLoading, setAuthLoading] = useState(true);
-
-    useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                const res = await fetch('/api/auth/status');
-                const data = await res.json();
-                setIsAuthenticated(data.authenticated);
-            } catch (error) {
-                console.error("Auth check failed", error);
-            } finally {
-                setAuthLoading(false);
-            }
-        };
-        checkAuth();
-    }, []);
-
-    // Activity Category Logic
-    const isTransfer = activity.category === 'Transfers';
-    const hasFood = ['City Trips & Excursions', 'Workshops', 'Entertainment'].includes(activity.category) || activity.tags?.includes('Food & Drink');
-
-    // Helper: Package Logic
+    // Helper to get  first package name from either structure
     const getFirstPackageName = () => {
         if (activity.packageCategories && activity.packageCategories.length > 0) {
             return activity.packageCategories[0]?.packages[0]?.name;
@@ -107,448 +37,320 @@ export function BookingForm({ activity }: BookingFormProps) {
         return activity.packages?.[0]?.name;
     };
 
+    // Helper to find package by name from either structure
     const findPackage = (packageName: string | undefined) => {
         if (!packageName) return undefined;
+
         if (activity.packageCategories) {
             for (const category of activity.packageCategories) {
                 const pkg = category.packages.find(p => p.name === packageName);
                 if (pkg) return pkg;
             }
         }
+
         return activity.packages?.find(p => p.name === packageName);
     };
 
+    // New state for packages and time
     const [selectedPackageName, setSelectedPackageName] = useState<string | undefined>(
         getFirstPackageName()
     );
+    const [selectedTime, setSelectedTime] = useState<string>("");
 
-    // Reset state on activity change
+    // Update selected package if activity changes
+    // Track the current activity ID to detect changes
     const [prevActivityId, setPrevActivityId] = useState(activity.id);
+
+    // Reset state if activity changes (pattern: state derived from props)
     if (activity.id !== prevActivityId) {
         setPrevActivityId(activity.id);
         setSelectedPackageName(getFirstPackageName());
-        setDate(undefined);
-        setSelectedTime("");
+        // Also reset other state if needed, but for now just package
     }
 
     const selectedPackage = findPackage(selectedPackageName);
     const pricePerPerson = selectedPackage ? selectedPackage.price : activity.price;
     const totalPrice = pricePerPerson * guests;
 
-
-    // Time Slots (Default 09:00 - 18:00 if not specified)
-    // In a real app, this would come from availability API
-    const timeSlots = Array.from({ length: 14 }, (_, i) => {
-        const hour = i + 8; // 8 AM to 9 PM
+    // Generate time slots (09:00 to 18:00)
+    const timeSlots = Array.from({ length: 10 }, (_, i) => {
+        const hour = i + 9;
         return `${hour.toString().padStart(2, '0')}:00`;
     });
 
-    const [showAuthModal, setShowAuthModal] = useState(false);
-
-    const handleSubmit = async () => {
-        // Auth Guard
-        if (!isAuthenticated) {
-            setShowAuthModal(true);
-            return;
-        }
-
-        if (!date) {
-            toast.error("Please select a preferred date");
-            return;
-        }
-        if (!selectedTime && !isTransfer) { // Transfers might be 24/7, handled by flight time usually, but let's require 'Preferred Time' roughly
-            toast.error("Please select a preferred time");
-            return;
-        }
-        if (!name || !email || !phone) {
-            toast.error("Please fill in all contact details");
-            return;
-        }
-        if (isTransfer && !pickupLocation) {
-            toast.error("Please provide flight details or pickup address");
-            return;
-        }
-
-        setIsLoading(true);
-
-        try {
-            // Real API call
-            const bookingData = {
-                activityId: activity.id,
-                activityTitle: activity.title,
-                date: date.toISOString(),
-                guests,
-                totalPrice,
-                package: selectedPackageName,
-                contact: { name, email, phone },
-                logistics: { pickupLocation, flightNumber },
-                preferences: { language, dietary, specialRequests }
-            };
-
-            const response = await fetch('/api/bookings', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(bookingData),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                console.error("Server API Error:", errorData);
-                throw new Error(errorData.details || errorData.error || 'Booking submission failed');
-            }
-
-            const result = await response.json();
-            console.log("Booking Success:", result);
-
-            toast.success("Booking Request Sent!", {
-                description: "Our concierge will contact you shortly to confirm details.",
-                duration: 5000,
-            });
-
-            // Reset optional fields
-            setName("");
-            setEmail("");
-            setPhone("");
-            setSpecialRequests("");
-            setDietary("");
-            setFlightNumber("");
-
-        } catch (err: any) {
-            console.error("Submission Error:", err);
-            toast.error(err.message || "Something went wrong. Please try again.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     return (
-        <>
-            <Card className="border-border/50 shadow-xl sticky top-24 bg-card ring-1 ring-white/10">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-amber-400 to-primary opacity-80" />
-
-                <CardHeader className="pb-6 pt-8 bg-gradient-to-b from-secondary/30 to-transparent">
-                    <div className="text-center space-y-1">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Reserve Your Spot</p>
-                        <div className="flex items-baseline justify-center gap-1">
-                            <span className="text-sm text-muted-foreground align-top mt-2">from €</span>
-                            <span className="text-5xl font-bold text-foreground tracking-tight font-serif">
-                                {pricePerPerson}
-                            </span>
-                            <span className="text-muted-foreground text-sm font-medium">/ person</span>
+        <Card className="border-border shadow-xl sticky top-28">
+            <CardHeader className="pb-4">
+                {activity.rating >= 4.8 && (
+                    <div className="mb-4 flex justify-center">
+                        <div className="inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-600 dark:bg-red-900/30 dark:text-red-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+                                <path fillRule="evenodd" d="M13.5 4.938a7 7 0 11-9.006 1.737c.202-.257.59-.218.793.039.278.352.594.672.943.954.332.269.786-.049.773-.476a5.977 5.977 0 01.572-2.759 6.026 6.026 0 012.486-2.665c.247-.14.55-.016.677.216.093.174.204.338.341.48.214.22.583.19.758-.058a9.8 9.8 0 00.663-.468zM10.5 15.25a5.25 5.25 0 00-3.099-9.628 5.8 5.8 0 01-1.96 3.283.75.75 0 01-1.192-.555 6.75 6.75 0 009.283 5.83.75.75 0 01.932.932c-.5.94-1.193 1.777-2.016 2.442a5.25 5.25 0 00-1.948-2.304z" clipRule="evenodd" />
+                            </svg>
+                            Likely to Sell Out
                         </div>
-
-                        {guests > 1 && (
-                            <div className="pt-2 text-sm text-muted-foreground/80">
-                                Total Estimate: <span className="text-foreground font-semibold">€{totalPrice}</span>
-                            </div>
-                        )}
                     </div>
-                </CardHeader>
-
-                <div className="max-h-[60vh] overflow-y-auto custom-scrollbar px-6 pb-6 space-y-8">
-                    {/* 1. Review Package */}
-                    {((activity.packageCategories && activity.packageCategories.length > 0) ||
-                        (activity.packages && activity.packages.length > 0)) && (
-                            <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <Label className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-2">
-                                    <Award className="w-3 h-3" /> Select Package
-                                </Label>
-                                <RadioGroup
-                                    value={selectedPackageName}
-                                    onValueChange={setSelectedPackageName}
-                                    className="flex flex-col gap-3"
-                                >
-                                    {activity.packageCategories ? (
-                                        activity.packageCategories.map(cat => (
-                                            <div key={cat.name} className="space-y-2">
-                                                <p className="text-xs font-semibold text-primary/80 pl-1">{cat.name}</p>
-                                                {cat.packages.map(pkg => (
-                                                    <div key={pkg.name} className={`
-                                                relative flex items-start space-x-3 rounded-xl border p-4 transition-all cursor-pointer hover:bg-secondary/40
-                                                ${selectedPackageName === pkg.name ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-border bg-card'}
-                                            `}>
-                                                        <RadioGroupItem value={pkg.name} id={pkg.name} className="mt-1" />
-                                                        <div className="grid gap-1.5 w-full">
-                                                            <div className="flex justify-between items-start">
-                                                                <Label htmlFor={pkg.name} className="font-semibold cursor-pointer">{pkg.name}</Label>
-                                                                <span className="font-bold text-primary">€{pkg.price}</span>
-                                                            </div>
-                                                            <p className="text-xs text-muted-foreground leading-relaxed">{pkg.description}</p>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ))
-                                    ) : (
-                                        activity.packages?.map(pkg => (
-                                            <div key={pkg.name} className={`
-                                        relative flex items-start space-x-3 rounded-xl border p-4 transition-all cursor-pointer hover:bg-secondary/40
-                                        ${selectedPackageName === pkg.name ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-border bg-card'}
-                                    `}>
+                )}
+                <div className="text-center space-y-3">
+                    <div>
+                        <p className="text-sm text-muted-foreground mb-1">Price per person</p>
+                        <div className="text-lg font-semibold text-foreground">
+                            {pricePerPerson} €
+                        </div>
+                    </div>
+                    <div className="pt-2 border-t border-border/50">
+                        <p className="text-sm text-muted-foreground mb-1">Total Price</p>
+                        <div className="flex items-baseline justify-center gap-1">
+                            <span className="text-3xl font-bold text-primary">{totalPrice} €</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            for {guests} {guests === 1 ? 'person' : 'people'}
+                        </p>
+                    </div>
+                </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                {/* Package Selection */}
+                {((activity.packageCategories && activity.packageCategories.length > 0) || (activity.packages && activity.packages.length > 0)) && (
+                    <div className="space-y-3">
+                        <Label>Select Package</Label>
+                        <RadioGroup
+                            value={selectedPackageName}
+                            onValueChange={setSelectedPackageName}
+                            className="flex flex-col gap-3"
+                        >
+                            {activity.packageCategories && activity.packageCategories.length > 0 ? (
+                                // Categorized packages
+                                activity.packageCategories.map((category) => (
+                                    <div key={category.name} className="space-y-2">
+                                        <div className="pt-2 first:pt-0">
+                                            <h4 className="font-semibold text-sm text-foreground">{category.name}</h4>
+                                            {category.description && (
+                                                <p className="text-xs text-muted-foreground">{category.description}</p>
+                                            )}
+                                        </div>
+                                        {category.packages.map((pkg) => (
+                                            <div key={pkg.name} className="flex items-start space-x-2 border border-border rounded-lg p-3 hover:bg-accent/5 transition-colors">
                                                 <RadioGroupItem value={pkg.name} id={pkg.name} className="mt-1" />
-                                                <div className="grid gap-1.5 w-full">
-                                                    <div className="flex justify-between items-start">
-                                                        <Label htmlFor={pkg.name} className="font-semibold cursor-pointer">{pkg.name}</Label>
-                                                        <span className="font-bold text-primary">€{pkg.price}</span>
-                                                    </div>
-                                                    <p className="text-xs text-muted-foreground leading-relaxed">{pkg.description}</p>
+                                                <div className="grid gap-1.5 leading-none w-full">
+                                                    <Label htmlFor={pkg.name} className="font-semibold cursor-pointer">
+                                                        {pkg.name}
+                                                    </Label>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {pkg.description}
+                                                    </p>
+                                                    <p className="text-sm font-medium text-primary">
+                                                        {pkg.price} €
+                                                    </p>
                                                 </div>
                                             </div>
-                                        ))
-                                    )}
-                                </RadioGroup>
-                            </div>
-                        )}
-
-                    <Separator className="bg-border/50" />
-
-                    {/* 2. Date & Time */}
-                    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
-                        <Label className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-2">
-                            <Clock className="w-3 h-3" /> Date & Time
-                        </Label>
-
-                        <div className="grid gap-4">
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant={"outline"}
-                                        className={cn(
-                                            "w-full justify-start text-left font-normal h-12 border-input/60 bg-background/80 hover:bg-background transition-colors",
-                                            !date && "text-muted-foreground"
-                                        )}
-                                    >
-                                        <CalendarIcon className="mr-3 h-4 w-4 text-primary" />
-                                        {date ? format(date, "EEE, MMMM do, yyyy") : <span>Select preferred date</span>}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        mode="single"
-                                        selected={date}
-                                        onSelect={setDate}
-                                        disabled={(d) => d < new Date()}
-                                        initialFocus
-                                        className="p-3 pointer-events-auto"
-                                    />
-                                </PopoverContent>
-                            </Popover>
-
-                            {!isTransfer && (
-                                <Select value={selectedTime} onValueChange={setSelectedTime}>
-                                    <SelectTrigger className="h-12 border-input/60 bg-background/80 hover:bg-background transition-colors">
-                                        <SelectValue placeholder="Select start time" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {timeSlots.map(time => (
-                                            <SelectItem key={time} value={time}>{time}</SelectItem>
                                         ))}
-                                    </SelectContent>
-                                </Select>
-                            )}
-                        </div>
+                                    </div>
+                                ))
+                            ) : activity.packages && activity.packages.length > 0 ? (
+                                // Legacy flat packages
+                                activity.packages.map((pkg) => (
+                                    <div key={pkg.name} className="flex items-start space-x-2 border border-border rounded-lg p-3 hover:bg-accent/5 transition-colors">
+                                        <RadioGroupItem value={pkg.name} id={pkg.name} className="mt-1" />
+                                        <div className="grid gap-1.5 leading-none w-full">
+                                            <Label htmlFor={pkg.name} className="font-semibold cursor-pointer">
+                                                {pkg.name}
+                                            </Label>
+                                            <p className="text-sm text-muted-foreground">
+                                                {pkg.description}
+                                            </p>
+                                            <p className="text-sm font-medium text-primary">
+                                                {pkg.price} €
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : null}
+                        </RadioGroup>
                     </div>
+                )}
 
-                    {/* 3. Guests */}
-                    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
-                        <Label className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-2">
-                            <User className="w-3 h-3" /> Guests
-                        </Label>
-                        <div className="flex items-center justify-between rounded-xl border border-input/60 bg-background/80 p-3 shadow-sm">
-                            <span className="text-sm font-medium pl-2">Number of people</span>
-                            <div className="flex items-center gap-3">
-                                <Button
-                                    type="button" variant="outline" size="icon" className="h-8 w-8 rounded-full border-input/60 hover:bg-secondary"
-                                    onClick={() => setGuests(Math.max(1, guests - 1))}
-                                    disabled={guests <= 1}
-                                >
-                                    -
-                                </Button>
-                                <span className="w-4 text-center font-bold text-lg">{guests}</span>
-                                <Button
-                                    type="button" variant="outline" size="icon" className="h-8 w-8 rounded-full border-input/60 hover:bg-secondary"
-                                    onClick={() => setGuests(Math.min(activity.maxGroupSize || 20, guests + 1))}
-                                >
-                                    +
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <Separator className="bg-border/50" />
-
-                    {/* 4. Contact & Logistics */}
-                    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
-                        <Label className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-2">
-                            <FileText className="w-3 h-3" /> Your Details
-                        </Label>
-
-                        <div className="grid gap-3">
-                            <div className="relative">
-                                <User className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground z-10" />
-                                <Input className="pl-10 h-12 bg-background/80 border-input/60 focus:bg-background transition-colors text-base" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} />
-                            </div>
-                            <div className="relative">
-                                <Mail className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground z-10" />
-                                <Input className="pl-10 h-12 bg-background/80 border-input/60 focus:bg-background transition-colors text-base" type="email" placeholder="Email Address" value={email} onChange={e => setEmail(e.target.value)} />
-                            </div>
-                            <div className="relative">
-                                <Phone className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground z-10" />
-                                <Input className="pl-10 h-12 bg-background/80 border-input/60 focus:bg-background transition-colors text-base" type="tel" placeholder="WhatsApp Number (e.g. +44...)" value={phone} onChange={e => setPhone(e.target.value)} />
-                            </div>
-
-                            {/* Logistics */}
-                            <div className="relative">
-                                <MapPin className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground z-10" />
-                                <Input
-                                    className="pl-10 h-12 bg-background/80 border-input/60 focus:bg-background transition-colors text-base"
-                                    placeholder={isTransfer ? "Pick-up Address / Hotel" : "Pick-up Hotel / Riad"}
-                                    value={pickupLocation}
-                                    onChange={e => setPickupLocation(e.target.value)}
-                                />
-                            </div>
-
-                            {isTransfer && (
-                                <div className="relative">
-                                    <Plane className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground z-10" />
-                                    <Input
-                                        className="pl-10 h-11 bg-background/80 border-input/60 focus:bg-background transition-colors"
-                                        placeholder="Flight Number (if airport pickup)"
-                                        value={flightNumber}
-                                        onChange={e => setFlightNumber(e.target.value)}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* 5. Preferences */}
-                    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
-                        <Label className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-2">
-                            <Check className="w-3 h-3" /> Preferences
-                        </Label>
-
-                        <div className="grid gap-3">
-                            <div className="relative">
-                                <Languages className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
-                                <Select value={language} onValueChange={setLanguage}>
-                                    <SelectTrigger className="pl-10 h-11 bg-background/80 border-input/60 focus:bg-background transition-colors">
-                                        <SelectValue placeholder="Preferred Language" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="English">English</SelectItem>
-                                        <SelectItem value="French">French</SelectItem>
-                                        <SelectItem value="Spanish">Spanish</SelectItem>
-                                        <SelectItem value="Arabic">Arabic</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {hasFood && (
-                                <div className="relative">
-                                    <Utensils className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground z-10" />
-                                    <Input
-                                        className="pl-10 h-11 bg-background/80 border-input/60 focus:bg-background transition-colors"
-                                        placeholder="Dietary Requirements (e.g. Vegetarian)"
-                                        value={dietary}
-                                        onChange={e => setDietary(e.target.value)}
-                                    />
-                                </div>
-                            )}
-
-                            <Textarea
-                                className="min-h-[80px] bg-background/80 border-input/60 focus:bg-background resize-none text-sm transition-colors"
-                                placeholder="Any special requests or celebrations? (Birthday, Anniversary...)"
-                                value={specialRequests}
-                                onChange={(e) => setSpecialRequests(e.target.value)}
+                <div className="space-y-2">
+                    <Label>Select Date</Label>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant={"outline"}
+                                className={cn(
+                                    "w-full justify-start text-left font-normal h-auto min-h-[48px] px-4",
+                                    !date && "text-muted-foreground"
+                                )}
+                            >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {date ? format(date, "PPP") : <span>Pick a date</span>}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                                mode="single"
+                                selected={date}
+                                onSelect={setDate}
+                                initialFocus
+                                disabled={(date) => date < new Date()}
                             />
-                        </div>
+                        </PopoverContent>
+                    </Popover>
+                </div>
+
+                {/* Time Selection */}
+                <div className="space-y-2">
+                    <Label>Select Time</Label>
+                    <div className="relative">
+                        <select
+                            className="flex h-auto min-h-[48px] w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none"
+                            value={selectedTime}
+                            onChange={(e) => setSelectedTime(e.target.value)}
+                        >
+                            <option value="" disabled>Select a time</option>
+                            {timeSlots.map((time) => (
+                                <option key={time} value={time}>
+                                    {time}
+                                </option>
+                            ))}
+                        </select>
+                        <Clock className="absolute right-3 top-3 h-4 w-4 text-muted-foreground pointer-events-none" />
                     </div>
                 </div>
 
-                <CardFooter className="flex flex-col gap-4 py-6 bg-gradient-to-t from-background to-transparent border-t border-border/40">
-                    <Button
-                        className="w-full h-14 text-base font-bold tracking-wide rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-[0.98] bg-gradient-to-r from-primary to-amber-600 hover:to-amber-500 text-white"
-                        size="lg"
-                        onClick={handleSubmit}
-                        disabled={isLoading || authLoading}
-                    >
-                        {isLoading ? (
-                            "Processing Request..."
-                        ) : authLoading ? (
-                            "Checking availability..."
-                        ) : (
-                            <span className="flex items-center gap-2">
-                                Request Availability <ArrowRight className="w-5 h-5" />
-                            </span>
-                        )}
-                    </Button>
-
-                    <div className="space-y-3 w-full">
-                        <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground px-1">
-                            <span className="flex items-center gap-1.5">
-                                <CheckCircle className="w-3.5 h-3.5 text-primary" /> Free Cancellation
-                            </span>
-                            <span className="flex items-center gap-1.5">
-                                <Check className="w-3.5 h-3.5 text-primary" /> No Payment Required
-                            </span>
-                        </div>
-
-                        <div className="bg-secondary/30 rounded-lg p-3 text-center border border-primary/10 space-y-2">
-                            <p className="text-xs text-muted-foreground text-center">
-                                <span className="font-semibold text-foreground">Concierge Promise:</span> You&apos;ll receive a personalized confirmation within 2 hours.
-                            </p>
-                            <p className="text-[10px] text-muted-foreground/80 border-t border-primary/5 pt-2">
-                                Every experience is verified for quality and safety standards.
-                            </p>
-                        </div>
-                    </div>
-                </CardFooter>
-            </Card>
-
-            <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
-                <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                        <DialogTitle className="text-center text-xl font-bold text-primary">Join us to Reserve</DialogTitle>
-                        <DialogDescription className="text-center pt-2">
-                            Please log in or create an account to book your experience. This allows you to manage your bookings and get real-time updates.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
+                <div className="space-y-2">
+                    <Label>Number of Guests</Label>
+                    <div className="flex items-center gap-2">
                         <Button
-                            className="w-full text-base font-semibold"
-                            size="lg"
-                            onClick={() => {
-                                const returnUrl = encodeURIComponent(window.location.href);
-                                window.location.href = `/login?from=${returnUrl}`;
-                            }}
-                        >
-                            <LogIn className="w-4 h-4 mr-2" /> Log In
-                        </Button>
-                        <div className="relative">
-                            <div className="absolute inset-0 flex items-center">
-                                <span className="w-full border-t" />
-                            </div>
-                            <div className="relative flex justify-center text-xs uppercase">
-                                <span className="bg-background px-2 text-muted-foreground">Or</span>
-                            </div>
-                        </div>
-                        <Button
+                            type="button"
                             variant="outline"
-                            className="w-full text-base font-semibold"
-                            size="lg"
-                            onClick={() => {
-                                const returnUrl = encodeURIComponent(window.location.href);
-                                window.location.href = `/register?from=${returnUrl}`;
-                            }}
+                            size="icon"
+                            onClick={() => setGuests(Math.max(1, guests - 1))}
+                            disabled={guests <= 1}
+                            className="h-12 w-12 sm:h-10 sm:w-10"
                         >
-                            <UserPlus className="w-4 h-4 mr-2" /> Create Account
+                            -
+                        </Button>
+                        <Input
+                            type="number"
+                            min={1}
+                            max={20}
+                            value={guests}
+                            onChange={(e) => {
+                                const val = parseInt(e.target.value) || 1;
+                                setGuests(Math.max(1, Math.min(20, val)));
+                            }}
+                            className="text-center h-12 sm:h-10 text-base"
+                        />
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => setGuests(Math.min(20, guests + 1))}
+                            disabled={guests >= 20}
+                            className="h-12 w-12 sm:h-10 sm:w-10"
+                        >
+                            +
                         </Button>
                     </div>
-                </DialogContent>
-            </Dialog>
-        </>
+                    <p className="text-xs text-muted-foreground">Maximum 20 guests</p>
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Full Name</Label>
+                    <Input placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)} className="h-12 sm:h-10" />
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Email</Label>
+                    <Input type="email" placeholder="john@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-12 sm:h-10" />
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Phone / WhatsApp</Label>
+                    <Input placeholder="+212 601 439 975" value={phone} onChange={(e) => setPhone(e.target.value)} className="h-12 sm:h-10" />
+                </div>
+
+                <div className="pt-2">
+                    <p className="text-xs text-center text-muted-foreground mb-3">
+                        No payment required today
+                    </p>
+                    <Button
+                        className="w-full text-base sm:text-lg font-semibold py-6 sm:py-5 h-auto min-h-[52px] rounded-full shadow-lg hover:shadow-xl transition-all"
+                        onClick={() => {
+                            if (!date) {
+                                alert("Please select a date");
+                                return;
+                            }
+                            if (!selectedTime) {
+                                alert("Please select a time");
+                                return;
+                            }
+                            if (!name || !email) {
+                                alert("Please fill in your name and email");
+                                return;
+                            }
+
+                            // Submit to API
+                            const bookingData = {
+                                name,
+                                email,
+                                phone,
+                                activityId: activity.id,
+                                activityTitle: activity.title,
+                                date: date,
+                                guests,
+                                totalPrice
+                            };
+
+                            const promise = fetch('/api/bookings', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(bookingData),
+                            }).then(async (response) => {
+                                const data = await response.json();
+                                if (!response.ok) throw new Error(data.error || 'Failed to book');
+                                return data;
+                            });
+
+                            toast.promise(promise, {
+                                loading: 'Processing your booking...',
+                                success: (data) => {
+                                    // Reset form
+                                    setName("");
+                                    setEmail("");
+                                    setPhone("");
+                                    return `Booking confirmed! ID: ${data.booking.id}`;
+                                },
+                                error: (err) => `Error: ${err.message}`,
+                            });
+                        }}
+                    >
+                        Check Availability
+                    </Button>
+                </div>
+            </CardContent>
+            <CardFooter className="flex flex-col gap-4 pt-0">
+                <div className="relative w-full">
+                    <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-card px-2 text-muted-foreground">Or</span>
+                    </div>
+                </div>
+                <Button
+                    variant="outline"
+                    className="w-full gap-2 rounded-full border-primary/20 hover:bg-primary/5 hover:text-primary"
+                    onClick={() => {
+                        const phoneNumber = "212601439975"; // Morocco format: +212 601 439 975
+                        const message = encodeURIComponent(`Hi! I'm interested in booking "${activity.title}" for ${guests} people. Can you provide more information?`);
+                        window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+                    }}
+                >
+                    <MessageCircle className="h-4 w-4" />
+                    Ask a Question via WhatsApp
+                </Button>
+            </CardFooter>
+        </Card>
     );
 }

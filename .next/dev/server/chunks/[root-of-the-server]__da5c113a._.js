@@ -57,6 +57,9 @@ __turbopack_context__.s([
 var __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/@prisma/client [external] (@prisma/client, cjs)");
 ;
 const prismaClientSingleton = ()=>{
+    if (!process.env.DATABASE_URL) {
+        throw new Error('Environment variable not found: DATABASE_URL');
+    }
     return new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
 };
 const prisma = globalThis.prisma ?? prismaClientSingleton();
@@ -105,7 +108,7 @@ async function comparePassword(plain, hashed) {
 async function signJWT(payload) {
     return new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$jose$2f$dist$2f$webapi$2f$jwt$2f$sign$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["SignJWT"](payload).setProtectedHeader({
         alg: 'HS256'
-    }).setIssuedAt().setExpirationTime('24h').sign(JWT_SECRET);
+    }).setIssuedAt().setExpirationTime('1h').sign(JWT_SECRET);
 }
 async function verifyJWT(token) {
     try {
@@ -128,7 +131,7 @@ async function loginUser(payload) {
     cookieStore.set('auth_token', token, {
         httpOnly: true,
         secure: ("TURBOPACK compile-time value", "development") === 'production',
-        maxAge: 60 * 60 * 24,
+        maxAge: 60 * 60,
         path: '/'
     });
 }
@@ -180,7 +183,7 @@ async function POST(request) {
                 email,
                 password: hashedPassword,
                 name: name || email.split('@')[0],
-                role: 'CLIENT'
+                role: 'USER'
             }
         });
         // Link existing bookings to this new user (History matching)
@@ -199,6 +202,20 @@ async function POST(request) {
             role: user.role,
             name: user.name
         });
+        // Create Notification
+        try {
+            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].notification.create({
+                data: {
+                    type: 'USER',
+                    title: 'New User Registered',
+                    message: `${user.name} (${user.email}) just signed up`,
+                    link: '/admin/customers',
+                    read: false
+                }
+            });
+        } catch (error) {
+            console.error('Failed to create notification for new user', error);
+        }
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             user: {
                 id: user.id,

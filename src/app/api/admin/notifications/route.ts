@@ -30,6 +30,21 @@ export async function GET() {
             take: 5
         })
 
+        // Fetch unread messages from users
+        const unreadMessages = await (prisma as any).message.findMany({
+            where: {
+                sender: 'USER',
+                read: false
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 5,
+            include: {
+                user: {
+                    select: { name: true }
+                }
+            }
+        })
+
         const notifications = [
             ...recentBookings.map((b) => ({
                 id: `booking-${b.id}`,
@@ -48,6 +63,15 @@ export async function GET() {
                 read: false,
                 createdAt: c.createdAt,
                 link: '/admin/complaints'
+            })),
+            ...unreadMessages.map((m: any) => ({
+                id: `message-${m.id}`,
+                type: 'MESSAGE',
+                title: 'New Message',
+                message: `From ${m.user?.name || 'User'}: ${m.content}`,
+                read: false,
+                createdAt: m.createdAt,
+                link: '/admin/messages'
             }))
         ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 

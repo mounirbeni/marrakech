@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/mouni/Desktop/marrakech/src/app/wishlist/layout.tsx"],"sourcesContent":["import { Metadata } from \"next\";\r\n\r\nexport const metadata: Metadata = {\r\n    title: \"My Wishlist\",\r\n    description: \"View your saved Marrakech experiences. Keep track of your favorite activities, tours, and adventures for easy planning.\",\r\n    openGraph: {\r\n        title: \"Wishlist | Explore Marrakech\",\r\n        description: \"Your favorite Marrakech experiences saved for later. Easy planning for your perfect trip.\",\r\n        url: \"https://marrakech-luxe.vercel.app/wishlist\",\r\n    },\r\n};\r\n\r\nexport default function WishlistLayout({\r\n    children,\r\n}: {\r\n    children: React.ReactNode;\r\n}) {\r\n    return children;\r\n}\r\n"],"names":[],"mappings":";;;;;;AAEO,MAAM,WAAqB;IAC9B,OAAO;IACP,aAAa;IACb,WAAW;QACP,OAAO;QACP,aAAa;QACb,KAAK;IACT;AACJ;AAEe,SAAS,eAAe,EACnC,QAAQ,EAGX;IACG,OAAO;AACX"}}]
-}

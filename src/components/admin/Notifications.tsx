@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import useSWR from 'swr'
-import { Bell } from 'lucide-react'
+import { Bell, CheckCheck } from 'lucide-react'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge'
 import { Notification } from '@/types/admin'
 import { formatDistanceToNow } from 'date-fns'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 const fetcher = async (url: string) => {
     const res = await fetch(url)
@@ -38,6 +39,23 @@ export function Notifications() {
         }
     }
 
+    const handleMarkAllAsRead = async () => {
+        try {
+            const res = await fetch('/api/admin/notifications', {
+                method: 'PATCH',
+            })
+
+            if (!res.ok) throw new Error('Failed to mark all as read')
+
+            // Refresh notifications
+            mutate()
+            toast.success('All notifications marked as read')
+        } catch (error) {
+            toast.error('Failed to mark all notifications as read')
+            console.error('[MARK_ALL_AS_READ]', error)
+        }
+    }
+
     return (
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
             <DropdownMenuTrigger asChild>
@@ -54,7 +72,23 @@ export function Notifications() {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-80">
-                <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                <div className="flex items-center justify-between px-2 py-1.5">
+                    <DropdownMenuLabel className="py-0">Notifications</DropdownMenuLabel>
+                    {unreadCount > 0 && (
+                        <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 px-2 text-xs"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                handleMarkAllAsRead()
+                            }}
+                        >
+                            <CheckCheck className="h-3 w-3 mr-1" />
+                            Mark all as read
+                        </Button>
+                    )}
+                </div>
                 <DropdownMenuSeparator />
                 <div className="max-h-[300px] overflow-y-auto">
                     {notifications?.length === 0 ? (

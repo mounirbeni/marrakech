@@ -187,16 +187,16 @@ export default function BookingsPage() {
     // ... (existing code, ensure to integrate this)
 
     return (
-        <div className="flex-1 space-y-4 p-8 pt-6">
+        <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
             {/* Same header... */}
-            <div className="flex items-center justify-between space-y-2">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Bookings</h2>
-                    <p className="text-muted-foreground">
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Bookings</h2>
+                    <p className="text-muted-foreground text-sm md:text-base">
                         Manage your bookings and reservations here.
                     </p>
                 </div>
-                <Button onClick={handleExport} variant="outline" className="gap-2">
+                <Button onClick={handleExport} variant="outline" className="gap-2 w-full md:w-auto">
                     <Download className="h-4 w-4" />
                     Export CSV
                 </Button>
@@ -213,42 +213,43 @@ export default function BookingsPage() {
                 <CardContent>
                     {/* Filters ... */}
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-                        <div className="flex items-center gap-2 flex-1 w-full md:max-w-sm">
+                        <div className="flex items-center gap-2 flex-1 w-full">
                             <div className="relative flex-1">
                                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     placeholder="Search bookings..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-8"
+                                    className="pl-8 text-sm"
                                 />
                             </div>
                         </div>
-                        <div className="flex flex-col md:flex-row items-center gap-2 w-full md:w-auto">
-                            <div className="flex items-center bg-muted p-1 rounded-lg border mr-2">
+                        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                            <div className="flex items-center bg-muted p-1 rounded-lg border">
                                 <Button
                                     variant={viewMode === 'LIST' ? 'secondary' : 'ghost'}
                                     size="sm"
                                     onClick={() => setViewMode('LIST')}
-                                    className="h-7 px-3"
+                                    className="h-8 px-3 text-xs md:text-sm"
                                 >
-                                    <LayoutList className="h-4 w-4 mr-2" /> List
+                                    <LayoutList className="h-4 w-4 mr-1 md:mr-2" /> List
                                 </Button>
                                 <Button
                                     variant={viewMode === 'BOARD' ? 'secondary' : 'ghost'}
                                     size="sm"
                                     onClick={() => setViewMode('BOARD')}
-                                    className="h-7 px-3"
+                                    className="h-8 px-3 text-xs md:text-sm"
                                 >
-                                    <LayoutGrid className="h-4 w-4 mr-2" /> Board
+                                    <LayoutGrid className="h-4 w-4 mr-1 md:mr-2" /> Board
                                 </Button>
                             </div>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
                                         variant={"outline"}
+                                        size="sm"
                                         className={cn(
-                                            "w-full md:w-[240px] justify-start text-left font-normal",
+                                            "w-full md:w-[180px] justify-start text-left font-normal text-sm",
                                             !date && "text-muted-foreground"
                                         )}
                                     >
@@ -266,16 +267,16 @@ export default function BookingsPage() {
                                 </PopoverContent>
                             </Popover>
                             <Select value={statusFilter} onValueChange={setStatusFilter}>
-                                <SelectTrigger className="w-full md:w-[180px]">
+                                <SelectTrigger className="w-full md:w-[150px] text-sm">
                                     <div className="flex items-center gap-2">
                                         <Filter className="h-4 w-4" />
-                                        <SelectValue placeholder="Filter by status" />
+                                        <SelectValue placeholder="Status" />
                                     </div>
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="ALL">All Statuses</SelectItem>
                                     <SelectItem value="PENDING">Pending</SelectItem>
-                                    <SelectItem value="UNPROCESSED">Awaiting Confirmation</SelectItem>
+                                    <SelectItem value="UNPROCESSED">Awaiting</SelectItem>
                                     <SelectItem value="CONFIRMED">Confirmed</SelectItem>
                                     <SelectItem value="CANCELLED">Cancelled</SelectItem>
                                 </SelectContent>
@@ -283,12 +284,13 @@ export default function BookingsPage() {
                             {(date || searchQuery || statusFilter !== 'ALL') && (
                                 <Button
                                     variant="ghost"
+                                    size="sm"
                                     onClick={() => {
                                         setDate(undefined)
                                         setSearchQuery('')
                                         setStatusFilter('ALL')
                                     }}
-                                    className="h-8 px-2 lg:px-3"
+                                    className="h-8 px-2 lg:px-3 text-sm"
                                 >
                                     Reset
                                     <XCircle className="ml-2 h-4 w-4" />
@@ -309,35 +311,42 @@ export default function BookingsPage() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Customer</TableHead>
-                                        <TableHead>Service</TableHead>
-                                        <TableHead>Date</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
+                                        <TableHead className="whitespace-nowrap">Customer</TableHead>
+                                        <TableHead className="whitespace-nowrap">Service</TableHead>
+                                        <TableHead className="whitespace-nowrap">Date</TableHead>
+                                        <TableHead className="whitespace-nowrap">Status</TableHead>
+                                        <TableHead className="text-right whitespace-nowrap">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {filteredBookings?.map((booking) => (
                                         <TableRow key={booking.id}>
-                                            <TableCell>
-                                                <div className="font-medium">{booking.name}</div>
-                                                <div className="text-sm text-muted-foreground">{booking.email}</div>
-                                                <div className="text-sm text-muted-foreground">{booking.phone}</div>
+                                            <TableCell className="max-w-[150px] md:max-w-xs">
+                                                <div className="font-medium truncate">{booking.name}</div>
+                                                <div className="text-sm text-muted-foreground truncate">{booking.email}</div>
+                                                <div className="text-sm text-muted-foreground truncate">{booking.phone}</div>
                                             </TableCell>
-                                            <TableCell>
-                                                <div className="font-medium">{booking.activityTitle}</div>
+                                            <TableCell className="max-w-[150px] md:max-w-xs">
+                                                <div className="font-medium truncate">{booking.activityTitle}</div>
                                                 <div className="text-sm text-muted-foreground">{booking.guests} guests</div>
                                             </TableCell>
-                                            <TableCell>
-                                                {format(new Date(booking.date), 'PPP')}
+                                            <TableCell className="whitespace-nowrap">
+                                                <div className="text-sm md:text-base">
+                                                    {format(new Date(booking.date), 'PPP')}
+                                                </div>
                                             </TableCell>
                                             <TableCell>
                                                 <Badge className={getStatusColor(booking.status)}>
-                                                    {booking.status === 'UNPROCESSED' ? 'Awaiting Confirmation' : booking.status}
+                                                    <span className="hidden md:inline">
+                                                        {booking.status === 'UNPROCESSED' ? 'Awaiting Confirmation' : booking.status}
+                                                    </span>
+                                                    <span className="md:hidden">
+                                                        {booking.status.charAt(0) + booking.status.slice(1).toLowerCase().substring(1, 4)}
+                                                    </span>
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <div className="flex items-center justify-end gap-2">
+                                                <div className="flex items-center justify-end gap-1 md:gap-2">
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
@@ -415,22 +424,22 @@ export default function BookingsPage() {
             </Card>
 
             <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-                <DialogContent>
+                <DialogContent className="max-w-[95vw] md:max-w-lg">
                     <DialogHeader>
-                        <DialogTitle>Booking Details</DialogTitle>
+                        <DialogTitle className="text-lg md:text-xl">Booking Details</DialogTitle>
                         <DialogDescription>Full details for booking #{selectedBooking?.id}</DialogDescription>
                     </DialogHeader>
                     {selectedBooking && (
-                        <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-3 md:gap-4 py-2 md:py-4 max-h-[60vh] overflow-y-auto">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                                 <div>
-                                    <Label className="text-muted-foreground">Customer</Label>
-                                    <div className="font-medium">{selectedBooking.name}</div>
-                                    <div className="text-sm">{selectedBooking.email}</div>
-                                    <div className="text-sm">{selectedBooking.phone}</div>
+                                    <Label className="text-muted-foreground text-xs md:text-sm">Customer</Label>
+                                    <div className="font-medium text-sm md:text-base">{selectedBooking.name}</div>
+                                    <div className="text-xs md:text-sm">{selectedBooking.email}</div>
+                                    <div className="text-xs md:text-sm">{selectedBooking.phone}</div>
                                 </div>
                                 <div>
-                                    <Label className="text-muted-foreground">Status</Label>
+                                    <Label className="text-muted-foreground text-xs md:text-sm">Status</Label>
                                     <div>
                                         <Badge className={getStatusColor(selectedBooking.status)}>
                                             {selectedBooking.status}
@@ -439,41 +448,41 @@ export default function BookingsPage() {
                                 </div>
                             </div>
                             <div>
-                                <Label className="text-muted-foreground">Activity</Label>
-                                <div className="font-medium text-lg">{selectedBooking.activityTitle}</div>
+                                <Label className="text-muted-foreground text-xs md:text-sm">Activity</Label>
+                                <div className="font-medium text-base md:text-lg">{selectedBooking.activityTitle}</div>
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                                 <div>
-                                    <Label className="text-muted-foreground">Date & Time</Label>
-                                    <div>{format(new Date(selectedBooking.date), 'PPP p')}</div>
+                                    <Label className="text-muted-foreground text-xs md:text-sm">Date & Time</Label>
+                                    <div className="text-sm md:text-base">{format(new Date(selectedBooking.date), 'PPP p')}</div>
                                 </div>
                                 <div>
-                                    <Label className="text-muted-foreground">Guests</Label>
-                                    <div>{selectedBooking.guests} people</div>
+                                    <Label className="text-muted-foreground text-xs md:text-sm">Guests</Label>
+                                    <div className="text-sm md:text-base">{selectedBooking.guests} people</div>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                                 <div>
-                                    <Label className="text-muted-foreground">Total Price</Label>
-                                    <div className="font-bold">€{selectedBooking.totalPrice}</div>
+                                    <Label className="text-muted-foreground text-xs md:text-sm">Total Price</Label>
+                                    <div className="font-bold text-sm md:text-base">€{selectedBooking.totalPrice}</div>
                                 </div>
                             </div>
                             {selectedBooking.pickupLocation && (
                                 <div>
-                                    <Label className="text-muted-foreground">Pickup Location</Label>
-                                    <div>{selectedBooking.pickupLocation}</div>
+                                    <Label className="text-muted-foreground text-xs md:text-sm">Pickup Location</Label>
+                                    <div className="text-sm md:text-base">{selectedBooking.pickupLocation}</div>
                                 </div>
                             )}
                             {selectedBooking.flightNumber && (
                                 <div>
-                                    <Label className="text-muted-foreground">Flight Number</Label>
-                                    <div>{selectedBooking.flightNumber}</div>
+                                    <Label className="text-muted-foreground text-xs md:text-sm">Flight Number</Label>
+                                    <div className="text-sm md:text-base">{selectedBooking.flightNumber}</div>
                                 </div>
                             )}
                             {selectedBooking.specialRequests && (
                                 <div>
-                                    <Label className="text-muted-foreground">Special Requests</Label>
-                                    <div className="text-sm">{selectedBooking.specialRequests}</div>
+                                    <Label className="text-muted-foreground text-xs md:text-sm">Special Requests</Label>
+                                    <div className="text-xs md:text-sm">{selectedBooking.specialRequests}</div>
                                 </div>
                             )}
                         </div>

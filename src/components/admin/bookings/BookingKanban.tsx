@@ -28,13 +28,13 @@ export function BookingKanban({ bookings, onStatusUpdate }: BookingKanbanProps) 
     const getColumnBookings = (status: string) => bookings.filter(b => b.status === status);
 
     return (
-        <div className="flex h-full gap-4 overflow-x-auto pb-4">
+        <div className="flex h-full gap-2 md:gap-4 overflow-x-auto pb-4">
             {COLUMNS.map(col => {
                 const columnBookings = getColumnBookings(col.id);
                 return (
-                    <div key={col.id} className="min-w-[300px] w-[300px] flex flex-col h-full rounded-xl bg-muted/40 border border-border/50">
+                    <div key={col.id} className="min-w-[250px] md:min-w-[300px] w-[250px] md:w-[300px] flex flex-col h-full rounded-xl bg-muted/40 border border-border/50">
                         {/* Column Header */}
-                        <div className={`p-3 border-b border-border/50 flex items-center justify-between ${col.color} bg-opacity-20`}>
+                        <div className={`p-2 md:p-3 border-b border-border/50 flex items-center justify-between ${col.color} bg-opacity-20`}>
                             <h3 className="font-semibold text-sm">{col.label}</h3>
                             <Badge variant="secondary" className="bg-background/50 font-mono text-xs">
                                 {columnBookings.length}
@@ -46,11 +46,11 @@ export function BookingKanban({ bookings, onStatusUpdate }: BookingKanbanProps) 
                             <div className="space-y-3">
                                 {columnBookings.map(booking => (
                                     <Card key={booking.id} className="shadow-sm hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing">
-                                        <CardContent className="p-3 space-y-3">
+                                        <CardContent className="p-2 md:p-3 space-y-2 md:space-y-3">
                                             <div className="flex justify-between items-start">
-                                                <div className="space-y-1">
+                                                <div className="space-y-1 min-w-0">
                                                     <p className="font-medium text-sm line-clamp-1">{booking.activityTitle}</p>
-                                                    <p className="text-xs text-muted-foreground">{booking.name}</p>
+                                                    <p className="text-xs text-muted-foreground truncate">{booking.name}</p>
                                                 </div>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
@@ -74,13 +74,13 @@ export function BookingKanban({ bookings, onStatusUpdate }: BookingKanbanProps) 
                                             </div>
 
                                             <div className="space-y-1">
-                                                <div className="flex items-center text-xs text-muted-foreground gap-2">
-                                                    <Calendar className="h-3 w-3" />
-                                                    {format(new Date(booking.date), 'MMM d')}
+                                                <div className="flex items-center text-xs text-muted-foreground gap-1 md:gap-2">
+                                                    <Calendar className="h-3 w-3 flex-shrink-0" />
+                                                    <span className="truncate">{format(new Date(booking.date), 'MMM d')}</span>
                                                 </div>
-                                                <div className="flex items-center text-xs text-muted-foreground gap-2">
-                                                    <User className="h-3 w-3" />
-                                                    {booking.guests} Guests
+                                                <div className="flex items-center text-xs text-muted-foreground gap-1 md:gap-2">
+                                                    <User className="h-3 w-3 flex-shrink-0" />
+                                                    <span>{booking.guests} Guests</span>
                                                 </div>
                                             </div>
 

@@ -31,23 +31,29 @@ export function AdminHeader() {
     })
 
     return (
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/80 px-6 backdrop-blur-md transition-all">
-            <div className="flex items-center gap-4 md:hidden">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-2 md:gap-4 border-b bg-background/80 px-4 md:px-6 backdrop-blur-md transition-all">
+            <div className="flex items-center gap-2 md:gap-4">
                 <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
                     <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon" className="-ml-3">
+                        <Button variant="ghost" size="icon" className="-ml-2 md:-ml-3">
                             <Menu className="h-5 w-5" />
                             <span className="sr-only">Toggle menu</span>
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side="left" className="p-0 w-72 border-r-0">
+                    <SheetContent side="left" className="p-0 w-64 md:w-72 border-r-0">
                         <SheetTitle className="sr-only">Navigation</SheetTitle>
                         <AdminSidebar onClose={() => setSheetOpen(false)} />
                     </SheetContent>
                 </Sheet>
+                
+                <div className="flex md:hidden">
+                    <h1 className="text-lg font-semibold truncate max-w-[120px] md:max-w-xs">
+                        {breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].label : 'Dashboard'}
+                    </h1>
+                </div>
             </div>
 
-            <div className="flex flex-1 items-center gap-4">
+            <div className="flex flex-1 items-center gap-2 md:gap-4">
                 <Breadcrumb className="hidden md:flex">
                     <BreadcrumbList>
                         {breadcrumbs.map((item, index) => (
@@ -66,13 +72,13 @@ export function AdminHeader() {
                 </Breadcrumb>
             </div>
 
-            <div className="flex items-center gap-4">
-                <div className="relative hidden sm:block w-full max-w-sm">
+            <div className="flex items-center gap-2 md:gap-4">
+                <div className="relative hidden sm:block w-full max-w-[120px] md:max-w-sm">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         type="search"
                         placeholder="Search..."
-                        className="w-64 rounded-xl bg-muted/50 pl-9 focus-visible:bg-background transition-colors"
+                        className="w-32 md:w-64 rounded-xl bg-muted/50 pl-9 focus-visible:bg-background transition-colors text-sm md:text-base"
                     />
                 </div>
 

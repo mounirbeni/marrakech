@@ -40,19 +40,27 @@ export function Notifications() {
     }
 
     const handleMarkAllAsRead = async () => {
+        // Optimistic update
+        const updatedNotifications = notifications?.map(n => ({ ...n, read: true })) || []
+
         try {
+            // Update local state immediately
+            await mutate(updatedNotifications, false)
+            toast.success('All notifications marked as read')
+
             const res = await fetch('/api/admin/notifications', {
                 method: 'PATCH',
             })
 
             if (!res.ok) throw new Error('Failed to mark all as read')
 
-            // Refresh notifications
+            // Revalidate to ensure sync with server
             mutate()
-            toast.success('All notifications marked as read')
         } catch (error) {
             toast.error('Failed to mark all notifications as read')
             console.error('[MARK_ALL_AS_READ]', error)
+            // Rollback on error
+            mutate()
         }
     }
 
@@ -75,9 +83,9 @@ export function Notifications() {
                 <div className="flex items-center justify-between px-2 py-1.5">
                     <DropdownMenuLabel className="py-0">Notifications</DropdownMenuLabel>
                     {unreadCount > 0 && (
-                        <Button 
-                            variant="ghost" 
-                            size="sm" 
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             className="h-6 px-2 text-xs"
                             onClick={(e) => {
                                 e.stopPropagation()

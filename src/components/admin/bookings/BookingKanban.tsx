@@ -15,6 +15,7 @@ import { format } from 'date-fns';
 interface BookingKanbanProps {
     bookings: Booking[];
     onStatusUpdate: (id: string, status: string) => void;
+    onViewDetails: (booking: Booking) => void;
 }
 
 const COLUMNS = [
@@ -24,7 +25,7 @@ const COLUMNS = [
     { id: 'COMPLETED', label: 'Completed', color: 'bg-slate-500/10 border-slate-500/20 text-slate-700 dark:text-slate-400' },
 ];
 
-export function BookingKanban({ bookings, onStatusUpdate }: BookingKanbanProps) {
+export function BookingKanban({ bookings, onStatusUpdate, onViewDetails }: BookingKanbanProps) {
     const getColumnBookings = (status: string) => bookings.filter(b => b.status === status);
 
     return (
@@ -45,7 +46,11 @@ export function BookingKanban({ bookings, onStatusUpdate }: BookingKanbanProps) 
                         <div className="flex-1 p-3 overflow-y-auto custom-scrollbar">
                             <div className="space-y-3">
                                 {columnBookings.map(booking => (
-                                    <Card key={booking.id} className="shadow-sm hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing">
+                                    <Card 
+                                        key={booking.id} 
+                                        className="shadow-sm hover:shadow-md transition-shadow cursor-pointer active:cursor-grabbing"
+                                        onClick={() => onViewDetails(booking)}
+                                    >
                                         <CardContent className="p-2 md:p-3 space-y-2 md:space-y-3">
                                             <div className="flex justify-between items-start">
                                                 <div className="space-y-1 min-w-0">
@@ -53,12 +58,15 @@ export function BookingKanban({ bookings, onStatusUpdate }: BookingKanbanProps) 
                                                     <p className="text-xs text-muted-foreground truncate">{booking.name}</p>
                                                 </div>
                                                 <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-muted">
                                                             <MoreHorizontal className="h-3 w-3" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
+                                                    <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+                                                        <DropdownMenuItem onClick={() => onViewDetails(booking)}>
+                                                            View Details
+                                                        </DropdownMenuItem>
                                                         {COLUMNS.map(targetCol => (
                                                             targetCol.id !== booking.status && (
                                                                 <DropdownMenuItem

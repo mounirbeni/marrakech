@@ -304,6 +304,10 @@ export default function BookingsPage() {
                             <BookingKanban
                                 bookings={filteredBookings || []}
                                 onStatusUpdate={handleStatusUpdate}
+                                onViewDetails={(booking) => {
+                                    setSelectedBooking(booking)
+                                    setIsDetailsOpen(true)
+                                }}
                             />
                         </div>
                     ) : (
@@ -312,25 +316,35 @@ export default function BookingsPage() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead className="whitespace-nowrap">Customer</TableHead>
-                                        <TableHead className="whitespace-nowrap">Service</TableHead>
-                                        <TableHead className="whitespace-nowrap">Date</TableHead>
+                                        <TableHead className="whitespace-nowrap hidden md:table-cell">Service</TableHead>
+                                        <TableHead className="whitespace-nowrap hidden sm:table-cell">Date</TableHead>
                                         <TableHead className="whitespace-nowrap">Status</TableHead>
                                         <TableHead className="text-right whitespace-nowrap">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {filteredBookings?.map((booking) => (
-                                        <TableRow key={booking.id}>
+                                        <TableRow
+                                            key={booking.id}
+                                            className="cursor-pointer hover:bg-muted/50 transition-colors"
+                                            onClick={() => {
+                                                setSelectedBooking(booking)
+                                                setIsDetailsOpen(true)
+                                            }}
+                                        >
                                             <TableCell className="max-w-[150px] md:max-w-xs">
                                                 <div className="font-medium truncate">{booking.name}</div>
-                                                <div className="text-sm text-muted-foreground truncate">{booking.email}</div>
-                                                <div className="text-sm text-muted-foreground truncate">{booking.phone}</div>
+                                                <div className="text-sm truncate md:hidden font-medium text-primary/80">{booking.activityTitle}</div>
+                                                <div className="text-sm text-muted-foreground truncate hidden md:block">{booking.email}</div>
+                                                <div className="text-xs text-muted-foreground truncate md:hidden">
+                                                    {booking.guests} guests • {format(new Date(booking.date), 'MMM d')}
+                                                </div>
                                             </TableCell>
-                                            <TableCell className="max-w-[150px] md:max-w-xs">
+                                            <TableCell className="max-w-[150px] md:max-w-xs hidden md:table-cell">
                                                 <div className="font-medium truncate">{booking.activityTitle}</div>
                                                 <div className="text-sm text-muted-foreground">{booking.guests} guests</div>
                                             </TableCell>
-                                            <TableCell className="whitespace-nowrap">
+                                            <TableCell className="whitespace-nowrap hidden sm:table-cell">
                                                 <div className="text-sm md:text-base">
                                                     {format(new Date(booking.date), 'PPP')}
                                                 </div>
@@ -341,16 +355,16 @@ export default function BookingsPage() {
                                                         {booking.status === 'UNPROCESSED' ? 'Awaiting Confirmation' : booking.status}
                                                     </span>
                                                     <span className="md:hidden">
-                                                        {booking.status.charAt(0) + booking.status.slice(1).toLowerCase().substring(1, 4)}
+                                                        {booking.status === 'UNPROCESSED' ? 'Awaiting' : booking.status.charAt(0) + booking.status.slice(1).toLowerCase()}
                                                     </span>
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <div className="flex items-center justify-end gap-1 md:gap-2">
+                                                <div className="flex items-center justify-end gap-1 md:gap-2" onClick={(e) => e.stopPropagation()}>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
-                                                        className="h-8 w-8 p-0"
+                                                        className="h-8 w-8 p-0 hidden md:inline-flex"
                                                         onClick={() => window.open(`mailto:${booking.email}`, '_blank')}
                                                         title="Send Email"
                                                     >
@@ -360,7 +374,7 @@ export default function BookingsPage() {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            className="h-8 w-8 p-0 text-green-600 hover:text-green-700"
+                                                            className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hidden md:inline-flex"
                                                             onClick={() => {
                                                                 const phone = booking.phone?.replace(/\D/g, '')
                                                                 window.open(`https://wa.me/${phone}`, '_blank')
@@ -477,6 +491,24 @@ export default function BookingsPage() {
                                 <div>
                                     <Label className="text-muted-foreground text-xs md:text-sm">Flight Number</Label>
                                     <div className="text-sm md:text-base">{selectedBooking.flightNumber}</div>
+                                </div>
+                            )}
+                            {selectedBooking.packageName && (
+                                <div>
+                                    <Label className="text-muted-foreground text-xs md:text-sm">Package</Label>
+                                    <div className="text-sm md:text-base">{selectedBooking.packageName}</div>
+                                </div>
+                            )}
+                            {selectedBooking.dietary && (
+                                <div className="col-span-1 md:col-span-2">
+                                    <Label className="text-muted-foreground text-xs md:text-sm">Dietary Requirements</Label>
+                                    <div className="text-sm md:text-base">{selectedBooking.dietary}</div>
+                                </div>
+                            )}
+                            {selectedBooking.specialRequests && (
+                                <div className="col-span-1 md:col-span-2">
+                                    <Label className="text-muted-foreground text-xs md:text-sm">Special Requests</Label>
+                                    <div className="text-sm md:text-base">{selectedBooking.specialRequests}</div>
                                 </div>
                             )}
                             {selectedBooking.specialRequests && (

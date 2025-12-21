@@ -86,6 +86,22 @@ export async function POST(request: Request) {
             }
         });
 
+        // Create Admin Notification
+        try {
+            await prisma.notification.create({
+                data: {
+                    type: 'BOOKING',
+                    title: 'New Booking',
+                    message: `New booking received from ${booking.name} for ${booking.activityTitle}`,
+                    link: '/admin/bookings',
+                    read: false
+                }
+            });
+        } catch (notifError) {
+            console.error('Failed to create notification:', notifError);
+            // Don't fail the request if notification creation fails
+        }
+
         return NextResponse.json({ success: true, booking: booking });
 
     } catch (error) {

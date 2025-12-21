@@ -51,6 +51,8 @@ model User {
   image              String?
   password           String?
   role               String         @default("CLIENT") // CLIENT, ADMIN, GUIDE, SUPER_ADMIN
+  canMessage         Boolean        @default(true)
+  conversationStatus String         @default("NONE")
   phone              String?
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
@@ -112,6 +114,10 @@ model Booking {
   
   pickupLocation  String?
   specialRequests String?
+  dietary         String?
+  flightNumber    String?
+  language        String?
+  packageName     String?
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -152,6 +158,7 @@ model Message {
   id             String       @id @default(cuid())
   conversationId String
   userId         String       // Sender
+  sender         String
   content        String
   read           Boolean      @default(false)
   createdAt      DateTime     @default(now())

@@ -1,32 +1,13 @@
-import { AdminHeader } from '@/components/admin/AdminHeader'
-import { AdminSidebar } from '@/components/admin/AdminSidebar'
-import { getSession } from '@/lib/auth'
 
-export default async function AdminLayout({
-    children,
-}: {
-    children: React.ReactNode
-}) {
-    const session = await getSession()
+import { AdminSidebar } from "@/components/admin/Sidebar";
 
-    if (!session) {
-        return <div className="min-h-screen bg-background">{children}</div>
-    }
-
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
     return (
-        <div className="flex h-screen overflow-hidden bg-background">
-            {/* Desktop Sidebar */}
-            <aside className="hidden md:flex w-72 flex-col bg-background">
-                <AdminSidebar />
-            </aside>
-
-            <div className="flex-1 flex flex-col overflow-hidden">
-                <AdminHeader />
-
-                <main className="flex-1 overflow-y-auto bg-muted/10 p-4 md:p-6">
-                    {children}
-                </main>
-            </div>
+        <div className="flex bg-muted/20 min-h-screen">
+            <AdminSidebar />
+            <main className="flex-1 p-8 overflow-y-auto h-screen">
+                {children}
+            </main>
         </div>
-    )
+    );
 }

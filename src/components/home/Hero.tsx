@@ -1,91 +1,51 @@
-"use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { Input } from "@/components/ui/input";
+import { Search, Calendar, MapPin } from "lucide-react";
 
 export function Hero() {
-    const ref = useRef(null);
-    const { scrollYProgress } = useScroll({
-        target: ref,
-        offset: ["start start", "end start"],
-    });
-
-    const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-    const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
-
     return (
-        <section ref={ref} className="relative h-[90dvh] min-h-[600px] flex items-center justify-center overflow-hidden">
-            {/* Parallax Background */}
-            <motion.div
-                style={{ y, opacity }}
-                className="absolute inset-0 z-0 h-full w-full"
-            >
-                <Image
-                    src="/homepage.jpg"
-                    alt="Marrakech Landscape"
-                    fill
-                    priority
-                    quality={90}
-                    className="object-cover object-center scale-110"
-                    sizes="100vw"
-                />
-                <div className="absolute inset-0 bg-white/60 dark:bg-black/50" />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background dark:from-black/40 dark:via-black/20 dark:to-black/60" />
-            </motion.div>
-
-            {/* Content */}
-            <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                >
-                    <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-foreground mb-6 tracking-tight drop-shadow-sm dark:drop-shadow-2xl font-serif leading-[1.1]">
-                        Uncover the Secrets <br className="hidden md:block" />
-                        <span className="text-primary italic">of Marrakech</span>
-                    </h1>
-                </motion.div>
-
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                    className="text-lg sm:text-xl md:text-2xl text-muted-foreground dark:text-gray-300 mb-10 max-w-2xl mx-auto font-medium leading-relaxed"
-                >
-                    Experience the magic of the Red City with trusted local guides.
-                    Curated tours, authentic encounters, and unforgettable memories.
-                </motion.p>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-                    className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-                >
-                    <Link href="/experiences">
-                        <Button
-                            size="lg"
-                            className="text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 bg-primary hover:bg-primary/90 text-primary-foreground"
-                        >
-                            Explore Experiences
-                        </Button>
-                    </Link>
-                    <Link href="/how-it-works">
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 bg-background/50 backdrop-blur-sm border-input text-foreground hover:bg-accent hover:text-accent-foreground"
-                        >
-                            How it Works
-                        </Button>
-                    </Link>
-                </motion.div>
+        <div className="relative h-[90vh] min-h-[600px] w-full overflow-hidden flex items-center justify-center">
+            {/* Background Image Layer */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/10 z-10" />
+                {/* Placeholder for actual image - using a rich dark color fallback for now */}
+                <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1597211661960-e1423301dc50?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center" />
             </div>
 
+            {/* Content Layer */}
+            <div className="relative z-20 container mx-auto px-4 text-center text-white">
+                <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl mb-6 tracking-tight animate-fade-in-up">
+                    Marrakech <span className="text-[var(--color-primary)] italic">Awaits</span>
+                </h1>
+                <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light tracking-wide text-white/90">
+                    Uncover the secrets of the Red City with our curated collection of authentic experiences, from the Atlas Mountains to the Agafay Desert.
+                </p>
 
-        </section>
+                {/* Search Bar Widget */}
+                <div className="bg-white/10 backdrop-blur-md border border-white/20 p-2 rounded-full max-w-4xl mx-auto flex flex-col md:flex-row gap-2 shadow-2xl">
+                    <div className="flex-1 flex items-center bg-white rounded-full px-6 py-3">
+                        <MapPin className="text-[var(--color-primary)] w-5 h-5 mr-3" />
+                        <input
+                            type="text"
+                            placeholder="What do you want to do?"
+                            className="bg-transparent border-none outline-none text-gray-800 placeholder-gray-500 w-full font-medium"
+                        />
+                    </div>
+                    <div className="flex-1 flex items-center bg-white rounded-full px-6 py-3 mt-2 md:mt-0">
+                        <Calendar className="text-[var(--color-primary)] w-5 h-5 mr-3" />
+                        <input
+                            type="text"
+                            placeholder="When are you going?"
+                            className="bg-transparent border-none outline-none text-gray-800 placeholder-gray-500 w-full font-medium"
+                        />
+                    </div>
+                    <Button size="lg" className="rounded-full px-8 py-6 text-lg bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/90 text-white mt-2 md:mt-0 shadow-lg transition-transform hover:scale-105">
+                        <Search className="w-5 h-5 mr-2" />
+                        Search
+                    </Button>
+                </div>
+            </div>
+        </div>
     );
 }

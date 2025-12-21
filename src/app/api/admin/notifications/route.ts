@@ -10,10 +10,12 @@ export async function GET() {
 
     try {
         // Fetch notifications from the database
-        const notifications = await prisma.notification.findMany({
-            orderBy: { createdAt: 'desc' },
-            take: 20
-        })
+        // Fetch notifications from the database
+        // const notifications = await prisma.notification.findMany({
+        //     orderBy: { createdAt: 'desc' },
+        //     take: 20
+        // })
+        const notifications: any[] = []
 
         return NextResponse.json(notifications)
     } catch (error) {
@@ -30,14 +32,15 @@ export async function PATCH() {
 
     try {
         // Mark all notifications as read
-        await prisma.notification.updateMany({
-            where: {
-                read: false
-            },
-            data: {
-                read: true
-            }
-        })
+        // Mark all notifications as read
+        // await prisma.notification.updateMany({
+        //     where: {
+        //         read: false
+        //     },
+        //     data: {
+        //         read: true
+        //     }
+        // })
 
         return NextResponse.json({ success: true })
     } catch (error) {

@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { WishlistProvider } from "@/lib/contexts/WishlistContext";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 
-const inter = Inter({
-  variable: "--font-inter",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   display: 'swap',
 });
-
-import { Playfair_Display } from "next/font/google";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -101,7 +98,7 @@ export default function RootLayout({
   return (
     <html lang="en-US" suppressHydrationWarning>
 
-      <body className={`${inter.className} ${playfair.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${outfit.variable} ${playfair.variable} antialiased`} suppressHydrationWarning>
         <WishlistProvider>
           <ThemeProvider
             attribute="class"

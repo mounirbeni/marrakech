@@ -9,28 +9,22 @@ export async function GET() {
     }
 
     try {
-        const [users, subscribers] = await Promise.all([
-            prisma.user.findMany({
-                where: { role: 'USER' },
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    role: true,
-                    createdAt: true,
-                },
-                orderBy: { createdAt: 'desc' }
-            }),
-            prisma.newsletterSubscriber.findMany({
-                where: { active: true },
-                orderBy: { createdAt: 'desc' }
-            })
-        ])
+        const users = await prisma.user.findMany({
+            where: { role: 'USER' },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                createdAt: true,
+            },
+            orderBy: { createdAt: 'desc' }
+        })
 
-        const usersWithStats = await Promise.all(users.map(async (user: { email: string; createdAt: Date; id: string; name: string | null; role: string }) => {
-            const bookingCount = await prisma.booking.count({
-                where: { email: user.email }
-            })
+        const usersWithStats = await Promise.all(users.map(async (user) => {
+            const bookingCount = user.email ? await prisma.booking.count({
+                where: { user: { email: user.email } }
+            }) : 0
             return {
                 ...user,
                 source: 'REGISTERED',
@@ -41,24 +35,9 @@ export async function GET() {
             }
         }))
 
-        // Filter out subscribers who are already registered users
-        const registeredEmails = new Set(users.map((u: { email: string }) => u.email))
+        // Removed newsletter logic
 
-        const subscribersList = subscribers
-            .filter((s: { email: string }) => !registeredEmails.has(s.email))
-            .map((s: { id: string; email: string; createdAt: Date }) => ({
-                id: s.id,
-                name: null,
-                email: s.email,
-                role: 'USER',
-                source: 'NEWSLETTER',
-                createdAt: s.createdAt,
-                _count: {
-                    bookings: 0
-                }
-            }))
-
-        const allCustomers = [...usersWithStats, ...subscribersList].sort(
+        const allCustomers = [...usersWithStats].sort(
             (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )
 

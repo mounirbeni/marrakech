@@ -1,217 +1,52 @@
+
 @import "tailwindcss";
-@import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+@theme {
+  --color-primary: #E07A5F;
+  --color-primary-foreground: #FFFFFF;
+  
+  --color-secondary: #1D3557;
+  --color-secondary-foreground: #FFFFFF;
+  
+  --color-accent: #F2CC8F;
+  --color-accent-foreground: #1D3557;
+  
+  --color-background: #F4F1DE;
+  --color-foreground: #3D405B;
+  
+  --color-muted: #F2F2F2;
+  --color-muted-foreground: #6B7280;
+  
+  --color-card: #FFFFFF;
+  --color-card-foreground: #3D405B;
+  
+  --color-border: #E5E7EB;
+  --color-input: #E5E7EB;
+  --color-ring: #E07A5F;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
-  --font-serif: var(--font-playfair);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif: var(--font-young-serif), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
-:root {
-  --radius: 0.5rem;
-
-  /* Light Mode - Premium Palette */
-  --background: #FFFCF8;
-  --foreground: #1C1917;
-
-  --card: #FFFFFF;
-  --card-foreground: #1C1917;
-
-  --popover: #FFFFFF;
-  --popover-foreground: #1C1917;
-
-  --primary: #C05621;
-  --primary-foreground: #FFFFFF;
-
-  --secondary: #F5F0EB;
-  --secondary-foreground: #1C1917;
-
-  --muted: #EDE5DE;
-  --muted-foreground: #6B625B;
-
-  --accent: #D97706;
-  --accent-foreground: #FFFFFF;
-
-  --destructive: #DC2626;
-  --destructive-foreground: #FFFFFF;
-
-  --border: #DBCDC4;
-  --input: #E7E5E4;
-  --ring: #C05621;
-
-  --chart-1: #C05621;
-  --chart-2: #D97706;
-  --chart-3: #1C1917;
-  --chart-4: #78716C;
-  --chart-5: #E7E5E4;
-
-  --sidebar: #FFFCF8;
-  --sidebar-foreground: #1C1917;
-  --sidebar-primary: #C05621;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F5F0EB;
-  --sidebar-accent-foreground: #1C1917;
-  --sidebar-border: #DBCDC4;
-  --sidebar-ring: #C05621;
-}
-
-.dark {
-  /* Dark Mode - Deep Night Palette */
-  --background: #0C0A09;
-  --foreground: #FAFAF9;
-
-  --card: #141211;
-  --card-foreground: #FAFAF9;
-
-  --popover: #141211;
-  --popover-foreground: #FAFAF9;
-
-  --primary: #EA580C;
-  --primary-foreground: #FFFFFF;
-
-  --secondary: #292524;
-  --secondary-foreground: #FAFAF9;
-
-  --muted: #292524;
-  --muted-foreground: #A8A29E;
-
-  --accent: #F59E0B;
-  --accent-foreground: #000000;
-
-  --destructive: #991B1B;
-  --destructive-foreground: #FAFAF9;
-
-  --border: #292524;
-  --input: #292524;
-  --ring: #EA580C;
-
-  --chart-1: #EA580C;
-  --chart-2: #F59E0B;
-  --chart-3: #FAFAF9;
-  --chart-4: #A8A29E;
-  --chart-5: #292524;
-
-  --sidebar: #0C0A09;
-  --sidebar-foreground: #FAFAF9;
-  --sidebar-primary: #EA580C;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #292524;
-  --sidebar-accent-foreground: #FAFAF9;
-  --sidebar-border: #292524;
-  --sidebar-ring: #EA580C;
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+/* Custom Utilities */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
+}
 
-  html {
-    @apply scroll-smooth;
-    -webkit-text-size-adjust: 100%;
-    /* Prevent font scaling in landscape on iOS */
+/* Base Styles */
+@layer base {
+  :root {
+    --background: 255 255 255;
+    --foreground: 23 23 23;
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased overflow-x-hidden min-h-screen flex flex-col;
-    /* overflow-x-hidden prevents horizontal scrollbars from unwanted overflows */
+    @apply bg-[var(--color-background)] text-[var(--color-foreground)] font-sans antialiased;
   }
-
-  /* Improve tap targets on mobile */
-  button,
-  a {
-    @apply touch-manipulation;
-  }
-}
-
-@layer utilities {
-
-  /* Dark mode image brightness adjustment */
-  .dark-mode-image {
-    @apply transition-all duration-300;
-  }
-
-  .dark .dark-mode-image {
-    filter: brightness(0.8);
-  }
-
-  /* Smooth theme transitions */
-  .theme-transition {
-    @apply transition-colors duration-300;
-  }
-
-  /* Hero background image dark mode */
-  .hero-bg-image {
-    @apply transition-all duration-300;
-  }
-
-  .dark .hero-bg-image {
-    filter: brightness(0.7);
-  }
-
-  /* Global dark mode image brightness adjustment */
-  .dark img:not(.no-dark-filter) {
-    filter: brightness(0.8);
-    transition: filter 0.3s ease-in-out;
-  }
-
-  /* Shimmer animation for skeletons */
-  @keyframes shimmer {
-    100% {
-      transform: translateX(100%);
-    }
-  }
-
-  .animate-shimmer {
-    animation: shimmer 2s infinite;
-  }
-
-  /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif tracking-tight text-[var(--color-secondary)];
   }
 }

@@ -582,7 +582,7 @@ async function main() {
                 price: service.price,
                 category: service.category,
                 rating: service.rating,
-                reviews: service.reviews,
+                // reviewCount: service.reviews,
                 duration: service.duration,
                 location: service.location,
 
@@ -590,12 +590,9 @@ async function main() {
                 images: JSON.stringify(service.images),
                 features: JSON.stringify(service.features),
                 included: JSON.stringify(service.included),
-                whatToBring: JSON.stringify(service.whatToBring),
-                tags: JSON.stringify(service.tags),
 
                 // Handle optional keys if they exist in source data, else default
                 itinerary: 'itinerary' in service ? JSON.stringify(service.itinerary) : "[]",
-                host: 'host' in service ? JSON.stringify(service.host) : "{}",
             }
         });
     }

@@ -593,6 +593,9 @@ async function main() {
 
                 // Handle optional keys if they exist in source data, else default
                 itinerary: 'itinerary' in service ? JSON.stringify(service.itinerary) : "[]",
+                whatToBring: "[]",
+                host: "Marrakech Host",
+                tags: "[]",
             }
         });
     }

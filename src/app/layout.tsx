@@ -6,16 +6,20 @@ import { WishlistProvider } from "@/lib/contexts/WishlistContext";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 
+// Configure fonts with explicit weight or style if needed, though variable fonts don't strictly require it
+// Disabling preload for now to troubleshoot build issue if related to font fetching
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
   display: 'swap',
+  adjustFontFallback: false, // Sometimes helps with build issues
 });
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
   display: "swap",
+  adjustFontFallback: false,
 });
 
 export const metadata: Metadata = {

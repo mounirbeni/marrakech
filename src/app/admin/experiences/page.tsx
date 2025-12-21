@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import prisma from "@/lib/prisma";
 import { Edit, Plus, Trash } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 async function getServices() {
     return await prisma.service.findMany({
         orderBy: { title: 'asc' }

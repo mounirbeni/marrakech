@@ -24,7 +24,7 @@ const COLUMNS = [
     { id: 'COMPLETED', label: 'Completed', color: 'bg-slate-500/10 border-slate-500/20 text-slate-700 dark:text-slate-400' },
 ];
 
-export function BookingKanban({ bookings, onStatusUpdate }: BookingKanbanProps) {
+export function BookingKanban({ bookings, onStatusUpdate, onViewDetails }: BookingKanbanProps & { onViewDetails: (booking: Booking) => void }) {
     const getColumnBookings = (status: string) => bookings.filter(b => b.status === status);
 
     return (
@@ -59,6 +59,9 @@ export function BookingKanban({ bookings, onStatusUpdate }: BookingKanbanProps) 
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                                                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-muted">
+                                                            <MoreHorizontal className="h-4 w-4" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
                                                         <DropdownMenuItem onClick={() => onViewDetails(booking)}>
                                                             View Details

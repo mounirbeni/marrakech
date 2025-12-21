@@ -24,7 +24,7 @@ const DURATIONS = [
 
 export function SearchFilters() {
     const router = useRouter();
-    constsearchParams = useSearchParams();
+    const searchParams = useSearchParams();
 
     const [priceRange, setPriceRange] = useState([0, 500]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);

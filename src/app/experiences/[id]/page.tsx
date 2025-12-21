@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Metadata } from "next";
 import { MapPin, Star, Clock, Users, Languages, CheckCircle, Sun, Package } from "lucide-react";
 import prisma from "@/lib/prisma";
+import { Service } from "@prisma/client";
 import { BookingForm } from "@/components/experiences/BookingForm";
 import { ActivityCard } from "@/components/shared/ActivityCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -34,7 +35,7 @@ async function getActivity(id: string): Promise<Activity | null> {
     // Validate input
     if (!id) return null;
 
-    let service = null;
+    let service: Service | null = null;
     try {
         service = await prisma.service.findUnique({
             where: { id }
@@ -57,6 +58,7 @@ async function getActivity(id: string): Promise<Activity | null> {
     }
 
     if (service) {
+        // Parse and map service data
         const parsedImages = safeParse(service.images, []);
         return {
             id: service.id || id, // Ensure id is present

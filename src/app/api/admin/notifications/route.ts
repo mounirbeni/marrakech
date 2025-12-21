@@ -9,6 +9,7 @@ export async function GET() {
     }
 
     try {
+        // Re-validating Prisma types
         // Since we don't have a dedicated Notification model in the schema yet,
         // we will generate notifications on the fly from recent events.
         // In a real app, you'd want a Notification table.
@@ -22,7 +23,7 @@ export async function GET() {
             orderBy: { createdAt: 'desc' }
         })
 
-        const recentComplaints = await prisma.supportTicket.findMany({
+        const recentComplaints = await prisma.supportRequest.findMany({
 
             where: {
                 status: 'PENDING'

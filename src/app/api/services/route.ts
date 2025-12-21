@@ -33,6 +33,8 @@ export async function POST(request: Request) {
                 price: parseFloat(price),
                 images: JSON.stringify(images || []),
                 category,
+                duration: body.duration || 'TBD',
+                location: body.location || 'Marrakech',
                 features: JSON.stringify([]),
                 included: JSON.stringify([]),
                 whatToBring: JSON.stringify([]),

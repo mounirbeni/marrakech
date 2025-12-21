@@ -7,187 +7,121 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Ensure 100% Match with NextAuth.js (Auth.js) requirements
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-}
-
-model User {
-  id                 String         @id @default(cuid())
-  name               String?
-  email              String?        @unique
-  emailVerified      DateTime?
-  image              String?
-  password           String?
-  role               String         @default("CLIENT") // CLIENT, ADMIN, GUIDE, SUPER_ADMIN
-  canMessage         Boolean        @default(true)
-  conversationStatus String         @default("NONE")
-  phone              String?
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
-  
-  accounts           Account[]
-  sessions           Session[]
-  bookings           Booking[]
-  reviews            Review[]
-  messages           Message[]
-  conversations      Conversation[]
-}
-
-model Service {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  price       Float
-  images      String   // JSON string or comma-separated URLs
-  category    String   // DESERT, MEDINA, FOOD, NATURE, ADVENTURE
-  duration    String
-  location    String
-  latitude    Float?
-  longitude   Float?
-  languages   String?  // JSON ["en", "fr"]
-  maxGuests   Int?
-  itinerary   String?  // JSON string
-  features    String?  // JSON string
-  included    String?  // JSON string
-  excluded    String?  // JSON string
-  requirements String? // What to bring, etc.
-  whatToBring String? // JSON
-  tags        String? // JSON
-  host        String? // JSON
-  
-  rating      Float    @default(0)
-  reviewCount Int      @default(0)
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  reviews     Review[]
-  bookings    Booking[]
-}
-
 model Booking {
-  id              String   @id @default(cuid())
-  userId          String
-  serviceId       String
+  id              String   @id
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  name            String
+  email           String
+  phone           String?
+  activityId      String
   activityTitle   String
   date            DateTime
   guests          Int
   totalPrice      Float
-  status          String   @default("PENDING") // PENDING, CONFIRMED, COMPLETED, CANCELLED
-  paymentStatus   String   @default("UNPAID")
-  
-  name            String?  // For guest checkout or snapshot
-  email           String?
-  phone           String?
-  
   pickupLocation  String?
-  specialRequests String?
-  dietary         String?
   flightNumber    String?
   language        String?
+  dietary         String?
+  specialRequests String?
   packageName     String?
-
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  user            User     @relation(fields: [userId], references: [id])
-  service         Service  @relation(fields: [serviceId], references: [id])
+  status          String   @default("PENDING")
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id])
   review          Review?
 }
 
-model Review {
-  id        String   @id @default(cuid())
-  rating    Int
-  comment   String
+model NewsletterSubscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
   createdAt DateTime @default(now())
-  
-  serviceId String
-  userId    String
-  bookingId String?   @unique
+  active    Boolean  @default(true)
+}
 
-  service   Service  @relation(fields: [serviceId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
-  booking   Booking? @relation(fields: [bookingId], references: [id])
+model User {
+  id                 String         @id @default(uuid())
+  email              String         @unique
+  password           String
+  name               String?
+  role               String         @default("CLIENT")
+  canMessage         Boolean        @default(true)
+  conversationStatus String         @default("NONE")
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  bookings           Booking[]
+  conversations      Conversation[]
+  messages           Message[]
+  reviews            Review[]
 }
 
 model Conversation {
-  id        String    @id @default(cuid())
-  userId    String
-  subject   String?
+  id        String    @id @default(uuid())
+  subject   String
   status    String    @default("OPEN")
+  userId    String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  
   user      User      @relation(fields: [userId], references: [id])
   messages  Message[]
 }
 
 model Message {
-  id             String       @id @default(cuid())
-  conversationId String
-  userId         String       // Sender
-  sender         String
+  id             String       @id @default(uuid())
   content        String
+  sender         String
   read           Boolean      @default(false)
+  conversationId String
+  userId         String
   createdAt      DateTime     @default(now())
-
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   user           User         @relation(fields: [userId], references: [id])
 }
 
-model GlobalSettings {
-  id             String @id @default("settings")
-  siteName       String @default("Marrakech Escapes")
-  contactEmail   String @default("contact@marrakechescapes.com")
-  homepageHeroVideo String?
-  featuredCategories String? // JSON
-}
-
-model NewsletterSubscriber {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  active    Boolean  @default(true)
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String
   createdAt DateTime @default(now())
+  serviceId String
+  userId    String
+  bookingId String   @unique
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  service   Service  @relation(fields: [serviceId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
-model Notification {
-  id        String   @id @default(cuid())
-  type      String   // BOOKING, COMPLAINT, SYSTEM
-  title     String
+model Service {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  price       Float
+  images      String
+  category    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  rating      Float    @default(0)
+  reviews     Int      @default(0)
+  duration    String   @default("")
+  location    String   @default("")
+  latitude    Float?
+  longitude   Float?
+  features    String
+  included    String
+  whatToBring String
+  itinerary   String
+  host        String
+  tags        String
+  userReviews Review[]
+}
+
+model SupportRequest {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
   message   String
-  read      Boolean  @default(false)
+  status    String   @default("PENDING")
   createdAt DateTime @default(now())
-  link      String?
+  updatedAt DateTime @updatedAt
 }

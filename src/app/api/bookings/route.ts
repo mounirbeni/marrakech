@@ -41,7 +41,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const session = await getSession();
-        
+
         const body = await request.json();
         const {
             activityId,
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
         const booking = await prisma.booking.create({
             data: {
                 id: generateBookingId(), // Short booking ID
-                userId: session?.id || null, // Use session ID if available, otherwise null
+                userId: session?.id || 'guest', // Use session ID if available, otherwise 'guest' placeholder
                 name: name || session?.name || email.split('@')[0] || 'Valued Customer',
                 email: email || session?.email || '',
                 phone: phone || null,
@@ -85,22 +85,6 @@ export async function POST(request: Request) {
                 status: 'UNPROCESSED' // Default status for new bookings
             }
         });
-
-        // Create Admin Notification
-        try {
-            await prisma.notification.create({
-                data: {
-                    type: 'BOOKING',
-                    title: 'New Booking',
-                    message: `New booking received from ${booking.name} for ${booking.activityTitle}`,
-                    link: '/admin/bookings',
-                    read: false
-                }
-            });
-        } catch (notifError) {
-            console.error('Failed to create notification:', notifError);
-            // Don't fail the request if notification creation fails
-        }
 
         return NextResponse.json({ success: true, booking: booking });
 

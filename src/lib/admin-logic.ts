@@ -94,8 +94,8 @@ export async function getUrgentStats(): Promise<UrgentStats> {
         where: { status: 'PENDING' }
     });
 
-    const pendingSupport = await prisma.supportRequest.count({
-        where: { status: 'PENDING' }
+    const pendingSupport = await prisma.conversation.count({
+        where: { status: 'OPEN' }
     });
 
     // Assuming Review has some status or just recent ones, but schema has no status for Review.

@@ -21,7 +21,7 @@ interface BookingsClientProps {
 }
 
 export default function BookingsClient({ initialBookings }: BookingsClientProps) {
-    const [bookings, setBookings] = useState<Booking[]>(initialBookings)
+    const [bookings, setBookings] = useState<(Booking & { service?: { title: string } })[]>(initialBookings)
     const [searchQuery, setSearchQuery] = useState('')
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
     const [isPending, startTransition] = useTransition()
@@ -31,8 +31,8 @@ export default function BookingsClient({ initialBookings }: BookingsClientProps)
         .filter((booking) => {
             const query = searchQuery.toLowerCase()
             return (
-                (booking.customerName || '').toLowerCase().includes(query) ||
-                (booking.customerEmail || '').toLowerCase().includes(query) ||
+                (booking.name || '').toLowerCase().includes(query) ||
+                (booking.email || '').toLowerCase().includes(query) ||
                 (booking.service?.title || '').toLowerCase().includes(query)
             )
         })
@@ -128,13 +128,13 @@ export default function BookingsClient({ initialBookings }: BookingsClientProps)
                                 filteredBookings.map((booking) => (
                                     <tr key={booking.id} className="hover:bg-gray-50/50 transition-colors">
                                         <td className="px-6 py-4">
-                                            <div className="font-medium text-gray-900">{booking.customerName}</div>
+                                            <div className="font-medium text-gray-900">{booking.name}</div>
                                             <div className="text-xs text-gray-500 mt-0.5">ID: {booking.id}</div>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2 text-gray-600">
                                                 <Mail className="h-3.5 w-3.5" />
-                                                {booking.customerEmail}
+                                                {booking.email}
                                             </div>
                                             {booking.phone && (
                                                 <div className="flex items-center gap-2 text-gray-600 mt-1">

@@ -56,7 +56,7 @@ export default async function AdminExperiencesPage() {
                                     <TableCell className="capitalize">{service.category}</TableCell>
                                     <TableCell>€{service.price}</TableCell>
                                     <TableCell>{service.duration}</TableCell>
-                                    <TableCell>{service.rating} ({service.reviewCount})</TableCell>
+                                    <TableCell>{service.rating} ({service.reviewsCount})</TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-2">
                                             <Button size="icon" variant="ghost" className="h-8 w-8">

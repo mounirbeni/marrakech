@@ -24,7 +24,7 @@ export default async function ExperiencesPage() {
                 title: service.title,
                 price: service.price,
                 rating: service.rating,
-                reviews: service.reviews,
+                reviews: service.reviewsCount,
                 category: service.category,
                 image: service.images[0] || "",
                 duration: service.duration,

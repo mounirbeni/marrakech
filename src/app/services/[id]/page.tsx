@@ -219,7 +219,7 @@ export default function ServiceDetailPage() {
                                     )}
                                     <li className="flex justify-between">
                                         <span>Rating:</span>
-                                        <span>{service.rating}/5 ({service.reviews} reviews)</span>
+                                        <span>{service.rating}/5 ({service.reviewsCount} reviews)</span>
                                     </li>
                                 </ul>
                             </div>

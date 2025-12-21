@@ -46,7 +46,7 @@ export async function POST(request: Request) {
         });
 
         // Auto login
-        await loginUser({ id: user.id, email: user.email, role: user.role, name: user.name });
+        await loginUser({ id: user.id, email: user.email!, role: user.role, name: user.name });
 
         return NextResponse.json({
             user: { id: user.id, email: user.email, name: user.name, role: user.role }

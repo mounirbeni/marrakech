@@ -32,12 +32,6 @@ export default async function EditServicePage({ params }: { params: Promise<{ id
         images: JSON.parse(service.images || '[]'),
         features: JSON.parse(service.features || '[]'),
         included: JSON.parse(service.included || '[]'),
-        // whatToBring: JSON.parse(service.whatToBring || '[]'),
-        // tags: JSON.parse(service.tags || '[]'),
-        // Arrays (JSON)
-        images: JSON.parse(service.images || '[]'),
-        features: JSON.parse(service.features || '[]'),
-        included: JSON.parse(service.included || '[]'),
         // @ts-ignore
         languages: JSON.parse((service as any).languages || '[]') as string[],
 

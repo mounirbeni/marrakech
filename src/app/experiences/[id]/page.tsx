@@ -33,7 +33,7 @@ const safeParse = (data: string | null | undefined, fallback: any) => {
 async function getActivity(id: string): Promise<Activity | null> {
     // Validate input
     if (!id) return null;
-    
+
     let service = null;
     try {
         service = await prisma.service.findUnique({
@@ -63,7 +63,7 @@ async function getActivity(id: string): Promise<Activity | null> {
             title: service.title,
             price: service.price,
             rating: service.rating,
-            reviews: service.reviews,
+            reviews: service.reviewsCount,
             category: service.category,
             image: parsedImages[0] || "",
             duration: service.duration,
@@ -144,14 +144,14 @@ export default async function ActivityPage({ params }: PageProps) {
     const relatedActivities: Activity[] = (relatedServices as any[]).map(service => {
         // Skip services without id
         if (!service.id) return null;
-        
+
         const parsedImages = safeParse(service.images, []);
         return {
             id: service.id,
             title: service.title,
             price: service.price,
             rating: service.rating,
-            reviews: service.reviews,
+            reviews: service.reviewsCount,
             category: service.category,
             image: parsedImages[0] || "",
             duration: service.duration,

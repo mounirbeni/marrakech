@@ -21,7 +21,7 @@ export async function POST(request: Request) {
             where: { email },
         });
 
-        if (!user || !(await comparePassword(password, user.password))) {
+        if (!user || !user.password || !user.email || !(await comparePassword(password, user.password))) {
             return NextResponse.json(
                 { error: 'Invalid credentials' },
                 { status: 401 }

@@ -15,7 +15,6 @@ import { format } from 'date-fns';
 interface BookingKanbanProps {
     bookings: Booking[];
     onStatusUpdate: (id: string, status: string) => void;
-    onViewDetails: (booking: Booking) => void;
 }
 
 const COLUMNS = [
@@ -25,7 +24,7 @@ const COLUMNS = [
     { id: 'COMPLETED', label: 'Completed', color: 'bg-slate-500/10 border-slate-500/20 text-slate-700 dark:text-slate-400' },
 ];
 
-export function BookingKanban({ bookings, onStatusUpdate, onViewDetails }: BookingKanbanProps) {
+export function BookingKanban({ bookings, onStatusUpdate }: BookingKanbanProps) {
     const getColumnBookings = (status: string) => bookings.filter(b => b.status === status);
 
     return (
@@ -60,9 +59,6 @@ export function BookingKanban({ bookings, onStatusUpdate, onViewDetails }: Booki
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                                                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-muted">
-                                                            <MoreHorizontal className="h-3 w-3" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
                                                         <DropdownMenuItem onClick={() => onViewDetails(booking)}>
                                                             View Details

@@ -18,11 +18,12 @@ export async function GET() {
             where: {
                 status: 'PENDING'
             },
-        // const notifications = await prisma.notification.findMany({
-            take: 5
-        //     take: 20
+            take: 5,
+            orderBy: { createdAt: 'desc' }
+        })
 
-        const recentComplaints = await prisma.supportRequest.findMany({
+        const recentComplaints = await prisma.supportTicket.findMany({
+
             where: {
                 status: 'PENDING'
             },
@@ -40,7 +41,7 @@ export async function GET() {
                 createdAt: b.createdAt,
                 link: '/admin/bookings'
             })),
-            ...recentComplaints.map((c) => ({
+            ...recentComplaints.map((c: any) => ({
                 id: `complaint-${c.id}`,
                 type: 'COMPLAINT',
                 title: 'New Support Request',
@@ -50,11 +51,8 @@ export async function GET() {
                 link: '/admin/complaints'
             }))
         ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        // })
-        const notifications: any[] = []
 
         return NextResponse.json(notifications)
-        return NextResponse.json({ success: true })
     } catch (error) {
         console.error('[NOTIFICATIONS_PATCH]', error)
         return new NextResponse('Internal Error', { status: 500 })

@@ -45,8 +45,7 @@ export default async function EditServicePage({ params }: { params: Promise<{ id
 
         // Mapped fields
         // Mapped fields
-        // @ts-ignore
-        reviews: (service as any).reviewCount || 0,
+        // reviews field is not present in the Prisma model; omit it
         rating: service.rating,
 
         // Dates (not strictly in Service interface shown step 305? Wait, lines 63 has createdAt for User, but Service lines 20-42 doesn't show createdAt/updatedAt?)

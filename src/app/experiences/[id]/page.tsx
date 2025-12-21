@@ -63,7 +63,7 @@ async function getActivity(id: string): Promise<Activity | null> {
             title: service.title,
             price: service.price,
             rating: service.rating,
-            reviews: service.reviewsCount,
+            reviews: service.reviewsCount || 0,
             category: service.category,
             image: parsedImages[0] || "",
             duration: service.duration,

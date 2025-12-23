@@ -1,7 +1,8 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarDays, CreditCard, TrendingUp, Users } from "lucide-react";
 import prisma from "@/lib/prisma";
+
+export const dynamic = 'force-dynamic';
 
 async function getStats() {
     // Basic stats fetching

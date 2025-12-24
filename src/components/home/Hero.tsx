@@ -37,20 +37,13 @@ export function Hero() {
                     Do more with your trip
                 </h1>
 
-                {/* Rotating Text Section - Hidden on mobile */}
-                <div className="hidden sm:block">
-                    <RotatingText
-                        staticText="Discover"
-                        rotatingWords={rotatingWords}
-                        interval={2800}
-                        className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8"
-                    />
-                </div>
-
-                {/* Mobile-only subtitle */}
-                <p className="sm:hidden text-gray-700 text-base mb-5 text-center">
-                    Discover Marrakech Experiences
-                </p>
+                {/* Rotating Text Section - Now visible on all devices */}
+                <RotatingText
+                    staticText="Discover"
+                    rotatingWords={rotatingWords}
+                    interval={2800}
+                    className="text-base sm:text-lg md:text-xl lg:text-2xl mb-5 md:mb-6 lg:mb-8"
+                />
 
                 {/* Search Bar */}
                 <SearchBar

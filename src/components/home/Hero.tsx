@@ -26,24 +26,31 @@ export function Hero() {
     };
 
     return (
-        <div className="relative h-[85vh] min-h-[600px] w-full flex items-center justify-center">
+        <div className="relative h-[55vh] md:h-[70vh] min-h-[450px] md:min-h-[550px] w-full flex items-center justify-center pb-8 md:pb-12">
             {/* Background Image */}
             <div className="absolute inset-0 z-0 bg-white" />
 
             {/* Content */}
             <div className="relative z-10 container mx-auto px-4 flex flex-col items-center">
                 {/* Main Headline */}
-                <h1 className="text-[#FF5F00] text-4xl md:text-6xl font-bold mb-4 text-center drop-shadow-sm">
+                <h1 className="text-[#FF5F00] text-3xl sm:text-4xl md:text-6xl font-bold mb-3 md:mb-4 text-center drop-shadow-sm leading-tight">
                     Do more with your trip
                 </h1>
 
-                {/* Rotating Text Section */}
-                <RotatingText
-                    staticText="Discover"
-                    rotatingWords={rotatingWords}
-                    interval={2800}
-                    className="text-xl md:text-2xl mb-8"
-                />
+                {/* Rotating Text Section - Hidden on mobile */}
+                <div className="hidden sm:block">
+                    <RotatingText
+                        staticText="Discover"
+                        rotatingWords={rotatingWords}
+                        interval={2800}
+                        className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8"
+                    />
+                </div>
+
+                {/* Mobile-only subtitle */}
+                <p className="sm:hidden text-gray-700 text-base mb-5 text-center">
+                    Discover Marrakech Experiences
+                </p>
 
                 {/* Search Bar */}
                 <SearchBar

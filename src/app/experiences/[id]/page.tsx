@@ -1,11 +1,9 @@
 
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { Metadata } from "next";
-import { MapPin, Star, Clock, Users, Languages, CheckCircle, Sun, Package } from "lucide-react";
+import { MapPin, Star, Clock, Users, Languages, CheckCircle, Package, Info, Calendar as CalendarIcon, Shield, XCircle } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { Service } from "@prisma/client";
-import { BookingForm } from "@/components/experiences/BookingForm";
 import { ActivityCard } from "@/components/shared/ActivityCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -17,6 +15,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Activity } from "@/lib/types";
 import { activities } from "@/lib/data/activities-data";
+import { ImageGallery } from "@/components/experiences/ImageGallery";
+import { ReviewsSection } from "@/components/experiences/ReviewsSection";
+import { BookingForm } from "@/components/experiences/BookingForm";
+import { InfoCard } from "@/components/experiences/InfoCard";
+import { mockReviews, calculateAverageRating } from "@/lib/data/mock-reviews";
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -32,7 +35,6 @@ const safeParse = (data: string | null | undefined, fallback: any) => {
 };
 
 async function getActivity(id: string): Promise<Activity | null> {
-    // Validate input
     if (!id) return null;
 
     let service: Service | null = null;
@@ -44,24 +46,21 @@ async function getActivity(id: string): Promise<Activity | null> {
         console.error("Database error in getActivity:", error);
     }
 
-    // Fallback to static data if not found in DB, or to get packages
     const staticActivity = activities.find(a => a.id === id || (service && a.title === service.title));
 
     if (!service && !staticActivity) return null;
 
     if (!service && staticActivity) {
-        // Ensure staticActivity has required id
         if (!staticActivity.id) {
-            staticActivity.id = id; // Assign the id if missing
+            staticActivity.id = id;
         }
         return staticActivity;
     }
 
     if (service) {
-        // Parse and map service data
         const parsedImages = safeParse(service.images, []);
         return {
-            id: service.id || id, // Ensure id is present
+            id: service.id || id,
             title: service.title,
             price: service.price,
             rating: service.rating,
@@ -89,7 +88,8 @@ async function getActivity(id: string): Promise<Activity | null> {
             minGroupSize: (service as any).minGroupSize || 1,
             maxGroupSize: (service as any).maxGroupSize || 8,
             packages: staticActivity?.packages || [],
-            packageCategories: staticActivity?.packageCategories || []
+            packageCategories: staticActivity?.packageCategories || [],
+            languages: staticActivity?.languages || ["English", "French", "Arabic"],
         };
     }
 
@@ -107,7 +107,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     return {
-        title: `${activity.title} | Explore Marrakech like local`,
+        title: `${activity.title} | Explore Marrakech`,
         description: activity.description,
         openGraph: {
             images: [activity.image],
@@ -123,12 +123,11 @@ export default async function ActivityPage({ params }: PageProps) {
         notFound();
     }
 
-    // Ensure activity has all required properties
     if (!activity.id) {
         notFound();
     }
 
-    // Get related activities (fetch from DB)
+    // Get related activities
     let relatedServices: any[] = [];
     try {
         relatedServices = await prisma.service.findMany({
@@ -144,7 +143,6 @@ export default async function ActivityPage({ params }: PageProps) {
     }
 
     const relatedActivities: Activity[] = (relatedServices as any[]).map(service => {
-        // Skip services without id
         if (!service.id) return null;
 
         const parsedImages = safeParse(service.images, []);
@@ -181,9 +179,26 @@ export default async function ActivityPage({ params }: PageProps) {
         };
     }).filter(Boolean) as Activity[];
 
+    // Prepare images for gallery
+    const galleryImages = activity.images && activity.images.length > 0
+        ? activity.images
+        : [activity.image];
+
+    // Use actual activity reviews count
+    const hasReviews = activity.reviews > 0;
+
     return (
-        <div className="min-h-screen bg-background pt-28 pb-20">
+        <div className="min-h-screen bg-background pt-24 pb-20">
             <div className="container mx-auto px-4 max-w-7xl">
+
+                {/* Breadcrumb */}
+                <div className="mb-6 text-sm text-muted-foreground">
+                    <span className="hover:text-foreground cursor-pointer">Home</span>
+                    <span className="mx-2">/</span>
+                    <span className="hover:text-foreground cursor-pointer">{activity.category}</span>
+                    <span className="mx-2">/</span>
+                    <span className="text-foreground">{activity.title}</span>
+                </div>
 
                 {/* Header */}
                 <div className="mb-8">
@@ -192,11 +207,11 @@ export default async function ActivityPage({ params }: PageProps) {
                     </h1>
                     <div className="flex flex-wrap items-center gap-6 text-muted-foreground">
                         <div className="flex items-center gap-1">
-                            <Star className="h-5 w-5 fill-accent text-accent" />
-                            <span className="font-medium text-foreground">{activity.rating}</span>
+                            <Star className="h-5 w-5 fill-[#FF5F00] text-[#FF5F00]" />
+                            <span className="font-semibold text-foreground">{activity.rating.toFixed(1)}</span>
                             <span>({activity.reviews} reviews)</span>
                         </div>
-                        <div className="flex items-center gap-1 hover:text-primary transition-colors cursor-pointer">
+                        <div className="flex items-center gap-1 hover:text-[#FF5F00] transition-colors cursor-pointer">
                             <MapPin className="h-5 w-5" />
                             <span className="underline underline-offset-4">{activity.location}</span>
                         </div>
@@ -210,254 +225,123 @@ export default async function ActivityPage({ params }: PageProps) {
                 {/* Main Content Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-20">
 
-                    {/* Left Column: Image & Details */}
-                    <div className="lg:col-span-7 xl:col-span-8 space-y-8">
+                    {/* Left Column: Images & Details */}
+                    <div className="lg:col-span-7 xl:col-span-8 space-y-12">
 
-                        {/* Image */}
-                        <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-lg">
-                            <Image
-                                src={activity.image}
-                                alt={activity.title}
-                                fill
-                                className="object-cover hover:scale-105 transition-transform duration-700 dark-mode-image"
-                                priority
-                            />
-                        </div>
+                        {/* Image Gallery */}
+                        <ImageGallery images={galleryImages} title={activity.title} />
 
-                        {/* Service Details */}
-                        <div className="space-y-12">
-
-                            {/* Host Info */}
-                            <div className="flex items-center justify-between border-b border-border pb-8">
-                                <div>
-                                    <h2 className="text-2xl font-bold text-foreground mb-2">
-                                        Hosted by a Local Expert
-                                    </h2>
-                                    <div className="flex items-center gap-4 text-muted-foreground">
-                                        <div className="flex items-center gap-2">
-                                            <Languages className="h-4 w-4" />
-                                            <span>English, French, Arabic</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <Users className="h-4 w-4" />
-                                            <span>Max 8 guests</span>
-                                        </div>
+                        {/* Host Info */}
+                        <div className="flex items-center justify-between border-b border-border pb-8">
+                            <div>
+                                <h2 className="text-2xl font-bold text-foreground mb-2">
+                                    Hosted by a Local Expert
+                                </h2>
+                                <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
+                                    <div className="flex items-center gap-2">
+                                        <Languages className="h-4 w-4" />
+                                        <span>{activity.languages?.join(", ") || "English, French, Arabic"}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Users className="h-4 w-4" />
+                                        <span>Max {activity.maxGroupSize} guests</span>
                                     </div>
                                 </div>
-                                <Avatar className="h-16 w-16 border-2 border-background shadow-sm">
-                                    <AvatarImage src={activity.host?.image} />
-                                    <AvatarFallback>{activity.host?.name?.[0] || 'H'}</AvatarFallback>
-                                </Avatar>
                             </div>
+                            <Avatar className="h-16 w-16 border-2 border-background shadow-sm">
+                                <AvatarImage src={activity.host?.image} />
+                                <AvatarFallback>{activity.host?.name?.[0] || 'H'}</AvatarFallback>
+                            </Avatar>
+                        </div>
 
-                            {/* Description */}
-                            <div className="space-y-4">
-                                <h3 className="text-xl font-semibold">About this experience</h3>
-                                <p className="text-lg text-muted-foreground leading-relaxed">
-                                    {activity.description}
-                                </p>
-                                <div className="flex flex-wrap gap-2 pt-2">
-                                    {activity.features?.map((feature) => (
-                                        <Badge key={feature} variant="secondary" className="text-sm py-1 px-3">
-                                            {feature}
-                                        </Badge>
+                        {/* Description */}
+                        <div className="space-y-4">
+                            <h3 className="text-2xl font-bold text-foreground">About this experience</h3>
+                            <p className="text-lg text-muted-foreground leading-relaxed">
+                                {activity.description}
+                            </p>
+                            <div className="flex flex-wrap gap-2 pt-2">
+                                {activity.features?.map((feature) => (
+                                    <Badge key={feature} variant="secondary" className="text-sm py-1.5 px-4">
+                                        {feature}
+                                    </Badge>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* What's Included / Not Included */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <InfoCard icon={CheckCircle} title="What's Included">
+                                <ul className="space-y-2">
+                                    {activity.included?.slice(0, 5).map((item, index) => (
+                                        <li key={index} className="flex items-start gap-2">
+                                            <CheckCircle className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+                                            <span className="text-sm">{item}</span>
+                                        </li>
                                     ))}
-                                </div>
-                            </div>
+                                </ul>
+                            </InfoCard>
 
-                            {/* Packages Section */}
-                            {activity.packageCategories && activity.packageCategories.length > 0 && (
-                                <div className="space-y-6 pt-6 border-t border-border mb-8">
-                                    {activity.packageCategories.map((category, idx) => (
-                                        <div key={idx} className="space-y-4">
-                                            <h3 className="text-xl font-semibold">{category.name}</h3>
-                                            {category.description && (
-                                                <p className="text-muted-foreground">{category.description}</p>
-                                            )}
-                                            <div className="grid grid-cols-1 gap-4">
-                                                {category.packages.map((pkg, pkgIdx) => (
-                                                    <div key={pkgIdx} className="border rounded-lg p-4 space-y-3 bg-card hover:border-primary/50 transition-colors">
-                                                        <div className="flex justify-between items-start gap-4">
-                                                            <div>
-                                                                <h4 className="font-semibold text-lg">{pkg.name}</h4>
-                                                                <p className="text-sm text-muted-foreground mt-1">{pkg.description}</p>
-                                                            </div>
-                                                            <div className="text-lg font-bold text-primary whitespace-nowrap">
-                                                                €{pkg.price}
-                                                            </div>
-                                                        </div>
-                                                        {pkg.included && pkg.included.length > 0 && (
-                                                            <div className="flex flex-wrap gap-2">
-                                                                {pkg.included.map((item, i) => (
-                                                                    <Badge key={i} variant="outline" className="text-xs bg-secondary/50">
-                                                                        {item}
-                                                                    </Badge>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ))}
+                            <InfoCard icon={XCircle} title="What's Not Included">
+                                <ul className="space-y-2">
+                                    {activity.exclusions?.slice(0, 5).map((item, index) => (
+                                        <li key={index} className="flex items-start gap-2">
+                                            <CheckCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+                                            <span className="text-sm">{item}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </InfoCard>
+                        </div>
+
+                        {/* Itinerary */}
+                        {activity.itinerary && activity.itinerary.length > 0 && (
+                            <div className="space-y-4">
+                                <h3 className="text-2xl font-bold text-foreground">Itinerary</h3>
+                                <div className="relative pl-6 border-l-2 border-[#FF5F00]/30 space-y-8">
+                                    {activity.itinerary.map((stop, index) => (
+                                        <div key={index} className="relative">
+                                            <div className="absolute -left-[29px] top-1 h-6 w-6 rounded-full border-2 border-[#FF5F00] bg-white flex items-center justify-center">
+                                                <div className="h-2 w-2 rounded-full bg-[#FF5F00]" />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <span className="text-sm font-semibold text-[#FF5F00]">{stop.time}</span>
+                                                <h4 className="text-lg font-semibold text-foreground">{stop.title}</h4>
+                                                <p className="text-muted-foreground">{stop.description}</p>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-                            )}
-
-                            {/* Accordions */}
-                            <Accordion type="single" collapsible className="w-full">
-
-                                <AccordionItem value="included">
-                                    <AccordionTrigger className="text-lg font-semibold">
-                                        <div className="flex items-center gap-3">
-                                            <Package className="h-5 w-5 text-primary" />
-                                            What&apos;s Included
-                                        </div>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                                            {activity.included?.map((item, index) => (
-                                                <li key={index} className="flex items-start gap-2 text-muted-foreground">
-                                                    <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
-                                                    <span>{item}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="exclusions">
-                                    <AccordionTrigger className="text-lg font-semibold">
-                                        <div className="flex items-center gap-3">
-                                            <Package className="h-5 w-5 text-primary" />
-                                            What&apos;s Not Included
-                                        </div>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                                            {activity.exclusions?.map((item, index) => (
-                                                <li key={index} className="flex items-start gap-2 text-muted-foreground">
-                                                    <CheckCircle className="h-5 w-5 text-red-500 shrink-0" />
-                                                    <span>{item}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="bring">
-                                    <AccordionTrigger className="text-lg font-semibold">
-                                        <div className="flex items-center gap-3">
-                                            <Sun className="h-5 w-5 text-primary" />
-                                            What to Bring
-                                        </div>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                                            {activity.whatToBring?.map((item, index) => (
-                                                <li key={index} className="flex items-start gap-2 text-muted-foreground">
-                                                    <CheckCircle className="h-5 w-5 text-primary shrink-0" />
-                                                    <span>{item}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="itinerary">
-                                    <AccordionTrigger className="text-lg font-semibold">
-                                        <div className="flex items-center gap-3">
-                                            <MapPin className="h-5 w-5 text-primary" />
-                                            Itinerary
-                                        </div>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <div className="relative pl-4 border-l-2 border-border ml-2 space-y-8 py-4">
-                                            {activity.itinerary?.map((stop, index) => (
-                                                <div key={index} className="relative">
-                                                    <div className="absolute -left-[21px] top-1 h-4 w-4 rounded-full border-2 border-primary bg-background" />
-                                                    <div className="space-y-1">
-                                                        <span className="text-sm font-medium text-primary">{stop.time}</span>
-                                                        <h4 className="text-base font-semibold">{stop.title}</h4>
-                                                        <p className="text-sm text-muted-foreground">{stop.description}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </AccordionContent>
-                                </AccordionItem>
-
-                                <AccordionItem value="highlights">
-                                    <AccordionTrigger className="text-lg font-semibold">
-                                        <div className="flex items-center gap-3">
-                                            <Star className="h-5 w-5 text-primary" />
-                                            Experience Highlights
-                                        </div>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                                            {activity.experienceHighlights?.map((item, index) => (
-                                                <li key={index} className="flex items-start gap-2 text-muted-foreground">
-                                                    <CheckCircle className="h-5 w-5 text-yellow-500 shrink-0" />
-                                                    <span>{item}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </AccordionContent>
-                                </AccordionItem>
-
-                            </Accordion>
-
-                            {/* Additional Information Sections */}
-                            <div className="space-y-6 pt-6 border-t border-border">
-
-                                {/* Meeting Point */}
-                                <div className="space-y-2">
-                                    <h3 className="text-lg font-semibold">Meeting Point</h3>
-                                    <p className="text-muted-foreground">{activity.meetingPoint}</p>
-                                </div>
-
-                                {/* Ending Point */}
-                                <div className="space-y-2">
-                                    <h3 className="text-lg font-semibold">Ending Point</h3>
-                                    <p className="text-muted-foreground">{activity.endingPoint}</p>
-                                </div>
-
-                                {/* Group Size */}
-                                <div className="space-y-2">
-                                    <h3 className="text-lg font-semibold">Group Size</h3>
-                                    <p className="text-muted-foreground">Minimum: {activity.minGroupSize} | Maximum: {activity.maxGroupSize}</p>
-                                </div>
-
-                                {/* Age Restrictions */}
-                                <div className="space-y-2">
-                                    <h3 className="text-lg font-semibold">Age Restrictions</h3>
-                                    <p className="text-muted-foreground">{activity.ageRestrictions}</p>
-                                </div>
-
-                                {/* Requirements */}
-                                <div className="space-y-2">
-                                    <h3 className="text-lg font-semibold">Requirements</h3>
-                                    <ul className="text-muted-foreground list-disc list-inside">
-                                        {activity.requirements?.map((req, index) => (
-                                            <li key={index}>{req}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                {/* Cancellation Policy */}
-                                <div className="space-y-2">
-                                    <h3 className="text-lg font-semibold">Cancellation Policy</h3>
-                                    <p className="text-muted-foreground">{activity.cancellationPolicy}</p>
-                                </div>
-
-                                {/* Additional Info */}
-                                <div className="space-y-2">
-                                    <h3 className="text-lg font-semibold">Additional Information</h3>
-                                    <p className="text-muted-foreground">{activity.additionalInfo}</p>
-                                </div>
-
                             </div>
+                        )}
+
+                        {/* Additional Information */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-border">
+                            <InfoCard icon={MapPin} title="Meeting Point">
+                                <p className="text-sm">{activity.meetingPoint || "Details provided upon booking"}</p>
+                            </InfoCard>
+
+                            <InfoCard icon={CalendarIcon} title="Cancellation Policy">
+                                <p className="text-sm">{activity.cancellationPolicy || "Free cancellation up to 24 hours before the experience"}</p>
+                            </InfoCard>
+
+                            <InfoCard icon={Users} title="Group Size">
+                                <p className="text-sm">Minimum: {activity.minGroupSize} | Maximum: {activity.maxGroupSize}</p>
+                            </InfoCard>
+
+                            <InfoCard icon={Shield} title="Age Restrictions">
+                                <p className="text-sm">{activity.ageRestrictions || "Suitable for all ages"}</p>
+                            </InfoCard>
                         </div>
+
+                        {/* Reviews Section */}
+                        {hasReviews && (
+                            <ReviewsSection
+                                reviews={mockReviews}
+                                averageRating={activity.rating}
+                                totalReviews={activity.reviews}
+                            />
+                        )}
                     </div>
 
                     {/* Right Column: Booking Form */}

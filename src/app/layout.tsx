@@ -1,24 +1,16 @@
 import type { Metadata } from "next";
-import { Outfit, Playfair_Display } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { WishlistProvider } from "@/lib/contexts/WishlistContext";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 
-// Configure fonts with explicit weight or style if needed, though variable fonts don't strictly require it
-// Disabling preload for now to troubleshoot build issue if related to font fetching
-const outfit = Outfit({
-  variable: "--font-outfit",
+// Configure fonts
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
   display: 'swap',
-  adjustFontFallback: false, // Sometimes helps with build issues
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  display: "swap",
   adjustFontFallback: false,
 });
 
@@ -89,8 +81,8 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
+    { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
+    { media: '(prefers-color-scheme: dark)', color: '#0F172A' },
   ],
 };
 
@@ -102,7 +94,7 @@ export default function RootLayout({
   return (
     <html lang="en-US" suppressHydrationWarning>
 
-      <body className={`${outfit.variable} ${playfair.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
         <WishlistProvider>
           <ThemeProvider
             attribute="class"

@@ -7,7 +7,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Rooftop Sunrise Yoga & Wellness",
             subtitle: "Begin your day with serenity and breathtaking views over the ancient Medina",
             price: 20,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "Health Services",
             image: "/Rooftop Sunrise Yoga & Wellness in Marrakech.jpg",
@@ -21,8 +21,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Sunrise View", "Certified Instructor", "Meditation", "Organic Herbal Tea", "Luxury Mat"],
             location: "Medina Rooftop",
             tags: ["Wellness", "Luxury", "Spiritual"],
-            host: { 
-                name: "Yasmina El Mansouri", 
+            host: {
+                name: "Yasmina El Mansouri",
                 image: "/localexpert.jpg",
                 bio: "Certified yoga instructor with 10+ years experience in holistic wellness. Specializes in sunrise meditation sessions with stunning panoramic views.",
                 verified: true
@@ -85,7 +85,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Royal Moroccan Hammam & Spa Ritual",
             subtitle: "Indulge in the centuries-old tradition of Moroccan wellness with premium organic treatments",
             price: 45,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "Health Services",
             image: "/Royal Moroccan Hammam & Spa Ritual.jpg",
@@ -99,8 +99,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Luxury Spa", "Black Soap Scrub", "Argan Massage", "Organic Ingredients", "Private Suite"],
             location: "Marrakech Medina",
             tags: ["Wellness", "Luxury", "Traditional"],
-            host: { 
-                name: "Fatima Zahra", 
+            host: {
+                name: "Fatima Zahra",
                 image: "/localexpert.jpg",
                 bio: "Third-generation hammam specialist trained in traditional Moroccan wellness rituals. Expert in organic skincare using locally-sourced ingredients.",
                 verified: true
@@ -214,7 +214,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Hidden Gems of the Medina: Walking Tour",
             subtitle: "Uncover the secret treasures and ancient stories of Marrakech's UNESCO World Heritage medina",
             price: 25,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "City Roaming",
             image: "/Hidden Gems of the Medina Walking Tour.jpg",
@@ -228,8 +228,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Licensed UNESCO Guide", "Skip-the-line Access", "Architecture", "Historical Insights", "Cultural Immersion"],
             location: "Marrakech Medina",
             tags: ["City Tours", "Culture", "UNESCO Heritage", "Luxury"],
-            host: { 
-                name: "Mustapha Bennani", 
+            host: {
+                name: "Mustapha Bennani",
                 image: "/localexpert.jpg",
                 bio: "UNESCO-certified cultural guide with 15+ years expertise in Marrakech's history. Specializes in revealing hidden architectural gems and sharing untold stories of the medina.",
                 verified: true
@@ -318,7 +318,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Vintage Sidecar Adventure",
             subtitle: "Experience Marrakech in ultimate style with a restored 1960s Vespa sidecar through the city's most photogenic districts",
             price: 110,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "City Roaming",
             image: "/Vintage Sidecar Adventure.jpg",
@@ -332,8 +332,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Private Tour", "Restored 1960s Vespa", "Photo Opportunities", "Expert Guide", "Luxury Experience"],
             location: "Gueliz & Medina",
             tags: ["City Tours", "Adventures", "Luxury", "Romantic"],
-            host: { 
-                name: "Karim Essaadi", 
+            host: {
+                name: "Karim Essaadi",
                 image: "/localexpert.jpg",
                 bio: "Passionate vintage vehicle restorer and certified tour guide with 12+ years experience. Specializes in unique perspectives of Marrakech through restored classic vehicles.",
                 verified: true
@@ -423,7 +423,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Ultimate Street Food Tasting Trail",
             subtitle: "An epicurean journey through the flavors of Marrakech with 12+ authentic tastings led by passionate local food experts",
             price: 35,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "City Roaming",
             image: "/Ultimate Street Food Tasting Trail.jpg",
@@ -437,8 +437,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["12+ Authentic Tastings", "Small Luxury Group", "Dinner Substitute", "Expert Food Guide", "Cultural Stories"],
             location: "Old Medina",
             tags: ["City Tours", "Food & Drink", "Cultural", "Luxury"],
-            host: { 
-                name: "Leila Amellah", 
+            host: {
+                name: "Leila Amellah",
                 image: "/localexpert.jpg",
                 bio: "Celebrity chef and food anthropologist with 20+ years documenting Moroccan culinary traditions. Winner of multiple international food awards and author of 'Flavors of the Medina.'",
                 verified: true
@@ -529,7 +529,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Yves Saint Laurent & Majorelle Garden VIP",
             subtitle: "An exclusive artistic journey through Yves Saint Laurent's muse and Morocco's most enchanting botanical sanctuary",
             price: 40,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "City Roaming",
             image: "/Yves Saint Laurent & Majorelle Garden VIP.jpg",
@@ -543,8 +543,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["VIP Skip-the-Line Access", "Botanic Garden", "Fashion History", "Luxury Transfer", "Expert Guide"],
             location: "Guéliz",
             tags: ["City Tours", "Culture", "Art", "Luxury"],
-            host: { 
-                name: "Sophia Benjelloun", 
+            host: {
+                name: "Sophia Benjelloun",
                 image: "/localexpert.jpg",
                 bio: "Art historian and fashion curator with expertise in Yves Saint Laurent's Moroccan period. Regular contributor to international fashion publications and museums.",
                 verified: true
@@ -638,7 +638,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Agafay Desert: Sunset, Camel & Dinner Show",
             subtitle: "An enchanting escape to Morocco's mystical 'Stone Desert' with luxury camel rides, gourmet Berber cuisine, and mesmerizing traditional performances",
             price: 55,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "City Trips & Excursions",
             image: "/Agafay Desert Sunset, Camel & Dinner Show show something luxury.jpg",
@@ -652,8 +652,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Stone Desert", "Luxury Camel Ride", "Gourmet Berber Feast", "Live Music", "Fire Eater", "Stargazing"],
             location: "Agafay Desert",
             tags: ["Adventures", "Excursions", "Luxury", "Romantic"],
-            host: { 
-                name: "Ahmed El Fassi", 
+            host: {
+                name: "Ahmed El Fassi",
                 image: "/localexpert.jpg",
                 bio: "Third-generation desert guide with deep knowledge of Berber traditions and storytelling. Specializes in luxury desert experiences blending authenticity with comfort.",
                 verified: true
@@ -707,7 +707,8 @@ export const activitiesData: Record<string, Activity[]> = {
                 { time: "19:00", title: "Welcome Feast", description: "Gourmet 3-course Berber dinner with traditional music accompaniment" },
                 { time: "20:30", title: "Entertainment Showcase", description: "Gnawa musicians and fire eater performance under the stars" },
                 { time: "21:30", title: "Stargazing & Storytelling", description: "Berber tales shared while admiring the brilliant desert night sky" },
-                { time: "22:00", title: "Return Journey", description: "Comfortable transport back to your accommodation"
+                {
+                    time: "22:00", title: "Return Journey", description: "Comfortable transport back to your accommodation"
                 }
             ],
             minGroupSize: 2,
@@ -749,7 +750,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Atlas Mountains & Ourika Valley Day Trip",
             subtitle: "A breathtaking journey through Morocco's highest mountain range with cascading waterfalls, traditional Berber villages, and authentic cultural immersion",
             price: 30,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "City Trips & Excursions",
             image: "/Atlas Mountains & Ourika Valley Day Trip.jpg",
@@ -763,8 +764,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Scenic Mountain Drives", "Waterfalls", "Berber House Visit", "Cultural Immersion", "Nature"],
             location: "High Atlas",
             tags: ["Adventures", "Excursions", "Nature", "Cultural"],
-            host: { 
-                name: "Mohammed Ait Brahim", 
+            host: {
+                name: "Mohammed Ait Brahim",
                 image: "/localexpert.jpg",
                 bio: "Native Berber guide from a mountain village with 15+ years of experience sharing his homeland's natural beauty and cultural heritage with international visitors.",
                 verified: true
@@ -860,7 +861,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Essaouira Coastal Escape",
             subtitle: "Discover Morocco's most charming coastal gem with UNESCO medina, windsurfing beaches, and the world's finest argan oil production",
             price: 35,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "City Trips & Excursions",
             image: "/Essaouira Coastal Escape.jpg",
@@ -874,8 +875,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["UNESCO Medina", "Coastal Beaches", "Seafood", "Argan Oil Cooperatives", "Art Galleries", "Windsurfing"],
             location: "Atlantic Coast",
             tags: ["Excursions", "Coastal", "UNESCO", "Cultural"],
-            host: { 
-                name: "Yasmine Filali", 
+            host: {
+                name: "Yasmine Filali",
                 image: "/localexpert.jpg",
                 bio: "Essaouira local with deep knowledge of the city's maritime history, art scene, and sustainable tourism initiatives. Specializes in authentic coastal experiences.",
                 verified: true
@@ -931,7 +932,8 @@ export const activitiesData: Record<string, Activity[]> = {
                 { time: "13:30", title: "Argan Oil Cooperative", description: "Visit women's cooperative learning traditional production methods" },
                 { time: "14:30", title: "Art Gallery Tour", description: "Explore local and international contemporary art spaces" },
                 { time: "15:30", title: "Beach & Windsurfing Views", description: "Visit popular beach with optional windsurfing demonstrations" },
-                { time: "17:00", title: "Return Journey", description: "Comfortable transport back to your accommodation"
+                {
+                    time: "17:00", title: "Return Journey", description: "Comfortable transport back to your accommodation"
                 }
             ],
             minGroupSize: 2,
@@ -973,7 +975,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Ouzoud Waterfalls: Nature Hike & Boat Ride",
             subtitle: "Experience North Africa's most spectacular waterfall cascade with hiking trails, traditional boat rides, and encounters with wild Barbary macaques",
             price: 30,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "City Trips & Excursions",
             image: "/Ouzoud Waterfalls Nature Hike & Boat Ride.jpg",
@@ -987,8 +989,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Highest Falls in North Africa", "Wild Monkeys", "Boat Ride", "Hiking Trails", "Nature Photography"],
             location: "Middle Atlas",
             tags: ["Adventures", "Excursions", "Nature", "Photography"],
-            host: { 
-                name: "Rashid Amellah", 
+            host: {
+                name: "Rashid Amellah",
                 image: "/localexpert.jpg",
                 bio: "Certified mountain guide and wildlife photographer with 20+ years exploring the Atlas Mountains. Specialist in waterfall ecosystems and Barbary macaque behavior.",
                 verified: true
@@ -1048,7 +1050,8 @@ export const activitiesData: Record<string, Activity[]> = {
                 { time: "14:00", title: "Picnic Lunch Spot", description: "Scenic riverside location with mountain views" },
                 { time: "15:00", title: "Hiking Ascent", description: "Return trail with different perspectives of the falls" },
                 { time: "16:00", title: "Photography Workshop", description: "Professional tips for capturing waterfall beauty" },
-                { time: "17:00", title: "Return Journey", description: "Comfortable transport back to your accommodation"
+                {
+                    time: "17:00", title: "Return Journey", description: "Comfortable transport back to your accommodation"
                 }
             ],
             minGroupSize: 2,
@@ -1090,7 +1093,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Quad Biking Adrenaline Rush",
             subtitle: "Conquer the rugged landscapes of Palmeraie and Agafay Desert with high-performance quads, expert guidance, and authentic Berber hospitality",
             price: 45,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "City Trips & Excursions",
             image: "/Quad Biking Adrenaline Rush.jpg",
@@ -1104,8 +1107,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["High-Performance Quads", "Professional Safety Gear", "Scenic Desert Landscapes", "Berber Tea Break", "Expert Guide"],
             location: "Palmeraie or Agafay",
             tags: ["Adventures", "Excursions", "Adrenaline", "Desert"],
-            host: { 
-                name: "Karim Zaari", 
+            host: {
+                name: "Karim Zaari",
                 image: "/localexpert.jpg",
                 bio: "Professional quad biking instructor and desert guide with 15+ years experience. Former motorcycle racer turned adventure tour specialist with extensive knowledge of Moroccan terrain.",
                 verified: true
@@ -1202,7 +1205,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Hot Air Balloon: Sunrise Over Atlas",
             subtitle: "Experience the magic of floating above Morocco's breathtaking landscapes at sunrise with a luxury balloon ride and gourmet Berber breakfast",
             price: 160,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "City Trips & Excursions",
             image: "/Hot Air Balloon Sunrise Over Atlas.jpg",
@@ -1216,8 +1219,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Bucket List Experience", "Silent Flight", "Panoramic Views", "Gourmet Berber Breakfast", "Flight Certificate", "Professional Photos"],
             location: "Marrakech Sky",
             tags: ["Adventures", "Luxury", "Romantic", "Bucket List"],
-            host: { 
-                name: "Pierre Dubois", 
+            host: {
+                name: "Pierre Dubois",
                 image: "/localexpert.jpg",
                 bio: "Certified hot air balloon pilot with 20+ years experience flying over Morocco's diverse landscapes. International ballooning champion and luxury tour specialist.",
                 verified: true
@@ -1311,7 +1314,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "3-Day Desert Expedition: Merzouga Dunes",
             subtitle: "The ultimate Moroccan odyssey through the High Atlas, UNESCO sites, and the majestic Sahara Desert with luxury camping beneath star-filled skies",
             price: 180,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "City Trips & Excursions",
             image: "/3-Day Desert Expedition Merzouga.jpg",
@@ -1325,8 +1328,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Epic Road Journey", "UNESCO World Heritage Sites", "Luxury Desert Camping", "Camel Trekking", "Starry Night Skies", "Berber Culture"],
             location: "Sahara Desert",
             tags: ["Adventures", "Excursions", "Luxury", "Cultural"],
-            host: { 
-                name: "Youssef El Mansouri", 
+            host: {
+                name: "Youssef El Mansouri",
                 image: "/localexpert.jpg",
                 bio: "Third-generation desert guide with deep knowledge of Saharan routes and Berber traditions. Specializes in luxury expeditions combining adventure with authentic cultural immersion.",
                 verified: true
@@ -1426,7 +1429,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Master the Tagine: Cooking Class",
             subtitle: "Learn the ancient art of Moroccan cuisine from a master chef with market sourcing, hands-on cooking, and indulgent feast of your creations",
             price: 45,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "Workshops",
             image: "/Master the Tagine Cooking Class.jpg",
@@ -1440,8 +1443,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Authentic Market Sourcing", "Hands-on Instruction", "Traditional Techniques", "Lunch of Your Creations", "Recipe Cards"],
             location: "Medina Riad",
             tags: ["Food & Drink", "Culture", "Educational", "Hands-on"],
-            host: { 
-                name: "Chef Fatema Bennani", 
+            host: {
+                name: "Chef Fatema Bennani",
                 image: "/localexpert.jpg",
                 bio: "Award-winning Moroccan chef with 25+ years mastering traditional tagine recipes. Former sous-chef at renowned Marrakech restaurants now dedicated to sharing culinary secrets with travelers.",
                 verified: true
@@ -1534,7 +1537,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Perfume Making Workshop",
             subtitle: "Unlock the ancient secrets of Moroccan perfumery with a master craftsman to create your exclusive signature fragrance using precious essential oils",
             price: 50,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "Workshops",
             image: "/Perfume Making Workshop.jpg",
@@ -1548,8 +1551,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Ancient Craftsmanship", "Signature Creation", "Premium Essential Oils", "Take Home Product", "Cultural Immersion"],
             location: "Medina Atelier",
             tags: ["Culture", "Creative", "Luxury", "Educational"],
-            host: { 
-                name: "Master Perfumer Hassan El Fassi", 
+            host: {
+                name: "Master Perfumer Hassan El Fassi",
                 image: "/localexpert.jpg",
                 bio: "Fourth-generation perfumer trained in traditional Moroccan methods. Expert in oud distillation and jasmine absolute extraction. Former consultant for luxury fragrance houses.",
                 verified: true
@@ -1642,7 +1645,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Pottery & Zellige Workshop",
             subtitle: "Master the ancient Moroccan crafts of pottery and zellige mosaic with master artisans in a traditional workshop setting",
             price: 35,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "Workshops",
             image: "/Pottery & Zellige Workshop.jpg",
@@ -1656,8 +1659,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Traditional Craftsmanship", "Hands-on Learning", "Cultural Immersion", "Take Home Creation", "Expert Instruction"],
             location: "Artisan District",
             tags: ["Culture", "Creative", "Educational", "Hands-on"],
-            host: { 
-                name: "Master Artisans Omar & Amina", 
+            host: {
+                name: "Master Artisans Omar & Amina",
                 image: "/localexpert.jpg",
                 bio: "Husband-wife team of master craftsmen with 30+ years specializing in traditional Moroccan pottery and zellige mosaic. Featured artists in international exhibitions and cultural preservation programs.",
                 verified: true
@@ -1753,7 +1756,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Chez Ali Fantasia Dinner Show",
             subtitle: "Experience the thundering hooves and vibrant colors of traditional Moroccan fantasia with an authentic Berber dinner under the stars",
             price: 45,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "Entertainment",
             image: "/Chez Ali Fantasia Dinner Show.jpg",
@@ -1767,8 +1770,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["Authentic Fantasia Performance", "Traditional Berber Dinner", "Live Folk Music", "Cultural Immersion", "Transportation"],
             location: "Palmerarie",
             tags: ["Food & Drink", "Culture", "Entertainment", "Traditional"],
-            host: { 
-                name: "Ali Ben Mansour", 
+            host: {
+                name: "Ali Ben Mansour",
                 image: "/localexpert.jpg",
                 bio: "Third-generation performer and cultural preservationist dedicated to showcasing authentic Moroccan traditions. Direct descendant of Berber warriors who participated in original fantasia cavalry charges.",
                 verified: true
@@ -1863,7 +1866,7 @@ export const activitiesData: Record<string, Activity[]> = {
             title: "Private Airport Transfer",
             subtitle: "Seamless luxury transfer service between Marrakech Menara Airport and your accommodation with professional chauffeur and premium vehicle",
             price: 25,
-            rating: 0,
+            rating: 4.8,
             reviews: 0,
             category: "Transfers",
             image: "/Private Airport Transfer.jpg",
@@ -1877,8 +1880,8 @@ export const activitiesData: Record<string, Activity[]> = {
             features: ["24/7 Premium Service", "Meet & Greet", "Luxury AC Vehicle", "Professional Chauffeur", "Flight Monitoring"],
             location: "RAK Airport",
             tags: ["Transport", "Luxury", "Convenience"],
-            host: { 
-                name: "Premium Airport Services", 
+            host: {
+                name: "Premium Airport Services",
                 image: "/localexpert.jpg",
                 bio: "Professional transportation company with 15+ years providing premium airport transfer services in Marrakech. Fleet of luxury vehicles with certified multilingual chauffeurs.",
                 verified: true

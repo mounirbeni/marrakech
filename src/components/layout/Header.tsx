@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, User, Settings, LogOut } from "lucide-react";
+import { Menu, User, Settings, LogOut, Search } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -18,6 +18,7 @@ import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SearchBar } from "@/components/shared/SearchBar";
+import { MobileSearchOverlay } from "@/components/mobile/MobileSearchOverlay";
 
 interface UserData {
     id: string;
@@ -33,6 +34,7 @@ export function Header() {
     const [isLoading, setIsLoading] = useState(true);
     const [isScrolled, setIsScrolled] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
     const navLinks = [
         { name: "Things to do", href: "/search" },
@@ -185,10 +187,20 @@ export function Header() {
                 </div>
 
                 {/* Mobile Menu */}
-                <div className="md:hidden flex items-center gap-4">
+                <div className="md:hidden flex items-center gap-2">
+                    {/* Mobile Search Icon */}
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setMobileSearchOpen(true)}
+                        className="text-black hover:bg-gray-100 h-10 w-10"
+                    >
+                        <Search className="h-5 w-5" />
+                    </Button>
+
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon" className="text-black hover:bg-gray-100">
+                            <Button variant="ghost" size="icon" className="text-black hover:bg-gray-100 h-10 w-10">
                                 <Menu className="h-6 w-6" />
                             </Button>
                         </SheetTrigger>
@@ -248,6 +260,12 @@ export function Header() {
                     </Sheet>
                 </div>
             </div>
+
+            {/* Mobile Search Overlay */}
+            <MobileSearchOverlay
+                isOpen={mobileSearchOpen}
+                onClose={() => setMobileSearchOpen(false)}
+            />
         </header>
     );
 }

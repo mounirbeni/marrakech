@@ -14,9 +14,33 @@ export function Categories() {
     ];
 
     return (
-        <section className="py-12 bg-white border-b border-[#E0E0E0]">
+        <section className="py-8 md:py-12 bg-white border-b border-[#E0E0E0]">
             <div className="container mx-auto px-4 max-w-[1400px]">
-                <div className="flex flex-wrap justify-center md:justify-between items-center gap-6 md:gap-8 overflow-x-auto pb-4 md:pb-0 scrollbar-hide">
+                {/* Mobile: Horizontal Scroll */}
+                <div className="md:hidden overflow-x-auto scrollbar-hide -mx-4 px-4">
+                    <div className="flex gap-6 pb-2">
+                        {categories.map((item) => {
+                            const Icon = item.icon;
+                            return (
+                                <Link
+                                    key={item.label}
+                                    href={item.href}
+                                    className="group flex flex-col items-center gap-3 min-w-[90px] flex-shrink-0"
+                                >
+                                    <div className="w-16 h-16 rounded-full border-2 border-gray-300 flex items-center justify-center transition-all duration-200 group-hover:border-[#FF5F00] group-hover:shadow-md bg-white active:scale-95">
+                                        <Icon className="w-7 h-7 text-gray-700 group-hover:text-[#FF5F00] transition-colors stroke-[1.5]" />
+                                    </div>
+                                    <span className="text-xs font-bold text-black text-center leading-tight">
+                                        {item.label}
+                                    </span>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Desktop: Centered Grid */}
+                <div className="hidden md:flex flex-wrap justify-center items-center gap-8">
                     {categories.map((item) => {
                         const Icon = item.icon;
                         return (

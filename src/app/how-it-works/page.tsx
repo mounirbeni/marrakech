@@ -136,7 +136,7 @@ export default function HowItWorksPage() {
                     <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
                         Browse our collection of authentic experiences and start planning your unforgettable journey today.
                     </p>
-                    <Link href="/experiences">
+                    <Link href="/search">
                         <button className="px-8 py-4 bg-primary text-primary-foreground rounded-full font-semibold text-lg hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl">
                             Explore Experiences
                         </button>

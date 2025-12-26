@@ -164,7 +164,7 @@ export default function AboutPage() {
                         Join thousands of satisfied travelers and book your next adventure with us today.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                        <Link href="/experiences">
+                        <Link href="/search">
                             <Button size="lg" className="text-lg px-8 py-6 rounded-full shadow-xl hover:shadow-2xl transition-all w-full sm:w-auto">
                                 Browse Experiences
                             </Button>

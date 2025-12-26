@@ -25,10 +25,24 @@ model Booking {
   dietary         String?
   specialRequests String?
   packageName     String?
-  status          String   @default("PENDING")
+  status          String    @default("PENDING")
+  paymentStatus   String    @default("UNPAID") // UNPAID, PAID, REFUNDED
+  invoiceUrl      String?
   userId          String?
-  user            User?    @relation(fields: [userId], references: [id])
+  user            User?     @relation(fields: [userId], references: [id])
+  payments        Payment[]
   review          Review?
+}
+
+model Payment {
+  id        String   @id @default(uuid())
+  amount    Float
+  currency  String   @default("EUR")
+  status    String   @default("PENDING") // PENDING, COMPLETED, FAILED
+  method    String?  // CREDIT_CARD, PAYPAL, CASH
+  createdAt DateTime @default(now())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id])
 }
 
 model NewsletterSubscriber {
@@ -43,6 +57,7 @@ model User {
   email              String         @unique
   password           String
   name               String?
+  phone              String?
   role               String         @default("CLIENT")
   canMessage         Boolean        @default(true)
   conversationStatus String         @default("NONE")
@@ -51,7 +66,10 @@ model User {
   bookings           Booking[]
   conversations      Conversation[]
   messages           Message[]
+  notifications      Notification[]
   reviews            Review[]
+  loyaltyPoints      Int            @default(0)
+  wishlist           String[]       @default([])
 }
 
 model Conversation {
@@ -75,6 +93,18 @@ model Message {
   createdAt      DateTime     @default(now())
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   user           User         @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      String   @default("INFO") // INFO, SUCCESS, WARNING, ERROR, BOOKING
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  link      String?
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Review {

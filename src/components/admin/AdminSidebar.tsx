@@ -2,10 +2,10 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Calendar, Settings, LogOut, Package, MessageSquare, Users, Shield } from 'lucide-react'
+import { LayoutDashboard, Calendar, Settings, LogOut, Package, MessageSquare, Users, Shield, ClipboardList } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { ThemeToggle } from '@/components/shared/ThemeToggle'
+// removed import
 
 const sidebarItems = [
     {
@@ -16,7 +16,7 @@ const sidebarItems = [
     {
         title: 'Bookings',
         href: '/admin/bookings',
-        icon: Calendar,
+        icon: ClipboardList,
     },
     {
         title: 'Calendar',
@@ -96,10 +96,8 @@ export function AdminSidebar({ onClose }: AdminSidebarProps) {
 
             {/* Footer */}
             <div className="border-t p-4 space-y-4">
-                <div className="flex items-center justify-between px-2">
-                    <span className="text-xs font-medium text-muted-foreground">Theme</span>
-                    <ThemeToggle />
-                </div>
+// removed theme toggle
+
                 <Button
                     variant="ghost"
                     className="w-full justify-start rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors h-11 px-4"

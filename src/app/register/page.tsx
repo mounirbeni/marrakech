@@ -1,45 +1,61 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Eye, EyeOff, Lock, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, User, ArrowRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 
-export default function LoginPage() {
+export default function RegisterPage() {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
     // Form state
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Validation
+        if (password !== confirmPassword) {
+            toast.error('Passwords do not match');
+            return;
+        }
+
+        if (password.length < 6) {
+            toast.error('Password must be at least 6 characters');
+            return;
+        }
+
         setIsLoading(true);
 
         try {
-            const result = await signIn('credentials', {
-                email,
-                password,
-                redirect: false,
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password }),
             });
 
-            if (result?.error) {
-                toast.error('Invalid email or password');
-            } else {
-                toast.success('Welcome back!');
-                router.push(callbackUrl);
-                router.refresh();
+            const data = await response.json();
+
+            if (!response.ok) {
+                toast.error(data.error || 'Registration failed');
+                return;
             }
+
+            toast.success('Account created successfully! Welcome aboard!');
+
+            // Redirect to dashboard after successful registration
+            router.push('/dashboard');
+            router.refresh();
+
         } catch (error) {
             toast.error('Something went wrong. Please try again.');
         } finally {
@@ -59,15 +75,33 @@ export default function LoginPage() {
                             </span>
                         </Link>
                         <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-                            Welcome back
+                            Create your account
                         </h1>
                         <p className="text-muted-foreground">
-                            Enter your credentials to access your account
+                            Start your journey to discover Marrakech
                         </p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="name">Full Name</Label>
+                                <div className="relative">
+                                    <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        id="name"
+                                        placeholder="John Doe"
+                                        type="text"
+                                        autoComplete="name"
+                                        disabled={isLoading}
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="pl-9 h-11"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
                                 <div className="relative">
@@ -87,28 +121,22 @@ export default function LoginPage() {
                                     />
                                 </div>
                             </div>
+
                             <div className="space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <Label htmlFor="password">Password</Label>
-                                    <Link
-                                        href="/forgot-password"
-                                        className="text-sm font-medium text-[#FF5F00] hover:text-[#E55500]"
-                                    >
-                                        Forgot password?
-                                    </Link>
-                                </div>
+                                <Label htmlFor="password">Password</Label>
                                 <div className="relative">
                                     <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                     <Input
                                         id="password"
                                         placeholder="••••••••"
                                         type={showPassword ? "text" : "password"}
-                                        autoComplete="current-password"
+                                        autoComplete="new-password"
                                         disabled={isLoading}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         className="pl-9 pr-9 h-11"
                                         required
+                                        minLength={6}
                                     />
                                     <button
                                         type="button"
@@ -123,16 +151,25 @@ export default function LoginPage() {
                                     </button>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id="remember" />
-                            <label
-                                htmlFor="remember"
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            >
-                                Remember me
-                            </label>
+                            <div className="space-y-2">
+                                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        id="confirmPassword"
+                                        placeholder="••••••••"
+                                        type={showPassword ? "text" : "password"}
+                                        autoComplete="new-password"
+                                        disabled={isLoading}
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        className="pl-9 h-11"
+                                        required
+                                        minLength={6}
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         <Button
@@ -143,11 +180,11 @@ export default function LoginPage() {
                             {isLoading ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Signing in...
+                                    Creating account...
                                 </>
                             ) : (
                                 <>
-                                    Sign In <ArrowRight className="ml-2 h-4 w-4" />
+                                    Create Account <ArrowRight className="ml-2 h-4 w-4" />
                                 </>
                             )}
                         </Button>
@@ -192,9 +229,20 @@ export default function LoginPage() {
                     </div>
 
                     <p className="text-center text-sm text-muted-foreground">
-                        Don't have an account?{" "}
-                        <Link href="/register" className="font-semibold text-[#FF5F00] hover:text-[#E55500]">
-                            Sign up
+                        Already have an account?{" "}
+                        <Link href="/login" className="font-semibold text-[#FF5F00] hover:text-[#E55500]">
+                            Sign in
+                        </Link>
+                    </p>
+
+                    <p className="text-center text-xs text-muted-foreground">
+                        By creating an account, you agree to our{" "}
+                        <Link href="/terms" className="underline hover:text-foreground">
+                            Terms of Service
+                        </Link>{" "}
+                        and{" "}
+                        <Link href="/privacy" className="underline hover:text-foreground">
+                            Privacy Policy
                         </Link>
                     </p>
                 </div>
@@ -203,18 +251,16 @@ export default function LoginPage() {
             {/* Right Side - Image/Banner */}
             <div className="hidden lg:block relative bg-[#FFF5F0]">
                 <div className="absolute inset-0">
-                    {/* We could use an actual image here, but a gradient placeholder works for now if no image is available 
-                       If there's an image in public, we could use it. */}
                     <div className="absolute inset-0 bg-[url('/marrakech-bg.jpg')] bg-cover bg-center mix-blend-overlay opacity-50" />
                     <div className="absolute inset-0 bg-gradient-to-br from-[#FF5F00]/20 to-[#E55500]/20" />
                 </div>
                 <div className="relative h-full flex items-center justify-center p-12 text-center">
                     <div className="max-w-xl space-y-6">
                         <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                            Experience the Magic of Marrakech
+                            Join Thousands of Happy Travelers
                         </h2>
                         <p className="text-lg text-gray-700">
-                            "The sheer variety of experiences available made our trip unforgettable. Highly recommended!"
+                            "Creating an account was seamless, and the personalized recommendations made planning our trip so easy!"
                         </p>
                         <div className="flex items-center justify-center gap-2">
                             {[1, 2, 3, 4, 5].map((i) => (
@@ -223,7 +269,7 @@ export default function LoginPage() {
                                 </svg>
                             ))}
                         </div>
-                        <p className="font-semibold text-gray-900">- Sarah Jenkins, UK</p>
+                        <p className="font-semibold text-gray-900">- Michael Chen, USA</p>
                     </div>
                 </div>
             </div>

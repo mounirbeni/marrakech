@@ -131,7 +131,7 @@ export default function ProfilePage() {
                             <Button
                                 variant="outline"
                                 className="w-full justify-start"
-                                onClick={() => router.push('/experiences')}
+                                onClick={() => router.push('/search')}
                             >
                                 Browse Experiences
                             </Button>

@@ -51,7 +51,7 @@ export default function WishlistPage() {
                         <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 max-w-md mx-auto">
                             Start adding experiences you love by clicking the heart icon on any activity card
                         </p>
-                        <Link href="/experiences">
+                        <Link href="/search">
                             <Button size="lg" className="rounded-full">
                                 Browse Experiences
                             </Button>

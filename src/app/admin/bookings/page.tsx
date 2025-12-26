@@ -11,8 +11,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import prisma from "@/lib/prisma";
 import { format } from "date-fns";
-import { Check, X, Eye } from "lucide-react";
+import { Check, X, Eye, FileText, MoreHorizontal } from "lucide-react";
 import Link from 'next/link';
+import { BookingActions } from "@/components/admin/BookingActions";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const dynamic = 'force-dynamic';
 
@@ -74,25 +83,16 @@ export default async function AdminBookingsPage() {
                                     </TableCell>
                                     <TableCell>€{booking.totalPrice}</TableCell>
                                     <TableCell className="text-right">
-                                        <div className="flex justify-end gap-2">
-                                            {/* In a real app, these would wrap server actions or API calls */}
-                                            <Button size="icon" variant="ghost" className="h-8 w-8 text-green-600">
-                                                <Check className="h-4 w-4" />
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="h-8 w-8 text-red-600">
-                                                <X className="h-4 w-4" />
-                                            </Button>
-                                            <Button size="icon" variant="ghost" className="h-8 w-8">
-                                                <Eye className="h-4 w-4" />
-                                            </Button>
-                                        </div>
+                                        <BookingActions bookingId={booking.id} status={booking.status} />
+                                    </div>
+                                </div>
                                     </TableCell>
-                                </TableRow>
-                            ))
+                </TableRow>
+                ))
                         )}
-                    </TableBody>
-                </Table>
-            </div>
-        </div>
+            </TableBody>
+        </Table>
+            </div >
+        </div >
     );
 }

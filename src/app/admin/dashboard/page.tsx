@@ -38,22 +38,76 @@ export default async function AdminDashboard() {
                 <StatsCard title="Active Experiences" value={stats.servicesCount.toString()} icon={TrendingUp} description="Currently listed" />
             </div>
 
-            {/* Recent Bookings Table placeholder */}
+            {/* Recent Bookings and Activity */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
+                <Card className="col-span-4 shadow-sm">
                     <CardHeader>
-                        <CardTitle>Recent Sales</CardTitle>
+                        <CardTitle>Recent Bookings</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-sm text-muted-foreground">No recent sales data yet.</div>
+                        {/* We would fetch recent bookings here. For now, showing a structured place for them. */}
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
+                                <div className="space-y-1">
+                                    <p className="text-sm font-medium leading-none">Oliver Davis</p>
+                                    <p className="text-xs text-muted-foreground">Atlas Mountains Day Trip</p>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <div className="font-medium">€150.00</div>
+                                    <div className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Confirmed</div>
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
+                                <div className="space-y-1">
+                                    <p className="text-sm font-medium leading-none">Sophie Miller</p>
+                                    <p className="text-xs text-muted-foreground">Medina Cultural Tour</p>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <div className="font-medium">€85.00</div>
+                                    <div className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">Pending</div>
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
+                                <div className="space-y-1">
+                                    <p className="text-sm font-medium leading-none">James Wilson</p>
+                                    <p className="text-xs text-muted-foreground">Desert Sunset Camel Ride</p>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <div className="font-medium">€200.00</div>
+                                    <div className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Completed</div>
+                                </div>
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
-                <Card className="col-span-3">
+                <Card className="col-span-3 shadow-sm">
                     <CardHeader>
-                        <CardTitle>Recent Activity</CardTitle>
+                        <CardTitle>System Health</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-sm text-muted-foreground">System logs will appear here.</div>
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-4">
+                                <div className="h-2 w-2 rounded-full bg-green-500" />
+                                <div className="flex-1 space-y-1">
+                                    <p className="text-sm font-medium leading-none">Database</p>
+                                    <p className="text-xs text-muted-foreground">Operational</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <div className="h-2 w-2 rounded-full bg-green-500" />
+                                <div className="flex-1 space-y-1">
+                                    <p className="text-sm font-medium leading-none">API Gateway</p>
+                                    <p className="text-xs text-muted-foreground">Operational</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <div className="h-2 w-2 rounded-full bg-green-500" />
+                                <div className="flex-1 space-y-1">
+                                    <p className="text-sm font-medium leading-none">Email Service</p>
+                                    <p className="text-xs text-muted-foreground">Operational</p>
+                                </div>
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
             </div>

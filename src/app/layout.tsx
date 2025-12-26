@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { WishlistProvider } from "@/lib/contexts/WishlistContext";
-import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/components/providers/AuthProvider";
 import { Toaster } from "sonner";
 
 // Configure fonts
@@ -80,10 +80,7 @@ export const viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
-    { media: '(prefers-color-scheme: dark)', color: '#0F172A' },
-  ],
+  themeColor: '#FFFFFF',
 };
 
 export default function RootLayout({
@@ -92,21 +89,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-US" suppressHydrationWarning>
-
-      <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
-        <WishlistProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            disableTransitionOnChange
-          >
+    <html lang="en-US">
+      <body className={`${inter.variable} antialiased`}>
+        <AuthProvider>
+          <WishlistProvider>
             <PublicLayout>
               {children}
             </PublicLayout>
             <Toaster />
-          </ThemeProvider>
-        </WishlistProvider>
+          </WishlistProvider>
+        </AuthProvider>
       </body>
     </html>
   );

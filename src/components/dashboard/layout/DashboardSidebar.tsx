@@ -2,128 +2,166 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 import {
     LayoutDashboard,
-    Calendar, // Changed from CalendarDays
+    ShoppingBag,
     Heart,
-    LifeBuoy,
-    LogOut,
-    Map,
-    UserCircle, // Changed from User
-    ChevronRight,
+    MessageSquare,
+    Bell,
     Settings,
-    CreditCard // Added CreditCard
+    HelpCircle,
+    CreditCard,
+    User,
+    LogOut,
+    ChevronRight,
+    Sparkles
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 
-const sidebarItems = [
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> { }
+
+const menuItems = [
     {
         title: "Overview",
-        href: "/dashboard",
-        icon: LayoutDashboard,
+        label: "Main",
+        items: [
+            {
+                title: "Dashboard",
+                href: "/dashboard",
+                icon: LayoutDashboard,
+            },
+            {
+                title: "My Bookings",
+                href: "/dashboard/bookings",
+                icon: ShoppingBag,
+            },
+            {
+                title: "Wishlist",
+                href: "/dashboard/wishlist",
+                icon: Heart,
+            },
+            {
+                title: "Messages",
+                href: "/dashboard/messages",
+                icon: MessageSquare,
+            },
+        ],
     },
     {
-        title: "My Bookings",
-        href: "/dashboard/bookings",
-        icon: Calendar,
-    },
-    {
-        title: "Payments",
-        href: "/dashboard/payments",
-        icon: CreditCard,
-    },
-    {
-        title: "Wishlist",
-        href: "/dashboard/wishlist",
-        icon: Heart,
-    },
-    {
-        title: "Profile",
-        href: "/dashboard/profile",
-        icon: UserCircle,
+        title: "Account",
+        label: "Settings",
+        items: [
+            {
+                title: "Profile",
+                href: "/dashboard/profile",
+                icon: User,
+            },
+            {
+                title: "Notifications",
+                href: "/dashboard/notifications",
+                icon: Bell,
+            },
+            {
+                title: "Payments",
+                href: "/dashboard/payments",
+                icon: CreditCard,
+            },
+            {
+                title: "Settings",
+                href: "/dashboard/settings",
+                icon: Settings,
+            },
+        ],
     },
     {
         title: "Support",
-        href: "/dashboard/support",
-        icon: LifeBuoy,
+        label: "Help",
+        items: [
+            {
+                title: "Help Center",
+                href: "/dashboard/support",
+                icon: HelpCircle,
+            },
+        ],
     },
 ];
 
-export function DashboardSidebar({ className }: { className?: string }) {
+export function DashboardSidebar({ className }: SidebarProps) {
     const pathname = usePathname();
-    const [userName, setUserName] = useState("Traveler");
-
-    useEffect(() => {
-        // Simple client-side fetch for name to display in sidebar
-        fetch("/api/user").then(res => res.json()).then(data => {
-            if (data.name) setUserName(data.name);
-        }).catch(() => { });
-    }, []);
+    const { data: session } = useSession();
 
     return (
-        <div className={cn("flex flex-col h-full border-r bg-card/30 backdrop-blur-xl supports-[backdrop-filter]:bg-background/20", className)}>
-            <div className="p-6">
-                <Link href="/" className="flex items-center gap-3 group">
-                    <div className="bg-primary/10 p-2 rounded-xl group-hover:bg-primary/20 transition-colors">
-                        <Map className="w-6 h-6 text-primary" />
-                    </div>
-                    <span className="font-bold text-xl tracking-tight">Marrakech</span>
-                </Link>
-            </div>
-
-            <div className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
-                {sidebarItems.map((item) => {
-                    const isActive = pathname === item.href;
-                    return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={cn(
-                                "flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden",
-                                isActive
-                                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                                    : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
-                            )}
-                        >
-                            {isActive && <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent pointer-events-none" />}
-                            <div className="flex items-center gap-3 relative z-10">
-                                <item.icon className={cn("w-5 h-5", isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-primary transition-colors")} />
-                                <span className="font-medium">{item.title}</span>
+        <div className={cn("pb-12 h-full flex flex-col bg-white border-r border-gray-100/50 shadow-[4px_0_24px_rgba(0,0,0,0.02)]", className)}>
+            <div className="space-y-6 py-6 flex-1">
+                {/* User Profile Card */}
+                <div className="px-6">
+                    <div className="bg-gradient-to-br from-[#FFF8F0] to-white border border-orange-100 p-5 rounded-3xl flex items-center gap-4 shadow-orange-100/50 relative overflow-hidden group transition-all hover:shadow-lg hover:shadow-orange-100/50">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FF5F00] to-[#E55500] flex items-center justify-center text-white shadow-lg shadow-orange-500/20 z-10 group-hover:scale-105 transition-transform">
+                            <span className="font-bold text-xl">{session?.user?.name?.[0]?.toUpperCase() || 'T'}</span>
+                        </div>
+                        <div className="flex flex-col overflow-hidden z-10">
+                            <span className="font-bold text-sm truncate text-gray-900">{session?.user?.name || 'Traveler'}</span>
+                            <div className="flex items-center gap-1 mt-1">
+                                <Sparkles className="w-3 h-3 text-[#FF5F00]" />
+                                <span className="text-[10px] text-[#FF5F00] uppercase tracking-wider font-extrabold">Premium Member</span>
                             </div>
-                            {isActive && <ChevronRight className="w-4 h-4 text-primary-foreground/70" />}
-                        </Link>
-                    );
-                })}
-            </div>
-
-            <div className="p-4 border-t border-border/50 bg-card/20">
-                <div className="flex items-center gap-3 mb-4 px-2">
-                    <Avatar className="h-10 w-10 border-2 border-background/50 shadow-sm">
-                        <AvatarImage src="/avatars/01.png" />
-                        <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                            {userName.charAt(0)}
-                        </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 overflow-hidden">
-                        <p className="text-sm font-medium truncate">{userName}</p>
-                        <Link href="/dashboard/profile" className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                            View Profile
-                        </Link>
+                        </div>
+                        {/* Decorative Circle */}
+                        <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-orange-100 to-orange-50 rounded-full opacity-50 group-hover:scale-125 transition-transform duration-700 blur-xl" />
                     </div>
                 </div>
+
+                <div className="px-4">
+                    {menuItems.map((group, i) => (
+                        <div key={i} className="mb-8">
+                            <h2 className="mb-3 px-4 text-[11px] font-extrabold uppercase tracking-[0.2em] text-gray-400/80">
+                                {group.label}
+                            </h2>
+                            <div className="space-y-1.5">
+                                {group.items.map((item) => {
+                                    const isActive = pathname === item.href;
+                                    return (
+                                        <Link
+                                            key={item.href}
+                                            href={item.href}
+                                            className={cn(
+                                                "group flex items-center rounded-2xl px-4 py-3.5 text-sm font-bold transition-all duration-200 relative overflow-hidden",
+                                                isActive
+                                                    ? "text-[#FF5F00] bg-orange-50/80 shadow-sm"
+                                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                                            )}
+                                        >
+                                            {isActive && (
+                                                <div className="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1 bg-[#FF5F00] rounded-r-full" />
+                                            )}
+                                            <item.icon className={cn(
+                                                "mr-4 h-5 w-5 transition-colors duration-200",
+                                                isActive ? "text-[#FF5F00]" : "text-gray-400 group-hover:text-gray-600"
+                                            )} />
+                                            <span className="flex-1 relative z-10">{item.title}</span>
+
+                                            {isActive && <ChevronRight className="ml-2 h-4 w-4 text-[#FF5F00] opacity-100" />}
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div className="px-6 mt-auto pt-6 pb-6 border-t border-gray-50">
                 <Button
                     variant="ghost"
-                    className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl"
-                    onClick={async () => {
-                        await fetch('/api/auth/logout', { method: 'POST' });
-                        window.location.href = '/login';
-                    }}
+                    className="w-full justify-start rounded-2xl text-gray-500 hover:text-red-600 hover:bg-red-50 font-bold transition-all duration-200 h-12"
+                    onClick={() => signOut({ callbackUrl: '/' })}
                 >
-                    <LogOut className="w-5 h-5" />
-                    <span>Sign Out</span>
+                    <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-red-100 flex items-center justify-center mr-3 transition-colors">
+                        <LogOut className="h-4 w-4" />
+                    </div>
+                    Sign Out
                 </Button>
             </div>
         </div>

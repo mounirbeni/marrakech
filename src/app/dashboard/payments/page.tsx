@@ -30,7 +30,7 @@ export default function PaymentsPage() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center justify-center py-8 space-y-6">
-                        <div className="flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 rounded-full text-sm font-medium">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-full text-sm font-medium">
                             <AlertCircle className="h-4 w-4" />
                             <span>Coming Soon</span>
                         </div>

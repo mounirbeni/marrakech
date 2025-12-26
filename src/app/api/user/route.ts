@@ -15,12 +15,9 @@ export async function GET() {
                 id: true,
                 name: true,
                 email: true,
-                // phone: true, // Field does not exist on User model
+                phone: true,
             }
         });
-
-        // Wait, I need to check if schema has phone for User. 
-        // If not, I should add it or just stick to name.
 
         return NextResponse.json(user);
     } catch (error) {
@@ -37,12 +34,18 @@ export async function PUT(request: Request) {
         }
 
         const body = await request.json();
-        const { name } = body;
+        const { name, phone } = body;
+
+        // Basic validation
+        if (name && name.length < 2) {
+            return new NextResponse('Name too short', { status: 400 });
+        }
 
         const updatedUser = await prisma.user.update({
             where: { id: session.id },
             data: {
-                name
+                name,
+                phone
             }
         });
 

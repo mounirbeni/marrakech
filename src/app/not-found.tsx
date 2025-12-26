@@ -18,7 +18,7 @@ export default function NotFound() {
                             Go Home
                         </Button>
                     </Link>
-                    <Link href="/experiences">
+                    <Link href="/search">
                         <Button size="lg" variant="outline" className="rounded-full">
                             Browse Experiences
                         </Button>

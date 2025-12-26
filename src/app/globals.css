@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+
 @theme {
   /* Deep Orange Color Palette - TripAdvisor Style */
   --color-primary: #FF5F00;
@@ -24,6 +27,7 @@
 
 /* Enhanced Light Mode */
 :root {
+  color-scheme: light;
   --background: #FFFFFF;
   --foreground: #1A1A1A;
 

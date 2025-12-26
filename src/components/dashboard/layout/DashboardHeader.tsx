@@ -1,112 +1,146 @@
 "use client";
 
-import { Bell, Menu, Search } from "lucide-react";
+import { Bell, Search, Menu, User, Settings, LogOut, Heart, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSession, signOut } from "next-auth/react";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuTrigger,
+    DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { DashboardSidebar } from "./DashboardSidebar";
+import Link from "next/link";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export function DashboardHeader() {
+    const { data: session } = useSession();
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+        // Simple polling for unread notifications/messages could go here
+        // For now, we'll leave it simple or fetch from the stats API we built
+        const fetchStats = async () => {
+            try {
+                const res = await fetch('/api/dashboard/stats');
+                if (res.ok) {
+                    const data = await res.json();
+                    setUnreadCount(data.stats?.unreadMessages || 0);
+                }
+            } catch (e) { }
+        }
+        fetchStats();
+    }, []);
+
     return (
-        <header className="h-16 border-b bg-card/50 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-50">
-            <div className="flex items-center gap-4 lg:hidden">
-                <Sheet>
-                    <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                            <Menu className="w-5 h-5" />
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="p-0 border-r w-72">
-                        <DashboardSidebar className="border-none" />
-                    </SheetContent>
-                </Sheet>
-                <span className="font-bold text-lg">Marrakech</span>
+        <header className="sticky top-0 z-40 flex h-24 w-full items-center gap-4 bg-white/80 backdrop-blur-2xl border-b border-gray-100/50 px-8 transition-all duration-300">
+            {/* Mobile Nav Toggle */}
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon" className="lg:hidden text-gray-500 hover:text-[#FF5F00] hover:bg-orange-50 rounded-xl">
+                        <Menu className="h-6 w-6" />
+                        <span className="sr-only">Toggle navigation menu</span>
+                    </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="p-0 w-72 border-r-0">
+                    <SheetHeader className="p-6 border-b border-gray-50 text-left bg-[#FFF8F0]">
+                        <SheetTitle className="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#FF5F00] to-[#E55500]">
+                            Marrakech Luxe
+                        </SheetTitle>
+                    </SheetHeader>
+                    <DashboardSidebar className="border-none shadow-none" />
+                </SheetContent>
+            </Sheet>
+
+            {/* Title / Breadcrumb Placeholder */}
+            <div className="flex-1 hidden md:block">
+                <nav className="flex text-sm text-gray-500 font-bold items-center">
+                    <Link href="/" className="hover:text-[#FF5F00] transition-colors">Home</Link>
+                    <span className="mx-3 text-gray-300">/</span>
+                    <span className="text-gray-900 bg-gray-100/50 px-3 py-1 rounded-full">Dashboard</span>
+                </nav>
             </div>
 
-            <div className="hidden lg:flex items-center gap-4 flex-1 max-w-xl">
-                <div className="relative w-full max-w-sm">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        type="search"
-                        placeholder="Search bookings or experiences..."
-                        className="pl-9 bg-background/50 border-muted-foreground/20 focus-visible:ring-primary/20"
-                    />
-                </div>
+            {/* Desktop Center - Search */}
+            <div className="flex-1 md:flex-initial max-w-md w-full relative group">
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-[#FF5F00] transition-colors" />
+                <Input
+                    placeholder="Search trips, messages..."
+                    className="pl-12 bg-gray-50/80 border-transparent focus:border-orange-100 focus:bg-white focus:ring-4 focus:ring-orange-50 h-12 transition-all rounded-full font-medium"
+                />
             </div>
 
-            <div className="flex items-center gap-4">
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
-                            <Bell className="w-5 h-5" />
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full ring-2 ring-background animate-pulse" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-80 p-0" align="end">
-                        <div className="p-4 border-b">
-                            <h4 className="font-semibold leading-none">Notifications</h4>
-                        </div>
-                        <div className="grid gap-1 p-1">
-                            {[
-                                { title: "Booking Confirmed", desc: "Your trip to Atlas Mountains is set!", time: "2m ago", unread: true },
-                                { title: "Welcome!", desc: "Thanks for joining Marrakech Escapes.", time: "1d ago", unread: false }
-                            ].map((item, i) => (
-                                <div key={i} className={`flex flex-col gap-1 p-3 rounded-lg hover:bg-muted/50 transition-colors ${item.unread ? 'bg-primary/5' : ''}`}>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">{item.title}</span>
-                                        <span className="text-xs text-muted-foreground">{item.time}</span>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground line-clamp-2">{item.desc}</p>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="p-2 border-t text-center">
-                            <Button variant="ghost" size="sm" className="w-full text-xs h-auto py-1.5">Mark all as read</Button>
-                        </div>
-                    </PopoverContent>
-                </Popover>
+            {/* Right Side Actions */}
+            <div className="flex items-center gap-3 md:gap-5">
+                <Button variant="ghost" size="icon" className="relative group hover:bg-orange-50 text-gray-400 hover:text-[#FF5F00] rounded-full h-11 w-11 transition-all">
+                    <Bell className="h-5 w-5" />
+                    {unreadCount > 0 && (
+                        <span className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-[#FF5F00] ring-2 ring-white animate-pulse" />
+                    )}
+                </Button>
+
+                <div className="h-8 w-px bg-gray-200 hidden md:block" />
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                            <Avatar className="h-9 w-9 border-2 border-primary/10">
-                                <AvatarImage src="/avatars/01.png" alt="@user" />
-                                <AvatarFallback>M</AvatarFallback>
-                            </Avatar>
+                        <Button variant="ghost" className="rounded-full pl-0 pr-3 py-1.5 h-auto hover:bg-orange-50 border border-transparent hover:border-orange-100 gap-3 transition-all">
+                            <div className="h-10 w-10 bg-gradient-to-br from-[#FF5F00] to-[#E55500] rounded-full flex items-center justify-center text-white font-bold shadow-lg shadow-orange-500/20 ring-2 ring-white">
+                                {session?.user?.name?.[0]?.toUpperCase() || 'U'}
+                            </div>
+                            <div className="hidden md:flex flex-col items-start">
+                                <span className="text-sm font-bold text-gray-800 leading-none mb-1">
+                                    {session?.user?.name?.split(' ')[0]}
+                                </span>
+                                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider leading-none">
+                                    Premium
+                                </span>
+                            </div>
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56" align="end" forceMount>
-                        <DropdownMenuLabel className="font-normal">
+                    <DropdownMenuContent align="end" className="w-64 p-2 rounded-3xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border-gray-100 animate-in slide-in-from-top-2 duration-200">
+                        <DropdownMenuLabel className="p-4">
                             <div className="flex flex-col space-y-1">
-                                <p className="text-sm font-medium leading-none">Mounir</p>
-                                <p className="text-xs leading-none text-muted-foreground">
-                                    mounir@example.com
-                                </p>
+                                <p className="text-sm font-bold leading-none text-gray-900">{session?.user?.name}</p>
+                                <p className="text-xs leading-none text-gray-500 font-medium">{session?.user?.email}</p>
                             </div>
                         </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Profile</DropdownMenuItem>
-                        <DropdownMenuItem>Billing</DropdownMenuItem>
-                        <DropdownMenuItem>Settings</DropdownMenuItem>
-                        <DropdownMenuSeparator />
+                        <DropdownMenuSeparator className="bg-gray-100 my-1" />
+                        <DropdownMenuItem asChild>
+                            <Link href="/dashboard/profile" className="flex items-center gap-3 p-3 rounded-2xl cursor-pointer hover:bg-orange-50 text-gray-600 hover:text-[#FF5F00] transition-colors font-medium">
+                                <User className="h-4 w-4" />
+                                <span>My Profile</span>
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                            <Link href="/dashboard/bookings" className="flex items-center gap-3 p-3 rounded-2xl cursor-pointer hover:bg-orange-50 text-gray-600 hover:text-[#FF5F00] transition-colors font-medium">
+                                <ShoppingBag className="h-4 w-4" />
+                                <span>Bookings</span>
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                            <Link href="/dashboard/wishlist" className="flex items-center gap-3 p-3 rounded-2xl cursor-pointer hover:bg-orange-50 text-gray-600 hover:text-[#FF5F00] transition-colors font-medium">
+                                <Heart className="h-4 w-4" />
+                                <span>Wishlist</span>
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                            <Link href="/dashboard/settings" className="flex items-center gap-3 p-3 rounded-2xl cursor-pointer hover:bg-orange-50 text-gray-600 hover:text-[#FF5F00] transition-colors font-medium">
+                                <Settings className="h-4 w-4" />
+                                <span>Settings</span>
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator className="bg-gray-100 my-1" />
                         <DropdownMenuItem
-                            className="text-destructive focus:text-destructive cursor-pointer"
-                            onClick={async () => {
-                                await fetch('/api/auth/logout', { method: 'POST' });
-                                window.location.href = '/login';
-                            }}
+                            className="flex items-center gap-3 p-3 rounded-2xl text-red-600 focus:bg-red-50 focus:text-red-700 cursor-pointer font-bold"
+                            onClick={() => signOut({ callbackUrl: '/' })}
                         >
-                            Log out
+                            <LogOut className="h-4 w-4" />
+                            <span>Log out</span>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

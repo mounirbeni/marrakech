@@ -8,9 +8,9 @@ import SkipLink from "@/components/shared/SkipLink"
 
 export function PublicLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
-    const isAdmin = pathname?.startsWith('/admin')
+    const isExcluded = pathname?.startsWith('/admin') || pathname?.startsWith('/dashboard')
 
-    if (isAdmin) {
+    if (isExcluded) {
         return <>{children}</>
     }
 

@@ -48,26 +48,42 @@ export default function CustomersPage() {
         )
     })
 
+    const handleSuspend = async (userId: string, currentStatus: boolean) => {
+        if (!confirm("Are you sure you want to suspend this user?")) return;
+        try {
+            const res = await fetch(`/api/admin/customers/${userId}/suspend`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ suspended: true }),
+            });
+            if (res.ok) {
+                // native mutate would be better but window reload is safer for 'Start from Zero' reliability
+                window.location.reload();
+            } else {
+                alert("Failed to suspend user");
+            }
+        } catch (error) {
+            alert("Error canceling booking");
+        }
+    };
+
     if (error) return <div>Failed to load customers</div>
     if (isLoading) return <div>Loading...</div>
 
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
+            {/* ... header ... */}
             <div className="flex items-center justify-between space-y-2">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">Customers</h2>
-                    <p className="text-muted-foreground">
-                        View and manage your registered customers.
-                    </p>
+                    <p className="text-muted-foreground">View and manage your registered customers.</p>
                 </div>
             </div>
 
             <Card>
                 <CardHeader>
                     <CardTitle>All Customers</CardTitle>
-                    <CardDescription>
-                        A list of all registered users on the platform.
-                    </CardDescription>
+                    <CardDescription>A list of all registered users on the platform.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex items-center gap-2 mb-6 max-w-sm">
@@ -120,16 +136,29 @@ export default function CustomersPage() {
                                             {user._count?.bookings || 0} bookings
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <Button variant="ghost" size="sm" onClick={() => window.location.href = `mailto:${user.email}`}>
-                                                <Mail className="mr-2 h-4 w-4" />
-                                                Email
-                                            </Button>
+                                            <div className="flex justify-end gap-2">
+                                                <Button variant="outline" size="sm" onClick={() => window.location.href = `mailto:${user.email}`}>
+                                                    <Mail className="h-4 w-4 mr-2" />
+                                                    Message
+                                                </Button>
+                                                <Button variant="secondary" size="sm">
+                                                    Edit
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="text-destructive hover:bg-destructive/10"
+                                                    onClick={() => handleSuspend(user.id, false)}
+                                                >
+                                                    Suspend
+                                                </Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))}
                                 {filteredUsers?.length === 0 && (
                                     <TableRow>
-                                        <TableCell colSpan={4} className="h-24 text-center">
+                                        <TableCell colSpan={5} className="h-24 text-center">
                                             No customers found.
                                         </TableCell>
                                     </TableRow>

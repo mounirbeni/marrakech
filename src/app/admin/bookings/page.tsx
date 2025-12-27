@@ -84,14 +84,12 @@ export default async function AdminBookingsPage() {
                                     <TableCell>€{booking.totalPrice}</TableCell>
                                     <TableCell className="text-right">
                                         <BookingActions bookingId={booking.id} status={booking.status} />
-                                    </div>
-                                </div>
                                     </TableCell>
-                </TableRow>
-                ))
+                                </TableRow>
+                            ))
                         )}
-            </TableBody>
-        </Table>
+                    </TableBody>
+                </Table>
             </div >
         </div >
     );

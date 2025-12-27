@@ -5,21 +5,17 @@ import { getSession } from '@/lib/auth';
 export async function POST(request: Request) {
     try {
         const session = await getSession();
-        if (!session) {
-            return new NextResponse('Unauthorized', { status: 401 });
-        }
-
         const body = await request.json();
-        const { subject, message, phone } = body;
+        const { subject, message, name, email, phone } = body;
 
-        if (!subject || !message) {
-            return new NextResponse('Missing required fields', { status: 400 });
+        if (!subject || !message || !name || !email) {
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
         const supportRequest = await prisma.supportRequest.create({
             data: {
-                name: session.name || 'User',
-                email: session.email,
+                name,
+                email,
                 phone: phone || null,
                 subject,
                 message,
@@ -27,23 +23,10 @@ export async function POST(request: Request) {
             }
         });
 
-        // Optional: Create a notification for the user confirming receipt
-        try {
-            await prisma.notification.create({
-                data: {
-                    userId: session.id,
-                    title: 'Support Request Received',
-                    message: `We received your request: "${subject}". Our team will get back to you shortly.`,
-                    type: 'INFO'
-                }
-            });
-        } catch (e) {
-            // Ignore notification error if schema isn't fully ready yet, but it should be.
-        }
+        return NextResponse.json({ success: true, request: supportRequest });
 
-        return NextResponse.json(supportRequest);
     } catch (error) {
-        console.error("Support API Error:", error);
-        return new NextResponse('Internal Server Error', { status: 500 });
+        console.error('Support request creation error:', error);
+        return NextResponse.json({ error: 'Failed to submit support request' }, { status: 500 });
     }
 }

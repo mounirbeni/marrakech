@@ -4,7 +4,7 @@ import { getSession } from '@/lib/auth';
 
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getSession();
@@ -12,7 +12,7 @@ export async function PUT(
             return new NextResponse('Unauthorized', { status: 401 });
         }
 
-        const bookingId = params.id;
+        const { id: bookingId } = await params;
         const body = await request.json();
         const { action } = body; // expect 'CANCEL'
 

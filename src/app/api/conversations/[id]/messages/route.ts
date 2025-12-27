@@ -4,7 +4,7 @@ import { getSession } from '@/lib/auth';
 
 export async function POST(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await getSession();
     if (!session) {
@@ -12,7 +12,7 @@ export async function POST(
     }
 
     try {
-        const conversationId = params.id;
+        const { id: conversationId } = await params;
         const { content } = await request.json();
 
         if (!content) {

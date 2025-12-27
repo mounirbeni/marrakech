@@ -9,7 +9,7 @@ import { comparePassword } from "@/lib/auth"
 const prisma = new PrismaClient()
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-    adapter: PrismaAdapter(prisma),
+    adapter: PrismaAdapter(prisma) as any,
     session: {
         strategy: "jwt",
     },
@@ -49,7 +49,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                token.id = user.id
+                token.id = user.id as string
                 token.role = user.role
             }
             return token

@@ -13,7 +13,7 @@ export default function BookingsPage() {
     const [activeTab, setActiveTab] = useState("upcoming");
 
     // Mock data
-    const bookings = [
+    const bookings: any[] = [
         // Populate with mock data later or fetch from API
     ];
 

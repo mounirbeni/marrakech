@@ -4,7 +4,7 @@ import { getSession } from '@/lib/auth'
 
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await getSession();
     if (!session || session.role !== 'ADMIN') {
@@ -12,7 +12,7 @@ export async function PUT(
     }
 
     try {
-        const userId = params.id;
+        const { id: userId } = await params;
         // In a real app we might have an 'active' status. 
         // For 'Start from Zero', let's assume we toggle 'canMessage' or specific role, 
         // OR we add 'active' boolean to User schema if not present. 

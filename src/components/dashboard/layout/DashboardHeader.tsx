@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Search, Menu, User, Settings, LogOut, Heart, ShoppingBag } from "lucide-react";
+import { Bell, Search, Menu, User, Settings, LogOut, Heart, ShoppingBag, Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSession, signOut } from "next-auth/react";
@@ -49,7 +49,8 @@ export function DashboardHeader() {
                 </SheetTrigger>
                 <SheetContent side="left" className="p-0 w-72 border-r border-gray-100 bg-white">
                     <SheetHeader className="p-6 border-b border-gray-100 text-left">
-                        <SheetTitle className="text-xl font-bold text-[#FF5F00]">
+                        <SheetTitle className="text-xl font-bold text-[#FF5F00] flex items-center gap-2">
+                            <Compass className="w-6 h-6" />
                             Explore Marrakesh
                         </SheetTitle>
                     </SheetHeader>

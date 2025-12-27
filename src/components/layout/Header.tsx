@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import {
     Menu, X, Search, User, LogOut, LayoutDashboard,
-    Heart, ShoppingBag, ChevronDown
+    Heart, ShoppingBag, ChevronDown, Compass
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -65,6 +65,7 @@ export function Header() {
                         {/* Assuming Logo component takes className or similar, 
                  but sticking to simple link wrapper if Logo text is internal */}
                         <div className="flex items-center gap-2">
+                            <Compass className="w-8 h-8 text-[#FF5F00]" />
                             <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FF5F00] to-[#E55500]">
                                 Explore Marrakesh
                             </span>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Eye, EyeOff, Lock, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, ArrowRight, Loader2, Compass } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -54,7 +54,8 @@ export default function LoginPage() {
             <div className="flex items-center justify-center p-8 bg-white dark:bg-gray-950">
                 <div className="w-full max-w-md space-y-8">
                     <div className="space-y-2">
-                        <Link href="/" className="inline-block mb-8">
+                        <Link href="/" className="inline-flex items-center gap-2 mb-8">
+                            <Compass className="w-8 h-8 text-[#FF5F00]" />
                             <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FF5F00] to-[#E55500]">
                                 Explore Marrakesh
                             </span>

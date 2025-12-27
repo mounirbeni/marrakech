@@ -93,30 +93,28 @@ export function DashboardSidebar({ className }: SidebarProps) {
     const { data: session } = useSession();
 
     return (
-        <div className={cn("pb-12 h-full flex flex-col bg-white border-r border-gray-100/50 shadow-[4px_0_24px_rgba(0,0,0,0.02)]", className)}>
+        <div className={cn("pb-12 h-full flex flex-col bg-white border-r border-gray-100 shadow-sm", className)}>
             <div className="space-y-6 py-6 flex-1">
                 {/* User Profile Card */}
                 <div className="px-6">
-                    <div className="bg-gradient-to-br from-[#FFF8F0] to-white border border-orange-100 p-5 rounded-3xl flex items-center gap-4 shadow-orange-100/50 relative overflow-hidden group transition-all hover:shadow-lg hover:shadow-orange-100/50">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FF5F00] to-[#E55500] flex items-center justify-center text-white shadow-lg shadow-orange-500/20 z-10 group-hover:scale-105 transition-transform">
+                    <div className="bg-white border border-gray-100 p-5 rounded-3xl flex items-center gap-4 hover:shadow-md transition-all shadow-sm">
+                        <div className="w-12 h-12 rounded-2xl bg-[#FF5F00] flex items-center justify-center text-white shadow-md shadow-orange-500/20 z-10">
                             <span className="font-bold text-xl">{session?.user?.name?.[0]?.toUpperCase() || 'T'}</span>
                         </div>
                         <div className="flex flex-col overflow-hidden z-10">
-                            <span className="font-bold text-sm truncate text-gray-900">{session?.user?.name || 'Traveler'}</span>
+                            <span className="font-semibold text-sm truncate text-gray-900">{session?.user?.name || 'Traveler'}</span>
                             <div className="flex items-center gap-1 mt-1">
                                 <Sparkles className="w-3 h-3 text-[#FF5F00]" />
-                                <span className="text-[10px] text-[#FF5F00] uppercase tracking-wider font-extrabold">Premium Member</span>
+                                <span className="text-[10px] text-[#FF5F00] uppercase tracking-wider font-bold">Premium Member</span>
                             </div>
                         </div>
-                        {/* Decorative Circle */}
-                        <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-orange-100 to-orange-50 rounded-full opacity-50 group-hover:scale-125 transition-transform duration-700 blur-xl" />
                     </div>
                 </div>
 
                 <div className="px-4">
                     {menuItems.map((group, i) => (
                         <div key={i} className="mb-8">
-                            <h2 className="mb-3 px-4 text-[11px] font-extrabold uppercase tracking-[0.2em] text-gray-400/80">
+                            <h2 className="mb-3 px-4 text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
                                 {group.label}
                             </h2>
                             <div className="space-y-1.5">
@@ -127,9 +125,9 @@ export function DashboardSidebar({ className }: SidebarProps) {
                                             key={item.href}
                                             href={item.href}
                                             className={cn(
-                                                "group flex items-center rounded-2xl px-4 py-3.5 text-sm font-bold transition-all duration-200 relative overflow-hidden",
+                                                "group flex items-center rounded-2xl px-4 py-3.5 text-sm font-medium transition-all duration-200 relative overflow-hidden",
                                                 isActive
-                                                    ? "text-[#FF5F00] bg-orange-50/80 shadow-sm"
+                                                    ? "text-[#FF5F00] bg-orange-50 shadow-sm"
                                                     : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                                             )}
                                         >
@@ -155,10 +153,10 @@ export function DashboardSidebar({ className }: SidebarProps) {
             <div className="px-6 mt-auto pt-6 pb-6 border-t border-gray-50">
                 <Button
                     variant="ghost"
-                    className="w-full justify-start rounded-2xl text-gray-500 hover:text-red-600 hover:bg-red-50 font-bold transition-all duration-200 h-12"
+                    className="w-full justify-start rounded-2xl text-gray-500 hover:text-red-600 hover:bg-red-50 font-medium transition-all duration-200 h-12"
                     onClick={() => signOut({ callbackUrl: '/' })}
                 >
-                    <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-red-100 flex items-center justify-center mr-3 transition-colors">
+                    <div className="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-red-100 flex items-center justify-center mr-3 transition-colors">
                         <LogOut className="h-4 w-4" />
                     </div>
                     Sign Out

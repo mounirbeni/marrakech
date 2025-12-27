@@ -150,12 +150,12 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Loyalty Card */}
-                <Card className="bg-white border-none shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06)] rounded-3xl relative overflow-hidden flex flex-col justify-between p-6">
+                <Card className="bg-white border-none shadow-sm rounded-3xl relative overflow-hidden flex flex-col justify-between p-6 hover:shadow-md transition-shadow">
                     <div>
                         <div className="flex justify-between items-start mb-4">
                             <div>
-                                <h3 className="text-gray-400 font-bold text-xs uppercase tracking-widest">Loyalty Status</h3>
-                                <div className={`text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${tier.color} mt-1`}>
+                                <h3 className="text-gray-500 font-medium text-xs uppercase tracking-widest">Loyalty Status</h3>
+                                <div className={`text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${tier.color} mt-1`}>
                                     {tier.name}
                                 </div>
                             </div>
@@ -165,9 +165,9 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="mb-2">
-                            <div className="flex justify-between text-sm font-bold mb-2">
+                            <div className="flex justify-between text-sm font-medium mb-2">
                                 <span className="text-gray-900">{data?.user?.loyaltyPoints || 0} Points</span>
-                                <span className="text-gray-400">{tier.next} Goal</span>
+                                <span className="text-gray-500">{tier.next} Goal</span>
                             </div>
                             <div className="h-3 w-full bg-gray-100 rounded-full overflow-hidden">
                                 <div
@@ -194,7 +194,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Countdown Widget (Double Width) */}
                 <motion.div variants={item} className="md:col-span-2">
-                    <Card className="h-full border-none shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06)] rounded-3xl overflow-hidden relative group">
+                    <Card className="h-full border-none shadow-sm rounded-3xl overflow-hidden relative group bg-white">
                         {data?.upcomingTrip ? (
                             <>
                                 <div className="absolute inset-0 bg-black/40 z-10 transition-colors group-hover:bg-black/50" />
@@ -238,12 +238,12 @@ export default function DashboardPage() {
                                 </CardContent>
                             </>
                         ) : (
-                            <CardContent className="h-full flex flex-col items-center justify-center p-8 bg-gray-50/50">
-                                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-gray-100">
-                                    <MapPin className="w-8 h-8 text-gray-300" />
+                            <CardContent className="h-full flex flex-col items-center justify-center p-8 bg-white">
+                                <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-4 shadow-sm">
+                                    <MapPin className="w-8 h-8 text-[#FF5F00]" />
                                 </div>
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">No upcoming trips</h3>
-                                <p className="text-gray-500 text-center text-sm mb-4">
+                                <p className="text-gray-500 text-center text-sm mb-4 font-medium">
                                     Your next adventure is waiting for you!
                                 </p>
                                 <Link href="/search">
@@ -259,37 +259,37 @@ export default function DashboardPage() {
                 {/* Quick Stats Grid */}
                 <motion.div variants={item} className="grid grid-cols-2 gap-4 md:col-span-2">
                     <Link href="/dashboard/bookings" className="group">
-                        <Card className="h-full border-none shadow-sm hover:shadow-lg transition-all duration-300 bg-white rounded-3xl p-5 flex flex-col justify-center items-center text-center cursor-pointer border border-gray-50 hover:border-orange-100">
+                        <Card className="h-full border-none shadow-sm hover:shadow-md transition-all duration-300 bg-white rounded-3xl p-5 flex flex-col justify-center items-center text-center cursor-pointer">
                             <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                                 <Calendar className="w-6 h-6" />
                             </div>
-                            <span className="text-3xl font-extrabold text-gray-900 mb-1">{data?.stats?.totalBookings || 0}</span>
-                            <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">Total Trips</span>
+                            <span className="text-3xl font-bold text-gray-900 mb-1">{data?.stats?.totalBookings || 0}</span>
+                            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Trips</span>
                         </Card>
                     </Link>
 
                     <Link href="/dashboard/messages" className="group">
-                        <Card className="h-full border-none shadow-sm hover:shadow-lg transition-all duration-300 bg-white rounded-3xl p-5 flex flex-col justify-center items-center text-center cursor-pointer border border-gray-50 hover:border-orange-100">
+                        <Card className="h-full border-none shadow-sm hover:shadow-md transition-all duration-300 bg-white rounded-3xl p-5 flex flex-col justify-center items-center text-center cursor-pointer">
                             <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform relative">
                                 <MessageSquare className="w-6 h-6" />
                                 {(data?.stats?.unreadMessages || 0) > 0 && (
                                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white" />
                                 )}
                             </div>
-                            <span className="text-3xl font-extrabold text-gray-900 mb-1">{data?.stats?.unreadMessages || 0}</span>
-                            <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">New Messages</span>
+                            <span className="text-3xl font-bold text-gray-900 mb-1">{data?.stats?.unreadMessages || 0}</span>
+                            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">New Messages</span>
                         </Card>
                     </Link>
 
                     <Link href="/dashboard/wishlist" className="col-span-2 group">
-                        <Card className="h-full border-none shadow-sm hover:shadow-lg transition-all duration-300 bg-white rounded-3xl p-4 flex items-center justify-between cursor-pointer border border-gray-50 hover:border-orange-100 relative overflow-hidden">
+                        <Card className="h-full border-none shadow-sm hover:shadow-md transition-all duration-300 bg-white rounded-3xl p-4 flex items-center justify-between cursor-pointer relative overflow-hidden">
                             <div className="flex items-center gap-4 relative z-10">
                                 <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center group-hover:bg-rose-100 transition-colors">
                                     <Heart className="w-6 h-6" />
                                 </div>
                                 <div className="text-left">
                                     <span className="block text-lg font-bold text-gray-900">{data?.user?.wishlistCount || 0} Items</span>
-                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">In My Wishlist</span>
+                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">In My Wishlist</span>
                                 </div>
                             </div>
                             <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-[#FF5F00] relative z-10 transition-colors" />
@@ -301,14 +301,14 @@ export default function DashboardPage() {
                 </motion.div>
             </div>
 
-            {/* 3. Recommended / Trending (Mocked for now but visually integrated) */}
+            {/* 3. Recommended / Trending */}
             <motion.div variants={item}>
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                         <TrendingUp className="w-5 h-5 text-[#FF5F00]" />
                         Recommended for You
                     </h2>
-                    <Link href="/search" className="text-sm font-bold text-gray-400 hover:text-[#FF5F00] transition-colors">
+                    <Link href="/search" className="text-sm font-medium text-gray-400 hover:text-[#FF5F00] transition-colors">
                         View All
                     </Link>
                 </div>
@@ -317,8 +317,8 @@ export default function DashboardPage() {
                     {data?.recommendations?.length ? (
                         data.recommendations.map((item, i) => (
                             <Link href={`/experiences/${item.id}`} key={i} className="group">
-                                <Card className="h-full border-none shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06)] rounded-3xl overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300">
-                                    <div className="h-48 relative bg-gray-200 overflow-hidden">
+                                <Card className="h-full border-none shadow-sm rounded-3xl overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300 bg-white">
+                                    <div className="h-48 relative bg-gray-100 overflow-hidden">
                                         {item.imageUrl ? (
                                             <Image
                                                 src={item.imageUrl}
@@ -327,18 +327,18 @@ export default function DashboardPage() {
                                                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                                             />
                                         ) : (
-                                            <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 group-hover:scale-105 transition-transform duration-700" />
+                                            <div className="absolute inset-0 bg-gray-100 group-hover:scale-105 transition-transform duration-700" />
                                         )}
-                                        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 text-xs font-bold shadow-sm">
+                                        <div className="absolute top-3 right-3 bg-white px-2 py-1 rounded-lg flex items-center gap-1 text-xs font-bold shadow-sm">
                                             <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
                                             {item.rating}
                                         </div>
                                     </div>
                                     <CardContent className="p-5">
                                         <h3 className="font-bold text-lg text-gray-900 mb-1 group-hover:text-[#FF5F00] transition-colors line-clamp-1">{item.title}</h3>
-                                        <p className="text-gray-500 text-sm mb-4 line-clamp-1">Unforgettable experience tailored for you.</p>
+                                        <p className="text-gray-500 text-sm mb-4 line-clamp-1 font-medium">Unforgettable experience tailored for you.</p>
                                         <div className="flex items-center justify-between">
-                                            <span className="font-extrabold text-xl text-gray-900">€{item.price}</span>
+                                            <span className="font-bold text-xl text-gray-900">€{item.price}</span>
                                             <Button size="sm" className="rounded-full bg-black text-white hover:bg-[#FF5F00] transition-colors text-xs font-bold px-4">
                                                 View
                                             </Button>

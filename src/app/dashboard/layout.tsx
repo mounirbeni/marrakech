@@ -7,7 +7,7 @@ export default function DashboardLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="flex min-h-screen w-full bg-gray-50">
+        <div className="flex min-h-screen w-full bg-white">
             {/* Desktop Sidebar */}
             <div className="hidden lg:block w-72 shrink-0 border-r border-border/50">
                 <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">

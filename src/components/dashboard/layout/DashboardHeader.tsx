@@ -54,7 +54,7 @@ export function DashboardHeader() {
                             Explore Marrakesh
                         </SheetTitle>
                     </SheetHeader>
-                    <DashboardSidebar className="border-none shadow-none" />
+                    <DashboardSidebar className="border-none shadow-none" showLogo={false} />
                 </SheetContent>
             </Sheet>
 

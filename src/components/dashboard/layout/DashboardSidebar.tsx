@@ -14,15 +14,19 @@ import {
     User,
     LogOut,
     ChevronRight,
-    Sparkles
+    Sparkles,
+    Compass
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useSession, signOut } from "next-auth/react";
 
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> { }
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+    showLogo?: boolean;
+}
 
 const menuItems = [
+    // ... existing items ...
     {
         title: "Overview",
         label: "Main",
@@ -88,12 +92,22 @@ const menuItems = [
     },
 ];
 
-export function DashboardSidebar({ className }: SidebarProps) {
+export function DashboardSidebar({ className, showLogo = true }: SidebarProps) {
     const pathname = usePathname();
     const { data: session } = useSession();
 
     return (
         <div className={cn("pb-12 h-full flex flex-col bg-white border-r border-gray-100 shadow-sm", className)}>
+            {showLogo && (
+                <div className="p-6 pb-0">
+                    <Link href="/" className="flex items-center gap-2">
+                        <Compass className="w-8 h-8 text-[#FF5F00]" />
+                        <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FF5F00] to-[#E55500]">
+                            Explore Marrakesh
+                        </span>
+                    </Link>
+                </div>
+            )}
             <div className="space-y-6 py-6 flex-1">
                 {/* User Profile Card */}
                 <div className="px-6">

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { confirmBooking, updateBookingStatus } from "@/app/actions/booking-actions";
 
 export function BookingActions({ bookingId, status }: { bookingId: string, status: string }) {
     const router = useRouter();
@@ -21,14 +22,7 @@ export function BookingActions({ bookingId, status }: { bookingId: string, statu
     const updateStatus = async (newStatus: string) => {
         setLoading(true);
         try {
-            const res = await fetch("/api/admin/bookings", {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: bookingId, status: newStatus }),
-            });
-
-            if (!res.ok) throw new Error("Failed to update status");
-
+            await updateBookingStatus(bookingId, newStatus);
             toast.success(`Booking ${newStatus.toLowerCase()} successfully`);
             router.refresh();
         } catch (error) {

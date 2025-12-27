@@ -17,18 +17,23 @@ export async function getBookings() {
     }
 }
 
-export async function confirmBooking(id: string) {
+export async function updateBookingStatus(id: string, status: string) {
     try {
         await prisma.booking.update({
             where: { id },
-            data: { status: 'CONFIRMED' },
+            data: { status },
         })
         revalidatePath('/admin/bookings')
+        revalidatePath('/admin/dashboard')
         return { success: true }
     } catch (error) {
-        console.error('Failed to confirm booking:', error)
-        return { success: false, error: 'Failed to confirm booking' }
+        console.error('Failed to update booking status:', error)
+        throw new Error('Failed to update booking status')
     }
+}
+
+export async function confirmBooking(id: string) {
+    return updateBookingStatus(id, 'CONFIRMED');
 }
 
 export async function deleteBooking(id: string) {

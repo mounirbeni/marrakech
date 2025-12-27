@@ -10,7 +10,8 @@ import {
     Map,
     Settings,
     LogOut,
-    CreditCard
+    CreditCard,
+    HelpCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
     { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
     { label: "Bookings", href: "/admin/bookings", icon: CalendarDays },
     { label: "Experiences", href: "/admin/experiences", icon: Map },
+    { label: "Support", href: "/admin/support", icon: HelpCircle },
     { label: "Customers", href: "/admin/customers", icon: Users },
     { label: "Finance", href: "/admin/finance", icon: CreditCard },
     { label: "Settings", href: "/admin/settings", icon: Settings },

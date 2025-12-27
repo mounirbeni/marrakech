@@ -53,10 +53,11 @@ export async function loginUser(payload: UserPayload) {
     const token = await signJWT(payload);
     const cookieStore = await cookies();
 
-    // Set cookie
+    // Set cookie with Vercel-compatible settings
     cookieStore.set('auth_token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
         maxAge: 60 * 60, // 1 hour
         path: '/',
     });

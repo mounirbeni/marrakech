@@ -13,8 +13,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     session: {
         strategy: "jwt",
     },
+    pages: {
+        signIn: '/login',
+        signOut: '/login',
+        error: '/login',
+    },
     providers: [
-        Google,
+        Google({
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            authorization: {
+                params: {
+                    prompt: "consent",
+                    access_type: "offline",
+                    response_type: "code"
+                }
+            }
+        }),
         Credentials({
             name: "Credentials",
             credentials: {
@@ -47,7 +62,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         })
     ],
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user, account }) {
             if (user) {
                 token.id = user.id as string
                 token.role = user.role
@@ -60,6 +75,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 session.user.role = token.role as string
             }
             return session
+        },
+        async signIn({ user, account, profile }) {
+            // For OAuth providers, ensure user exists in database
+            if (account?.provider === 'google') {
+                const existingUser = await prisma.user.findUnique({
+                    where: { email: user.email! }
+                });
+
+                if (!existingUser) {
+                    // Create user if doesn't exist
+                    await prisma.user.create({
+                        data: {
+                            email: user.email!,
+                            name: user.name || user.email!.split('@')[0],
+                            password: '', // OAuth users don't have passwords
+                            role: 'CLIENT',
+                        }
+                    });
+                }
+            }
+            return true;
         }
     }
 }) 

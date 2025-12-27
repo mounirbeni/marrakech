@@ -20,15 +20,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     providers: [
         Google({
-            clientId: process.env.GOOGLE_CLIENT_ID!,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-            authorization: {
-                params: {
-                    prompt: "consent",
-                    access_type: "offline",
-                    response_type: "code"
-                }
-            }
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            allowDangerousEmailAccountLinking: true,
         }),
         Credentials({
             name: "Credentials",
@@ -62,7 +56,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         })
     ],
     callbacks: {
-        async jwt({ token, user, account }) {
+        async jwt({ token, user }) {
             if (user) {
                 token.id = user.id as string
                 token.role = user.role
@@ -76,26 +70,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             }
             return session
         },
-        async signIn({ user, account, profile }) {
-            // For OAuth providers, ensure user exists in database
-            if (account?.provider === 'google') {
-                const existingUser = await prisma.user.findUnique({
-                    where: { email: user.email! }
-                });
-
-                if (!existingUser) {
-                    // Create user if doesn't exist
-                    await prisma.user.create({
-                        data: {
-                            email: user.email!,
-                            name: user.name || user.email!.split('@')[0],
-                            password: '', // OAuth users don't have passwords
-                            role: 'CLIENT',
-                        }
-                    });
-                }
-            }
-            return true;
+    },
+    events: {
+        async linkAccount({ user }) {
+            console.log("Link account event", user.email)
+        },
+        async signIn({ user, isNewUser }) {
+            console.log("Sign in event", user.email, "Is new:", isNewUser)
         }
-    }
+    },
+    debug: process.env.NODE_ENV === "development",
 }) 

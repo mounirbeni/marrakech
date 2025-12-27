@@ -72,7 +72,7 @@ export async function POST(request: Request) {
         const booking = await prisma.booking.create({
             data: {
                 id: generateBookingId(), // Short booking ID
-                userId: session?.id || 'guest', // Use session ID if available, otherwise 'guest' placeholder
+                userId: session?.id || null, // Use session ID if available, otherwise null for guest
                 name: name || session?.name || email.split('@')[0] || 'Valued Customer',
                 email: email || session?.email || '',
                 phone: phone || null,

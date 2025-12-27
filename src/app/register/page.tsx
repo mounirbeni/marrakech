@@ -72,7 +72,7 @@ export default function RegisterPage() {
                     <div className="space-y-2">
                         <Link href="/" className="inline-block mb-8">
                             <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FF5F00] to-[#E55500]">
-                                Marrakech Luxe
+                                Explore Marrakesh
                             </span>
                         </Link>
                         <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">

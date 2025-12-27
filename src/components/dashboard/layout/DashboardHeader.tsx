@@ -50,7 +50,7 @@ export function DashboardHeader() {
                 <SheetContent side="left" className="p-0 w-72 border-r border-gray-100 bg-white">
                     <SheetHeader className="p-6 border-b border-gray-100 text-left">
                         <SheetTitle className="text-xl font-bold text-[#FF5F00]">
-                            Marrakech Luxe
+                            Explore Marrakesh
                         </SheetTitle>
                     </SheetHeader>
                     <DashboardSidebar className="border-none shadow-none" />

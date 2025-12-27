@@ -66,7 +66,7 @@ export function Header() {
                  but sticking to simple link wrapper if Logo text is internal */}
                         <div className="flex items-center gap-2">
                             <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FF5F00] to-[#E55500]">
-                                Marrakech Luxe
+                                Explore Marrakesh
                             </span>
                         </div>
                     </Link>
